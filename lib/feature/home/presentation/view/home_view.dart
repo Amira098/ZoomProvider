@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import 'request_card.dart';
+import 'store_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -190,10 +191,20 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   const Text('👋', style: TextStyle(fontSize: 24)),
                   const Spacer(),
-                  SvgPicture.asset(
-                    'assets/svg/shopping_cart.svg',
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                    width: 24,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StoreScreen(),
+                        ),
+                      );
+                    },
+                    child: SvgPicture.asset(
+                      'assets/svg/shopping_cart.svg',
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      width: 24,
+                    ),
                   ),
                 ],
               ),

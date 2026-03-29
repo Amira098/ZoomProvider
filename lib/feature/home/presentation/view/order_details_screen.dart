@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import 'status_update_screen.dart';
+import 'store_screen.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   const OrderDetailsScreen({super.key});
@@ -35,10 +36,20 @@ class OrderDetailsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SvgPicture.asset(
-                    'assets/svg/shopping_cart.svg',
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                    width: 24,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StoreScreen(),
+                        ),
+                      );
+                    },
+                    child: SvgPicture.asset(
+                      'assets/svg/shopping_cart.svg',
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      width: 24,
+                    ),
                   ),
                 ],
               ),
