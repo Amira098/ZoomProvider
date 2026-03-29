@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
+import '../../../home/presentation/view/request_card.dart';
+import '../../../home/presentation/view/store_screen.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -7,179 +10,106 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff1B1D27),
-      body: Column(
-        children: [
-          SafeArea(
-            bottom: false,
-            child: Container(
-              height: 70,
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: Stack(
-                alignment: Alignment.center,
+      backgroundColor: const Color(0xFF161A22),
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+              child: Row(
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const Expanded(
+                    child: Text(
+                      'Notification',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  const Text(
-                    'Notification',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color(0xffF6F6F6),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
-              child: Stack(
-                children: [
-
-                  ListView.separated(
-                    padding: const EdgeInsets.all(24),
-                    itemCount: 2,
-                    separatorBuilder: (context, index) => const SizedBox(height: 16),
-                    itemBuilder: (context, index) {
-                      return _buildNotificationCard(
-                        title: 'Candle change',
-                        description: 'Qui rerum voluptas qui laboriosam Debitis numquam doloribus.',
-                        status: 'Pending',
-                        imageUrl: 'https://via.placeholder.com/300x150', // Replace with real asset if available
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StoreScreen(),
+                        ),
                       );
                     },
+                    child: SvgPicture.asset(
+                      'assets/svg/shopping_cart.svg',
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      width: 24,
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotificationCard({
-    required String title,
-    required String description,
-    required String status,
-    required String imageUrl,
-  }) {
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xffE8E8E8)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              Image.network(
-                imageUrl,
-                height: 160,
+            Expanded(
+              child: Container(
                 width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  height: 160,
-                  color: Colors.grey[200],
-                  child: const Icon(Icons.image_not_supported),
-                ),
-              ),
-              Positioned(
-                top: 16,
-                left: 16,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xffFF7A30),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    status,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                decoration: const BoxDecoration(
+                  color: Color(0xffF6F6F6),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  child: Stack(
                     children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xff1E1E1E),
+                      Positioned.fill(
+                        child: CustomPaint(
+                          painter: ToolsPatternPainter(),
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        description,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0xff8A8A8A),
-                          height: 1.4,
-                        ),
+                      ListView(
+                        padding: const EdgeInsets.all(20),
+                        children: const [
+                          RequestCard(
+                            id: '#ORD-2234',
+                            name: 'Mahmoud Abdullah',
+                            location: 'Republic Street, Maadi — 3.2 km',
+                            time: 'Today 11:00 AM',
+                            description: 'Disbursement authorization #WH-0091 — Ready',
+                            status: 'New',
+                            statusColor: Color(0xFFD9E9FF),
+                            statusTextColor: Color(0xFF4A90E2),
+                            type: 'Filter installation',
+                          ),
+                          RequestCard(
+                            id: '#ORD-2234',
+                            name: 'Mahmoud Abdullah',
+                            location: 'Republic Street, Maadi — 3.2 km',
+                            time: 'Today 11:00 AM',
+                            description: 'Disbursement authorization #WH-0091 — Ready',
+                            status: 'New',
+                            statusColor: Color(0xFFD9E9FF),
+                            statusTextColor: Color(0xFF4A90E2),
+                            type: 'Filter installation',
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffF3212D),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    minimumSize: const Size(80, 36),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
