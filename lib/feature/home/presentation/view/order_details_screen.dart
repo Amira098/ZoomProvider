@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
+import 'status_update_screen.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   const OrderDetailsScreen({super.key});
@@ -153,7 +154,18 @@ class OrderDetailsScreen extends StatelessWidget {
                             const SizedBox(height: 12),
                             _buildActionButton('I reached the client — work began', const Color(0xFFFF2A2A)),
                             const SizedBox(height: 12),
-                            _buildActionButton('Status update', const Color(0xFFFF2A2A)),
+                            _buildActionButton(
+                              'Status update',
+                              const Color(0xFFFF2A2A),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const StatusUpdateScreen(),
+                                  ),
+                                );
+                              },
+                            ),
                             const SizedBox(height: 20),
                             Container(
                               padding: const EdgeInsets.all(16),
@@ -250,11 +262,11 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(String label, Color color) {
+  Widget _buildActionButton(String label, Color color, {VoidCallback? onPressed}) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed ?? () {},
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.white,
