@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../home/presentation/view/all_requests_screen.dart';
 import '../../../home/presentation/view/home_view.dart';
 import '../../../notifications/presentation/view/notification_screen.dart';
 import '../../../profile_screen/presentation/view/profile_screen.dart';
@@ -15,7 +16,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   List<Widget> get pages => const [
     HomeScreen(),
-    Center(child: Text('All requests')),
+    AllRequestsScreen(),
     NotificationScreen(),
     ProfileScreen(),
   ];

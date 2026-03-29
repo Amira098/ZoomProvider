@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
+import 'request_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -166,119 +167,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRequestCard({
-    required String id,
-    required String name,
-    required String location,
-    required String time,
-    required String description,
-    required String status,
-    required Color statusColor,
-    required Color statusTextColor,
-    required String type,
-    bool isCompleted = false,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFFF8585).withOpacity(0.3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                id,
-                style: const TextStyle(fontSize: 10, color: Colors.grey),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: statusTextColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            name,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            location,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            time,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            description,
-            style: const TextStyle(fontSize: 12, color: Colors.black87),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFDADA),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  type,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFFFF2A2A),
-                  ),
-                ),
-              ),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF2A2A),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text(
-                  'View details',
-                  style: TextStyle(fontSize: 12),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -366,37 +254,37 @@ class HomeScreen extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 10),
-                            _buildRequestCard(
+                            const RequestCard(
                               id: '#ORD-2234',
                               name: 'Mahmoud Abdullah',
                               location: 'Republic Street, Maadi — 3.2 km',
                               time: 'Today 11:00 AM',
                               description: 'Disbursement authorization #WH-0091 — Ready',
                               status: 'New',
-                              statusColor: const Color(0xFFD9E9FF),
-                              statusTextColor: const Color(0xFF4A90E2),
+                              statusColor: Color(0xFFD9E9FF),
+                              statusTextColor: Color(0xFF4A90E2),
                               type: 'Filter installation',
                             ),
-                            _buildRequestCard(
+                            const RequestCard(
                               id: '#ORD-2198',
                               name: 'Sarah Ibrahim',
                               location: 'Nasr City, Ahmed Orabi Street — 1.8 km',
                               time: 'Today 10:00 AM',
                               description: 'Disbursement authorization #WH-0089 — Received',
                               status: 'In the way',
-                              statusColor: const Color(0xFFFFF4D9),
-                              statusTextColor: const Color(0xFFD8891E),
+                              statusColor: Color(0xFFFFF4D9),
+                              statusTextColor: Color(0xFFD8891E),
                               type: 'Change candle',
                             ),
-                            _buildRequestCard(
+                            const RequestCard(
                               id: '#ORD-2178',
                               name: 'Karim Al-Sayed',
                               location: 'Helwan, Nile Street — 5.4 km',
                               time: 'Today 9:30 AM',
                               description: 'It started 42 minutes ago',
                               status: 'In Progress',
-                              statusColor: const Color(0xFFE2F9E2),
-                              statusTextColor: const Color(0xFF27AE60),
+                              statusColor: Color(0xFFE2F9E2),
+                              statusTextColor: Color(0xFF27AE60),
                               type: 'Change candle',
                             ),
                             const SizedBox(height: 20),
@@ -408,15 +296,15 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            _buildRequestCard(
+                            const RequestCard(
                               id: '#ORD-2178',
                               name: 'Heba Ramadan',
                               location: '',
                               time: 'Finished 8:45 AM',
                               description: 'Installation completed and payment made — OMR 450',
                               status: 'Complete',
-                              statusColor: const Color(0xFFFFDADA),
-                              statusTextColor: const Color(0xFFFF2A2A),
+                              statusColor: Color(0xFFFFDADA),
+                              statusTextColor: Color(0xFFFF2A2A),
                               type: 'Filter installation',
                               isCompleted: true,
                             ),
