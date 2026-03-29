@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'order_details_screen.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../order_details_screen.dart';
 
 class RequestCard extends StatelessWidget {
   final String id;
@@ -35,7 +36,7 @@ class RequestCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFFF8585).withOpacity(0.3)),
+        border: Border.all(color: AppColors.primaryLight.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,14 +96,14 @@ class RequestCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFDADA),
+                  color: AppColors.paleRed,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   type,
                   style: const TextStyle(
                     fontSize: 10,
-                    color: Color(0xFFFF2A2A),
+                    color: AppColors.accentRed,
                   ),
                 ),
               ),
@@ -117,7 +118,7 @@ class RequestCard extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF2A2A),
+                  backgroundColor: AppColors.accentRed,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   minimumSize: Size.zero,

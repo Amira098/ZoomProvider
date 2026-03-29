@@ -45,6 +45,17 @@ abstract class AppColors {
   static const headBlueTop = Color(0xFF87BFFF);
   static const Color darkrose = Color(0xFFC74185);
 
+  static const Color surface = Color(0xFF161A22);
+  static const Color scaffoldBackground = Color(0xffF6F6F6);
+  static const Color primaryLight = Color(0xFFFF8585);
+  static const Color primaryDark = Color(0xFFFF5252);
+  static const Color accentRed = Color(0xFFFF2A2A);
+  static const Color paleRed = Color(0xFFFFDADA);
+  static const Color paleGreen = Color(0xFFD4F9D4);
+  static const Color paleOrange = Color(0xFFFFF4D9);
+  static const Color paleBlue2 = Color(0xFFD9E9FF);
+  static const Color palePurple = Color(0xFFF9D4FF);
+
   static const Color grey900 = Color(0xFF212121);
   static const Color grey800 = Color(0xFF424242);
   static const Color grey700 = Color(0xFF616161);

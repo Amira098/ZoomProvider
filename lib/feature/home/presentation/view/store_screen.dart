@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
+import '../../../../core/constants/app_colors.dart';
+import 'widgets/authorization_header.dart';
+import 'widgets/store_item.dart';
 
 class StoreScreen extends StatelessWidget {
   const StoreScreen({super.key});
@@ -8,7 +11,7 @@ class StoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF161A22),
+      backgroundColor: AppColors.surface,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -46,7 +49,7 @@ class StoreScreen extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color(0xffF6F6F6),
+                  color: AppColors.scaffoldBackground,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -100,7 +103,7 @@ class StoreScreen extends StatelessWidget {
                                     child: Text(
                                       'Disbursement authorization #WH-0091 is approved by management. Proceed to the main warehouse.',
                                       style: TextStyle(
-                                        color: Color(0xFFFF2A2A),
+                                        color: AppColors.accentRed,
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
                                         height: 1.4,
@@ -113,42 +116,47 @@ class StoreScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 24),
-                            _buildAuthorizationHeader('#WH-0091', 'Certified'),
+                            const AuthorizationHeader(id: '#WH-0091', status: 'Certified'),
                             const SizedBox(height: 12),
-                            _buildStoreItem(
+                            const StoreItem(
                               title: '5-stage RO filter',
                               code: 'FLT-RO-001 | Location: Shelf A-12',
                               quantity: '1 unit',
                               status: 'ready',
-                              statusColor: const Color(0xFFD4F9D4),
-                              statusTextColor: const Color(0xFF27AE60),
+                              statusColor: AppColors.paleGreen,
+                              statusTextColor: Color(0xFF27AE60),
                             ),
-                            _buildStoreItem(
+                            const StoreItem(
                               title: '10 inch PP candle',
                               code: 'CND-PP-010 | Location: Shelf B-04',
                               quantity: '3 pieces',
                               status: 'ready',
-                              statusColor: const Color(0xFFD4F9D4),
-                              statusTextColor: const Color(0xFF27AE60),
+                              statusColor: AppColors.paleGreen,
+                              statusTextColor: Color(0xFF27AE60),
                             ),
-                            _buildStoreItem(
+                            const StoreItem(
                               title: 'Carbon block filter',
                               code: 'CRB-BLK-05 | Location: Shelf C-07',
                               quantity: '1 unit',
                               status: 'expected',
-                              statusColor: const Color(0xFFFFF4D9),
-                              statusTextColor: const Color(0xFFD8891E),
+                              statusColor: AppColors.paleOrange,
+                              statusTextColor: AppColors.orange,
                             ),
                             const SizedBox(height: 12),
-                            _buildAuthorizationHeader('#WH-0089', 'recipient', headerColor: const Color(0xFFF9D4FF), textColor: const Color(0xFFC74185)),
+                            const AuthorizationHeader(
+                              id: '#WH-0089',
+                              status: 'recipient',
+                              headerColor: AppColors.palePurple,
+                              textColor: AppColors.darkrose,
+                            ),
                             const SizedBox(height: 12),
-                            _buildStoreItem(
+                            const StoreItem(
                               title: 'Granular candle',
                               code: 'KIT-STD-02 | Request by Sarah Ibrahim',
                               quantity: '1 unit',
                               status: 'recipient',
-                              statusColor: const Color(0xFFF9D4FF),
-                              statusTextColor: const Color(0xFFC74185),
+                              statusColor: AppColors.palePurple,
+                              statusTextColor: AppColors.darkrose,
                             ),
                             const SizedBox(height: 24),
                             SizedBox(
@@ -156,7 +164,7 @@ class StoreScreen extends StatelessWidget {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFFF2A2A),
+                                  backgroundColor: AppColors.accentRed,
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
@@ -185,80 +193,4 @@ class StoreScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAuthorizationHeader(String id, String status, {Color headerColor = const Color(0xFFD9E9FF), Color textColor = const Color(0xFF4A90E2)}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'Disbursement authorization $id',
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          decoration: BoxDecoration(
-            color: headerColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            status,
-            style: TextStyle(fontSize: 10, color: textColor, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStoreItem({
-    required String title,
-    required String code,
-    required String quantity,
-    required String status,
-    required Color statusColor,
-    required Color statusTextColor,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.withOpacity(0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(fontSize: 10, color: statusTextColor, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            code,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Quantity: $quantity',
-            style: const TextStyle(fontSize: 14, color: Colors.red, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../home/presentation/view/all_requests_screen.dart';
 import '../../../home/presentation/view/home_view.dart';
 import '../../../notifications/presentation/view/notification_screen.dart';
@@ -85,7 +86,7 @@ class CustomBottomNav extends StatelessWidget {
               child: Container(
                 height: 75,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF161A22),
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: const [
                     BoxShadow(
@@ -124,7 +125,7 @@ class CustomBottomNav extends StatelessWidget {
                                     ? FontWeight.bold
                                     : FontWeight.normal,
                                 color: currentIndex == index
-                                    ? const Color(0xFFFF2A2A)
+                                    ? AppColors.accentRed
                                     : Colors.white,
                               ),
                               child: Text(items[index].label),
@@ -163,7 +164,7 @@ class CustomBottomNav extends StatelessWidget {
                     ),
                     child: Icon(
                       items[currentIndex].icon,
-                      color: const Color(0xFFFF2A2A),
+                      color: AppColors.accentRed,
                       size: 28,
                     ),
                   ),

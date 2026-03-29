@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
+import '../../../../core/constants/app_colors.dart';
 import 'status_update_screen.dart';
 import 'store_screen.dart';
 
@@ -10,7 +11,7 @@ class OrderDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF161A22),
+      backgroundColor: AppColors.surface,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -58,7 +59,7 @@ class OrderDetailsScreen extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color(0xffF6F6F6),
+                  color: AppColors.scaffoldBackground,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -84,13 +85,13 @@ class OrderDetailsScreen extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFDADA),
+                                color: AppColors.paleRed,
                                 borderRadius: BorderRadius.circular(15),
                               ),
                               child: const Text(
                                 'New — Awaiting action',
                                 style: TextStyle(
-                                  color: Color(0xFFFF2A2A),
+                                  color: AppColors.accentRed,
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -161,13 +162,13 @@ class OrderDetailsScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 24),
-                            _buildActionButton('Start job', const Color(0xFFFF2A2A)),
+                            _buildActionButton('Start job', AppColors.accentRed),
                             const SizedBox(height: 12),
-                            _buildActionButton('I reached the client — work began', const Color(0xFFFF2A2A)),
+                            _buildActionButton('I reached the client — work began', AppColors.accentRed),
                             const SizedBox(height: 12),
                             _buildActionButton(
                               'Status update',
-                              const Color(0xFFFF2A2A),
+                              AppColors.accentRed,
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -190,7 +191,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                   const Expanded(
                                     child: Text(
                                       'Clicking will send an immediate notification to the admin and route manager.',
-                                      style: TextStyle(color: Color(0xFFFF2A2A), fontSize: 12),
+                                      style: TextStyle(color: AppColors.accentRed, fontSize: 12),
                                     ),
                                   ),
                                   const SizedBox(width: 8),

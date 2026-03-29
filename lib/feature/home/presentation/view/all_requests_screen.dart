@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
-import 'request_card.dart';
+import '../../../../core/constants/app_colors.dart';
 import 'store_screen.dart';
+import 'widgets/request_card.dart';
 
 class AllRequestsScreen extends StatelessWidget {
   const AllRequestsScreen({super.key});
@@ -10,7 +11,7 @@ class AllRequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF161A22),
+      backgroundColor: AppColors.surface,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -58,7 +59,7 @@ class AllRequestsScreen extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color(0xffF6F6F6),
+                  color: AppColors.scaffoldBackground,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),

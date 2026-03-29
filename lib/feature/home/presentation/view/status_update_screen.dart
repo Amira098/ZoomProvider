@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
+import '../../../../core/constants/app_colors.dart';
 import 'store_screen.dart';
 
 class StatusUpdateScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF161A22),
+      backgroundColor: AppColors.surface,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -64,7 +65,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
               child: Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
-                  color: Color(0xffF6F6F6),
+                  color: AppColors.scaffoldBackground,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -110,7 +111,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                   const Expanded(
                                     child: Text(
                                       'An automatic notification will be sent to the admin and account management when the status is selected.',
-                                      style: TextStyle(color: Color(0xFFFF2A2A), fontSize: 12),
+                                      style: TextStyle(color: AppColors.accentRed, fontSize: 12),
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -203,7 +204,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFFF2A2A),
+                                  backgroundColor: AppColors.accentRed,
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
@@ -247,7 +248,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
           color: const Color(0xFFF2F4F7),
           borderRadius: BorderRadius.circular(30),
           border: Border.all(
-            color: isSelected ? const Color(0xFFFF2A2A).withOpacity(0.5) : Colors.grey.withOpacity(0.1),
+            color: isSelected ? AppColors.accentRed.withOpacity(0.5) : Colors.grey.withOpacity(0.1),
             width: isSelected ? 1 : 1,
           ),
         ),
