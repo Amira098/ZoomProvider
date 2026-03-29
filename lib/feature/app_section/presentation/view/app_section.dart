@@ -54,18 +54,18 @@ class CustomBottomNav extends StatelessWidget {
     _NavItemData(icon: Icons.person_outline_rounded, label: 'Profile'),
   ];
 
-  Alignment _alignment(int index) {
+  AlignmentDirectional _alignment(int index) {
     switch (index) {
       case 0:
-        return const Alignment(-0.88, -1);
+        return const AlignmentDirectional(-0.88, -1);
       case 1:
-        return const Alignment(-0.30, -1);
+        return const AlignmentDirectional(-0.30, -1);
       case 2:
-        return const Alignment(0.28, -1);
+        return const AlignmentDirectional(0.28, -1);
       case 3:
-        return const Alignment(0.88, -1);
+        return const AlignmentDirectional(0.88, -1);
       default:
-        return Alignment.center;
+        return AlignmentDirectional.center;
     }
   }
 
