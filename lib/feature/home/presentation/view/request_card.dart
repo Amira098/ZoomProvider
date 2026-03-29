@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'order_details_screen.dart';
 
 class RequestCard extends StatelessWidget {
   final String id;
@@ -107,7 +108,14 @@ class RequestCard extends StatelessWidget {
               ),
               const Spacer(),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OrderDetailsScreen(),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF2A2A),
                   foregroundColor: Colors.white,
