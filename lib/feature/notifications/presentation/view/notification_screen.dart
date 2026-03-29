@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../home/presentation/view/store_screen.dart';
-import '../../../home/presentation/view/widgets/request_card.dart';
+import '../../../home/presentation/widgets/request_card.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});

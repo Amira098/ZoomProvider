@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/constants/app_colors.dart';
-import '../order_details_screen.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../view/order_details_screen.dart';
 
 class RequestCard extends StatelessWidget {
   final String id;

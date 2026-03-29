@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
-import 'widgets/authorization_header.dart';
-import 'widgets/store_item.dart';
-
+import '../widgets/authorization_header.dart';
+import '../widgets/store_item.dart';
 class StoreScreen extends StatelessWidget {
   const StoreScreen({super.key});
 

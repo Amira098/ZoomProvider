@@ -50,7 +50,7 @@ class CustomBottomNav extends StatelessWidget {
 
   static const List<_NavItemData> items = [
     _NavItemData(icon: Icons.home_rounded, label: 'Home'),
-    _NavItemData(icon: Icons.history_rounded, label: 'All requests'),
+    _NavItemData(icon: Icons.receipt_long, label: 'All requests'),
     _NavItemData(icon: Icons.notifications_none_rounded, label: 'Alerts'),
     _NavItemData(icon: Icons.person_outline_rounded, label: 'Profile'),
   ];
