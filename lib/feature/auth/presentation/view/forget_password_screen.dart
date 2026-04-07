@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/utils/customTextField.dart';
 import '../../../../generated/locale_keys.g.dart';
 import 'verify_phone_screen.dart';
@@ -28,6 +29,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
+            opacity: 0.4,
             image: AssetImage("assets/svg/backgrawend.png"),
             fit: BoxFit.cover,
           ),
@@ -94,7 +96,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                         hint: "abhishekpatelXXX@gmail.com",
                         label: "Email Address",
                         borderRadius: 30,
-                        fillColor: Colors.white.withOpacity(0.4),
+                        fillColor: Colors.white.withOpacity(0.8),
                         borderColor: Colors.grey.shade400,
                       ),
                       const SizedBox(height: 40),
@@ -141,15 +143,17 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       children: [
                         const Text(
                           "Remember password? ",
-                          style: TextStyle(color: Colors.black54),
+                          style: TextStyle(color: Colors.black,
+                          fontSize: 16),
                         ),
                         InkWell(
                           onTap: () => Navigator.pop(context),
-                          child: const Text(
+                          child:  Text(
                             "Log in",
                             style: TextStyle(
-                              color: Colors.black,
+                              color:AppColors.primary,
                               fontWeight: FontWeight.bold,
+                              fontSize: 14,
                             ),
                           ),
                         ),

@@ -71,7 +71,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                           children: [
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(180, 50),
+                                fixedSize: const Size(120, 50),
                                 backgroundColor: currentLocale.languageCode == 'en'
                                     ? AppColors.primary
                                     : Colors.white,
@@ -95,7 +95,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
 
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(180, 50),
+                                fixedSize: const Size(120, 50),
                                 backgroundColor: currentLocale.languageCode == 'ar'
                                     ? AppColors.primary
                                     : Colors.white,

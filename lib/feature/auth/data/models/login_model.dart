@@ -1,5 +1,3 @@
-// login_model.dart
-
 class LoginModel {
   final bool? status;
   final Message? message;
@@ -15,10 +13,11 @@ class LoginModel {
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
     return LoginModel(
-      status: json['status'],
-      message:
-      json['message'] != null ? Message.fromJson(json['message']) : null,
-      token: json['token'],
+      status: json['status'] as bool?,
+      message: json['message'] is Map<String, dynamic>
+          ? Message.fromJson(json['message'])
+          : null,
+      token: json['token']?.toString(),
       user: json['user'] != null ? User.fromJson(json['user']) : null,
     );
   }
@@ -44,8 +43,8 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
-      ar: json['ar'],
-      en: json['en'],
+      ar: json['ar']?.toString(),
+      en: json['en']?.toString(),
     );
   }
 
@@ -85,15 +84,17 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      name: json['name'],
-      avatar: json['avatar'],
-      email: json['email'],
-      phone: json['phone'],
-      address: json['address'],
-      latitude: json['latitude']?.toDouble(),
-      longitude: json['longitude']?.toDouble(),
-      pushNotificationsToken: json['push_notifications_token'],
-      accountType: json['account_type'],
+      name: json['name']?.toString(),
+      avatar: json['avatar']?.toString(),
+      email: json['email']?.toString(),
+      phone: json['phone']?.toString(),
+      address: json['address']?.toString(),
+
+      latitude: _toDouble(json['latitude']),
+      longitude: _toDouble(json['longitude']),
+
+      pushNotificationsToken: json['push_notifications_token']?.toString(),
+      accountType: json['account_type']?.toString(),
     );
   }
 
@@ -110,5 +111,12 @@ class User {
       'push_notifications_token': pushNotificationsToken,
       'account_type': accountType,
     };
+  }
+
+  static double? _toDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    return double.tryParse(value.toString());
   }
 }

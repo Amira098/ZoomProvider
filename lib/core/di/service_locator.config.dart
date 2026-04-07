@@ -144,17 +144,15 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i899.PrivacyUseCase(gh<_i498.RemotePrivacyDataSource>()));
     gh.factory<_i1009.ContactUsCubit>(
         () => _i1009.ContactUsCubit(gh<_i368.RemoteContactUsDataSource>()));
-    gh.factory<_i1027.ProfileUpdateCubit>(() =>
-        _i1027.ProfileUpdateCubit(gh<_i457.RemoteProfileUpdateDataSource>()));
     gh.factory<_i269.DeleteCubit>(
         () => _i269.DeleteCubit(gh<_i418.DeleteDataSources>()));
-    gh.factory<_i304.RemoteProfileUpdateDataSourceImp>(
+    gh.factory<_i547.AboutUsUseCase>(
+        () => _i547.AboutUsUseCase(gh<_i966.RemoteAboutUsDataSource>()));
+    gh.factory<_i457.RemoteProfileUpdateDataSource>(
         () => _i304.RemoteProfileUpdateDataSourceImp(
               gh<_i238.ApiManager>(),
               gh<_i1004.ProfileUpdateRetrofitClient>(),
             ));
-    gh.factory<_i547.AboutUsUseCase>(
-        () => _i547.AboutUsUseCase(gh<_i966.RemoteAboutUsDataSource>()));
     gh.factory<_i909.RemoteTermsDataSource>(
         () => _i739.RemoteTermsDataSourceImp(
               gh<_i238.ApiManager>(),
@@ -178,6 +176,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i839.PrivacyCubit(gh<_i899.PrivacyUseCase>()));
     gh.factory<_i431.AboutUsCubit>(
         () => _i431.AboutUsCubit(gh<_i547.AboutUsUseCase>()));
+    gh.factory<_i1027.ProfileUpdateCubit>(() =>
+        _i1027.ProfileUpdateCubit(gh<_i457.RemoteProfileUpdateDataSource>()));
     gh.factory<_i152.HomeCubit>(
         () => _i152.HomeCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i610.LoginCubit>(
