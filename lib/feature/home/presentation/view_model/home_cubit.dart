@@ -24,8 +24,8 @@ class HomeCubit extends Cubit<HomeState> {
       case FailureResult<HomeModel>():
         emit(
           HomeFailure(
-            apiError: result.apiError as ApiError,
-            exception: result.exception as Exception,
+            apiError: result.apiError,
+            exception: result.exception,
           ),
         );
         break;

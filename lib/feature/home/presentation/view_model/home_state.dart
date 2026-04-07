@@ -15,9 +15,8 @@ class HomeSuccess extends HomeState {
 }
 
 class HomeFailure extends HomeState {
-final ApiError apiError;
-final Exception exception;
+  final ApiError? apiError;
+  final Exception? exception;
 
-
-  HomeFailure({required this.apiError,required this.exception});
+  HomeFailure({this.apiError, this.exception});
 }

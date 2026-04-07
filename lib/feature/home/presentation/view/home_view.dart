@@ -84,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                             if (state is HomeLoading) {
                               return const Center(child: CircularProgressIndicator());
                             } else if (state is HomeFailure) {
-                              return Center(child: Text('Error: ${state.apiError.message}'));
+                              return Center(child: Text('Error: ${state.apiError?.message ?? "Something went wrong"}'));
                             } else if (state is HomeSuccess) {
                               final homeModel = state.homeModel;
                               final orders = homeModel.data ?? [];
