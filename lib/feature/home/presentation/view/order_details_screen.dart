@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/service_locator.dart';
 import '../view_model/home_cubit.dart';
 import '../view_model/home_state.dart';
@@ -13,7 +14,22 @@ class OrderDetailsScreen extends StatelessWidget {
   final int requestId;
 
   const OrderDetailsScreen({super.key, required this.requestId});
-
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'pending':
+        return Colors.orange;
+      case 'accepted':
+        return Colors.blue;
+      case 'started_by_technical':
+        return Colors.green;
+      case 'completed':
+        return Colors.teal;
+      case 'cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -121,19 +137,34 @@ class OrderDetailsScreen extends StatelessWidget {
                                     const SizedBox(height: 16),
                                     Builder(
                                       builder: (context) {
-                                        String mapUrl;
-                                        if (order.latitude != null && order.longitude != null) {
+                                        final hasLatLng = order.latitude != null && order.longitude != null;
+                                        final hasAddress = order.address != null && order.address!.trim().isNotEmpty;
+
+                                        String? mapUrl;
+
+                                        if (hasLatLng) {
                                           mapUrl =
-                                              'https://maps.googleapis.com/maps/api/staticmap?center=${order.latitude},${order.longitude}&zoom=14&size=600x300&markers=color:red%7C${order.latitude},${order.longitude}';
-                                        } else if (order.address != null && order.address!.isNotEmpty) {
+                                          'https://maps.googleapis.com/maps/api/staticmap'
+                                              '?center=${order.latitude},${order.longitude}'
+                                              '&zoom=14'
+                                              '&size=600x300'
+                                              '&markers=color:red%7C${order.latitude},${order.longitude}'
+                                              '&key=$googleMapsApiKey';
+                                        } else if (hasAddress) {
                                           final encodedAddress = Uri.encodeComponent(order.address!);
                                           mapUrl =
-                                              'https://maps.googleapis.com/maps/api/staticmap?center=$encodedAddress&zoom=14&size=600x300&markers=color:red%7C$encodedAddress';
-                                        } else {
-                                          // Fallback to a default location if no lat/long or address
-                                          mapUrl =
-                                              'https://maps.googleapis.com/maps/api/staticmap?center=30.0444,31.2357&zoom=14&size=600x300&markers=color:red%7C30.0444,31.2357';
+                                          'https://maps.googleapis.com/maps/api/staticmap'
+                                              '?center=$encodedAddress'
+                                              '&zoom=14'
+                                              '&size=600x300'
+                                              '&markers=color:red%7C$encodedAddress'
+                                              '&key=$googleMapsApiKey';
                                         }
+
+                                        final statusLabel = order.status?.label ?? 'Unknown';
+                                        final statusValue = order.status?.value ?? '';
+
+                                        final statusColor = _getStatusColor(statusValue);
 
                                         return Container(
                                           height: 180,
@@ -141,28 +172,40 @@ class OrderDetailsScreen extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(20),
                                             border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                                            image: DecorationImage(
-                                              image: NetworkImage(mapUrl),
-                                              fit: BoxFit.cover,
-                                            ),
                                           ),
+                                          clipBehavior: Clip.antiAlias,
                                           child: Stack(
                                             children: [
-                                              Positioned(
-                                                top: 12,
-                                                left: 12,
-                                                child: Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                                  decoration: BoxDecoration(
-                                                    color: const Color(0xFF27AE60).withOpacity(0.8),
-                                                    borderRadius: BorderRadius.circular(15),
-                                                  ),
-                                                  child: const Text(
-                                                    'Open',
-                                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                              Positioned.fill(
+                                                child: mapUrl != null
+                                                    ? Image.network(
+                                                  mapUrl,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (context, error, stackTrace) {
+                                                    return Container(
+                                                      color: Colors.grey.shade200,
+                                                      child: const Center(
+                                                        child: Icon(
+                                                          Icons.location_off,
+                                                          size: 50,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                )
+                                                    : Container(
+                                                  color: Colors.grey.shade200,
+                                                  child: const Center(
+                                                    child: Icon(
+                                                      Icons.location_on,
+                                                      size: 50,
+                                                      color: Colors.grey,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
+
                                             ],
                                           ),
                                         );

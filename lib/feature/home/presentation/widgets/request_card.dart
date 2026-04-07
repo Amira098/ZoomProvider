@@ -20,20 +20,20 @@ class RequestCard extends StatelessWidget {
       case 'completed':
         return AppColors.paleRed;
       default:
-        return AppColors.paleBlue2;
+        return AppColors.primary;
     }
   }
 
   Color _getStatusTextColor(String? status) {
     switch (status) {
       case 'new':
-        return const Color(0xFF4A90E2);
+        return AppColors.primary;
       case 'pending':
         return AppColors.orange;
       case 'completed':
         return AppColors.accentRed;
       default:
-        return const Color(0xFF4A90E2);
+        return AppColors.primary;
     }
   }
 
@@ -68,6 +68,7 @@ class RequestCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
+
                   ),
                   child: Text(
                     statusLabel,

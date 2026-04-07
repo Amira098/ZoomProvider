@@ -95,9 +95,7 @@ const IP = 'ip';
 const VERSION = 'version';
 const DEVICE_ID = 'device_id';
 const OS = 'os';
-
-
-
+const String googleMapsApiKey = 'AIzaSyB4H3wQWZ_8RPrcApCAgHUnuLm36PU_9Rw';
 
 
 
