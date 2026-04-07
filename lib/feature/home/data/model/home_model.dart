@@ -140,7 +140,9 @@ class OrderModel {
       longitude: (json['longitude'] as num?)?.toDouble(),
       address: json['address'] as String?,
       customer: json['customer'] != null
-          ? CustomerModel.fromJson(json['customer'] as Map<String, dynamic>)
+          ? (json['customer'] is String
+              ? CustomerModel(name: json['customer'] as String)
+              : CustomerModel.fromJson(json['customer'] as Map<String, dynamic>))
           : null,
       customerNotes: json['customer_notes'] as String?,
       customerDate: json['customer_date'] as String?,
