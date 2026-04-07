@@ -4,7 +4,9 @@ import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 import '../../../../core/models/custom_token_response.dart';
 import '../../../../core/network/remote/api_constants.dart';
+import '../model/all_requests_model.dart';
 import '../model/home_model.dart';
+import '../model/requests_details_model.dart';
 part 'home_retrofit_client.g.dart';
 
 @lazySingleton
@@ -18,4 +20,18 @@ abstract class HomeRetrofitClient {
   Future<HomeModel> getHomeData(
 @Header("Authorization") String token,
   );
+
+    @GET(ApiConstants.requests)
+  @FormUrlEncoded()
+  Future<AllRequestsModel> getAllRequests(
+  @Header("Authorization") String token,
+  );
+
+    @GET("orders/{order}")
+  @FormUrlEncoded()
+  Future<RequestsDetailsModel> getRequestsDetails(
+        @Path("order") int requestsId,
+       @Header("Authorization") String token,
+  );
+
 }

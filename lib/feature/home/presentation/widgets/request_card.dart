@@ -59,24 +59,10 @@ class RequestCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '#ORD-${order.code ?? order.id ?? ""}',
-                style: const TextStyle(fontSize: 10, color: Colors.grey),
+                '# ORD- ${order.code ?? order.id ?? ""}',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  statusLabel,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: statusTextColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+
             ],
           ),
           const SizedBox(height: 4),
@@ -109,21 +95,21 @@ class RequestCard extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              if (order.products?.isNotEmpty == true)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppColors.paleRed,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    order.products!.first.type ?? '',
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: AppColors.accentRed,
-                    ),
-                  ),
-                ),
+              // if (order.products?.isNotEmpty == true)
+              //   Container(
+              //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              //     decoration: BoxDecoration(
+              //       color: AppColors.paleRed,
+              //       borderRadius: BorderRadius.circular(10),
+              //     ),
+              //     child: Text(
+              //       order.products!.first.type ?? '',
+              //       style: const TextStyle(
+              //         fontSize: 10,
+              //         color: AppColors.accentRed,
+              //       ),
+              //     ),
+              //   ),
               const Spacer(),
               ElevatedButton(
                 onPressed: () {

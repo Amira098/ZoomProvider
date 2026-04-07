@@ -74,11 +74,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     child: Stack(
                       children: [
-                        Positioned.fill(
-                          child: CustomPaint(
-                            painter: ToolsPatternPainter(),
-                          ),
-                        ),
+
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is HomeLoading) {
@@ -108,11 +104,12 @@ class HomeScreen extends StatelessWidget {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Text(
+                                             Text(
                                               'New requests',
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
+                                                color: AppColors.primary,
                                               ),
                                             ),
                                             TextButton(

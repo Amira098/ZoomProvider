@@ -72,11 +72,7 @@ class OrderDetailsScreen extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      Positioned.fill(
-                        child: CustomPaint(
-                          painter: ToolsPatternPainter(),
-                        ),
-                      ),
+
                       SingleChildScrollView(
                         padding: const EdgeInsets.all(20),
                         child: Column(
