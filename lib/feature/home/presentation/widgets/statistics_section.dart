@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../data/model/home_model.dart';
 
 class StatisticsSection extends StatelessWidget {
-  const StatisticsSection({super.key});
+  final StatsModel? stats;
+  const StatisticsSection({super.key, this.stats});
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +33,17 @@ class StatisticsSection extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               border: Border.all(color: Colors.grey.withOpacity(0.2)),
             ),
-            child: const Column(
+            child: Column(
               children: [
                 Text(
-                  '100',
-                  style: TextStyle(
+                  '${stats?.total ?? 0}',
+                  style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
-                Text(
+                const Text(
                   'Number of requests',
                   style: TextStyle(
                     fontSize: 14,
@@ -54,16 +56,16 @@ class StatisticsSection extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              const Expanded(
-                child: StatItem(count: '20', label: 'Canceled requests'),
+              Expanded(
+                child: StatItem(count: '${stats?.canceled ?? 0}', label: 'Canceled requests'),
               ),
               const SizedBox(width: 8),
-              const Expanded(
-                child: StatItem(count: '50', label: 'Completed requests'),
+              Expanded(
+                child: StatItem(count: '${stats?.completed ?? 0}', label: 'Completed requests'),
               ),
               const SizedBox(width: 8),
-              const Expanded(
-                child: StatItem(count: '30', label: 'Pending requests'),
+              Expanded(
+                child: StatItem(count: '${stats?.pending ?? 0}', label: 'Pending requests'),
               ),
             ],
           ),

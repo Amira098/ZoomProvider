@@ -1,35 +1,49 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../data/model/home_model.dart';
 import '../view/order_details_screen.dart';
 
 class RequestCard extends StatelessWidget {
-  final String id;
-  final String name;
-  final String location;
-  final String time;
-  final String description;
-  final String status;
-  final Color statusColor;
-  final Color statusTextColor;
-  final String type;
-  final bool isCompleted;
+  final OrderModel order;
 
   const RequestCard({
     super.key,
-    required this.id,
-    required this.name,
-    required this.location,
-    required this.time,
-    required this.description,
-    required this.status,
-    required this.statusColor,
-    required this.statusTextColor,
-    required this.type,
-    this.isCompleted = false,
+    required this.order,
   });
+
+  Color _getStatusColor(String? status) {
+    switch (status) {
+      case 'new':
+        return AppColors.paleBlue2;
+      case 'pending':
+        return AppColors.paleOrange;
+      case 'completed':
+        return AppColors.paleRed;
+      default:
+        return AppColors.paleBlue2;
+    }
+  }
+
+  Color _getStatusTextColor(String? status) {
+    switch (status) {
+      case 'new':
+        return const Color(0xFF4A90E2);
+      case 'pending':
+        return AppColors.orange;
+      case 'completed':
+        return AppColors.accentRed;
+      default:
+        return const Color(0xFF4A90E2);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final status = order.status?.value;
+    final statusLabel = order.status?.label ?? '';
+    final statusColor = _getStatusColor(status);
+    final statusTextColor = _getStatusTextColor(status);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -45,7 +59,7 @@ class RequestCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                id,
+                '#ORD-${order.code ?? order.id ?? ""}',
                 style: const TextStyle(fontSize: 10, color: Colors.grey),
               ),
               Container(
@@ -55,7 +69,7 @@ class RequestCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  status,
+                  statusLabel,
                   style: TextStyle(
                     fontSize: 10,
                     color: statusTextColor,
@@ -67,7 +81,7 @@ class RequestCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            name,
+            order.customer?.name ?? 'Unknown Customer',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -75,38 +89,41 @@ class RequestCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          if (location.isNotEmpty)
+          if (order.address != null && order.address!.isNotEmpty)
             Text(
-              location,
+              order.address!,
               style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
           const SizedBox(height: 4),
           Text(
-            time,
+            order.customerDate ?? order.createdAt ?? '',
             style: const TextStyle(fontSize: 12, color: Colors.grey),
           ),
           const SizedBox(height: 8),
           Text(
-            description,
+            order.customerNotes ?? (order.products?.isNotEmpty == true ? order.products!.first.name ?? "" : ""),
             style: const TextStyle(fontSize: 12, color: Colors.black87),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.paleRed,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  type,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: AppColors.accentRed,
+              if (order.products?.isNotEmpty == true)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.paleRed,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    order.products!.first.type ?? '',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: AppColors.accentRed,
+                    ),
                   ),
                 ),
-              ),
               const Spacer(),
               ElevatedButton(
                 onPressed: () {
