@@ -62,7 +62,22 @@ class RequestCard extends StatelessWidget {
                 '# ORD- ${order.code ?? order.id ?? ""}',
                 style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
-
+              if (order.status?.label != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    statusLabel,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: statusTextColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 4),
@@ -95,30 +110,17 @@ class RequestCard extends StatelessWidget {
           const SizedBox(height: 16),
           Row(
             children: [
-              // if (order.products?.isNotEmpty == true)
-              //   Container(
-              //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              //     decoration: BoxDecoration(
-              //       color: AppColors.paleRed,
-              //       borderRadius: BorderRadius.circular(10),
-              //     ),
-              //     child: Text(
-              //       order.products!.first.type ?? '',
-              //       style: const TextStyle(
-              //         fontSize: 10,
-              //         color: AppColors.accentRed,
-              //       ),
-              //     ),
-              //   ),
               const Spacer(),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const OrderDetailsScreen(),
-                    ),
-                  );
+                  if (order.id != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderDetailsScreen(requestId: order.id!),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accentRed,

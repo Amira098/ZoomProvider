@@ -173,7 +173,7 @@ class ProductModel {
   final String? name;
   final String? type;
   final int? quantity;
-  final String? warehouse;
+  final WarehouseModel? warehouse;
   final String? image;
 
   ProductModel({
@@ -191,7 +191,11 @@ class ProductModel {
       name: json['name'] as String?,
       type: json['type'] as String?,
       quantity: json['quantity'] as int?,
-      warehouse: json['warehouse'] as String?,
+      warehouse: json['warehouse'] != null
+          ? (json['warehouse'] is Map<String, dynamic>
+              ? WarehouseModel.fromJson(json['warehouse'] as Map<String, dynamic>)
+              : WarehouseModel(name: json['warehouse'].toString()))
+          : null,
       image: json['image'] as String?,
     );
   }
@@ -202,8 +206,32 @@ class ProductModel {
       'name': name,
       'type': type,
       'quantity': quantity,
-      'warehouse': warehouse,
+      'warehouse': warehouse?.toJson(),
       'image': image,
+    };
+  }
+}
+
+class WarehouseModel {
+  final int? id;
+  final String? name;
+
+  WarehouseModel({
+    this.id,
+    this.name,
+  });
+
+  factory WarehouseModel.fromJson(Map<String, dynamic> json) {
+    return WarehouseModel(
+      id: json['id'] as int?,
+      name: json['name'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
     };
   }
 }

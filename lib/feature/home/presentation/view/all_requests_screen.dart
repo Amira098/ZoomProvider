@@ -15,7 +15,7 @@ class AllRequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => serviceLocator<HomeCubit>()..getHomeData(),
+      create: (context) => serviceLocator<HomeCubit>()..getAllRequests(),
       child: Scaffold(
         backgroundColor: AppColors.surface,
         body: SafeArea(
@@ -28,7 +28,10 @@ class AllRequestsScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        // In MainLayout, we don't pop, but we are here from MainLayout or direct push
+                        if (Navigator.canPop(context)) {
+                          Navigator.pop(context);
+                        }
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                       padding: EdgeInsets.zero,
@@ -87,17 +90,17 @@ class AllRequestsScreen extends StatelessWidget {
                         ),
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
-                            if (state is HomeLoading) {
+                            if (state is AllRequestsLoading) {
                               return const Center(child: CircularProgressIndicator());
-                            } else if (state is HomeFailure) {
-                            return Center(child: Text('Error: ${state.apiError?.message ?? "Something went wrong"}'));
-                            } else if (state is HomeSuccess) {
-                              final orders = state.homeModel.data ?? [];
+                            } else if (state is AllRequestsFailure) {
+                              return Center(child: Text('Error: ${state.apiError?.message ?? "Something went wrong"}'));
+                            } else if (state is AllRequestsSuccess) {
+                              final orders = state.allRequestsModel.data ?? [];
                               if (orders.isEmpty) {
                                 return const Center(child: Text('No requests found'));
                               }
                               return RefreshIndicator(
-                                onRefresh: () => context.read<HomeCubit>().getHomeData(),
+                                onRefresh: () => context.read<HomeCubit>().getAllRequests(),
                                 child: ListView.builder(
                                   padding: const EdgeInsets.all(20),
                                   itemCount: orders.length,
