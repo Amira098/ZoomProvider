@@ -16,6 +16,6 @@ abstract class HomeRetrofitClient {
     @GET(ApiConstants.home)
   @FormUrlEncoded()
   Future<HomeModel> getHomeData(
-
+@Header("Authorization") String token,
   );
 }

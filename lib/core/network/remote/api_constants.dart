@@ -16,7 +16,7 @@ abstract class ApiConstants {
   static const String usedProducts  = "products/used-products";
   static const String myPoint  = "profile/me/points";
   static const String products  = "products";
-  static const String home  = "home";
+  static const String home  = "assigned-requests";
   static const String services  = "services";
   static const String allProjects  = "projects";
   static const String cartOrders  = "orders/create-from-cart";

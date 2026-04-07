@@ -1,7 +1,9 @@
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/constants/app_values.dart';
 import '../../../../core/network/common/api_result.dart';
 import '../../../../core/network/remote/api_manager.dart';
+import '../../../../core/utils/app_shared_preference.dart';
 import '../api/home_retrofit_client.dart';
 import '../model/home_model.dart';
 import 'home_data_sources.dart';
@@ -15,7 +17,9 @@ class HomeDataSourcesImp implements HomeDataSources {
   @override
   Future<Result<HomeModel>> getHomeData() async {
     final result = await _apiManager.execute<HomeModel>(() async {
-      return await _apiService.getHomeData();
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.getHomeData(auth);
     });
 
     switch (result) {

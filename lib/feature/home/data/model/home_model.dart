@@ -1,218 +1,259 @@
 class HomeModel {
-  final bool status;
-  final String message;
-  final HomeData? data;
+  final bool? status;
+  final MessageModel? message;
+  final StatsModel? stats;
+  final List<OrderModel>? data;
 
-  const HomeModel({
-    required this.status,
-    required this.message,
+  HomeModel({
+    this.status,
+    this.message,
+    this.stats,
     this.data,
   });
 
   factory HomeModel.fromJson(Map<String, dynamic> json) {
     return HomeModel(
-      status: json['status'] ?? false,
-      message: json['message'] ?? '',
-      data:
-      json['data'] != null ? HomeData.fromJson(json['data']) : null,
-    );
-  }
-}
-
-class HomeData {
-  final List<BannerModel> banners;
-  final List<ServiceModel> services;
-  final List<ProductModel> products;
-  final List<BlogModel> blogs;
-
-  const HomeData({
-    required this.banners,
-    required this.services,
-    required this.products,
-    required this.blogs,
-  });
-
-  factory HomeData.fromJson(Map<String, dynamic> json) {
-    return HomeData(
-      banners: (json['banners'] as List? ?? [])
-          .map((e) => BannerModel.fromJson(e))
-          .toList(),
-      services: (json['services'] as List? ?? [])
-          .map((e) => ServiceModel.fromJson(e))
-          .toList(),
-      products: (json['products'] as List? ?? [])
-          .map((e) => ProductModel.fromJson(e))
-          .toList(),
-      blogs: (json['blogs'] as List? ?? [])
-          .map((e) => BlogModel.fromJson(e))
-          .toList(),
-    );
-  }
-}
-
-class BannerModel {
-  final int id;
-  final LocalizedText? name;
-  final String url;
-  final String image;
-
-  const BannerModel({
-    required this.id,
-    this.name,
-    required this.url,
-    required this.image,
-  });
-
-  factory BannerModel.fromJson(Map<String, dynamic> json) {
-    return BannerModel(
-      id: json['id'] ?? 0,
-      name: json['name'] != null
-          ? LocalizedText.fromJson(json['name'])
+      status: json['status'] as bool?,
+      message: json['message'] != null
+          ? MessageModel.fromJson(json['message'] as Map<String, dynamic>)
           : null,
-      url: json['url'] ?? '',
-      image: json['image'] ?? '',
+      stats: json['stats'] != null
+          ? StatsModel.fromJson(json['stats'] as Map<String, dynamic>)
+          : null,
+      data: json['data'] != null
+          ? (json['data'] as List)
+          .map((e) => OrderModel.fromJson(e as Map<String, dynamic>))
+          .toList()
+          : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'message': message?.toJson(),
+      'stats': stats?.toJson(),
+      'data': data?.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
-class LocalizedText {
-  final String ar;
-  final String en;
+class MessageModel {
+  final String? ar;
+  final String? en;
 
-  const LocalizedText({
-    required this.ar,
-    required this.en,
+  MessageModel({
+    this.ar,
+    this.en,
   });
 
-  factory LocalizedText.fromJson(Map<String, dynamic> json) {
-    return LocalizedText(
-      ar: json['ar'] ?? '',
-      en: json['en'] ?? '',
+  factory MessageModel.fromJson(Map<String, dynamic> json) {
+    return MessageModel(
+      ar: json['ar'] as String?,
+      en: json['en'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ar': ar,
+      'en': en,
+    };
   }
 }
 
-class ServiceModel {
-  final int id;
-  final LocalizedText? title;
-  final LocalizedText? shortDescription;
-  final String imageUrl;
-  final String slug;
+class StatsModel {
+  final int? total;
+  final int? canceled;
+  final int? completed;
+  final int? pending;
 
-  const ServiceModel({
-    required this.id,
-    this.title,
-    this.shortDescription,
-    required this.imageUrl,
-    required this.slug,
+  StatsModel({
+    this.total,
+    this.canceled,
+    this.completed,
+    this.pending,
   });
 
-  factory ServiceModel.fromJson(Map<String, dynamic> json) {
-    return ServiceModel(
-      id: json['id'] ?? 0,
-      title: json['title'] != null
-          ? LocalizedText.fromJson(json['title'])
-          : null,
-      shortDescription: json['short_description'] != null
-          ? LocalizedText.fromJson(json['short_description'])
-          : null,
-      imageUrl: json['image_url'] ?? '',
-      slug: json['slug'] ?? '',
+  factory StatsModel.fromJson(Map<String, dynamic> json) {
+    return StatsModel(
+      total: json['total'] as int?,
+      canceled: json['canceled'] as int?,
+      completed: json['completed'] as int?,
+      pending: json['pending'] as int?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'total': total,
+      'canceled': canceled,
+      'completed': completed,
+      'pending': pending,
+    };
+  }
+}
+
+class OrderModel {
+  final int? id;
+  final List<ProductModel>? products;
+  final OrderStatusModel? status;
+  final int? code;
+  final String? createdAt;
+  final double? latitude;
+  final double? longitude;
+  final String? address;
+  final CustomerModel? customer;
+  final String? customerNotes;
+  final String? customerDate;
+  final bool? hasInvoice;
+
+  OrderModel({
+    this.id,
+    this.products,
+    this.status,
+    this.code,
+    this.createdAt,
+    this.latitude,
+    this.longitude,
+    this.address,
+    this.customer,
+    this.customerNotes,
+    this.customerDate,
+    this.hasInvoice,
+  });
+
+  factory OrderModel.fromJson(Map<String, dynamic> json) {
+    return OrderModel(
+      id: json['id'] as int?,
+      products: json['products'] != null
+          ? (json['products'] as List)
+          .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+          .toList()
+          : null,
+      status: json['status'] != null
+          ? OrderStatusModel.fromJson(json['status'] as Map<String, dynamic>)
+          : null,
+      code: json['code'] as int?,
+      createdAt: json['created_at'] as String?,
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      address: json['address'] as String?,
+      customer: json['customer'] != null
+          ? CustomerModel.fromJson(json['customer'] as Map<String, dynamic>)
+          : null,
+      customerNotes: json['customer_notes'] as String?,
+      customerDate: json['customer_date'] as String?,
+      hasInvoice: json['has_invoice'] as bool?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'products': products?.map((e) => e.toJson()).toList(),
+      'status': status?.toJson(),
+      'code': code,
+      'created_at': createdAt,
+      'latitude': latitude,
+      'longitude': longitude,
+      'address': address,
+      'customer': customer?.toJson(),
+      'customer_notes': customerNotes,
+      'customer_date': customerDate,
+      'has_invoice': hasInvoice,
+    };
   }
 }
 
 class ProductModel {
-  final int id;
-  final LocalizedText? title;
-  final LocalizedText? summary;
-  final LocalizedText? categoryName;
-  final String imageUrl;
-  final String slug;
+  final int? id;
+  final String? name;
+  final String? type;
+  final int? quantity;
+  final String? warehouse;
+  final String? image;
 
-  const ProductModel({
-    required this.id,
-    this.title,
-    this.summary,
-    this.categoryName,
-    required this.imageUrl,
-    required this.slug,
+  ProductModel({
+    this.id,
+    this.name,
+    this.type,
+    this.quantity,
+    this.warehouse,
+    this.image,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
-      id: json['id'] ?? 0,
-      title: json['title'] != null
-          ? LocalizedText.fromJson(json['title'])
-          : null,
-      summary: json['summary'] != null
-          ? LocalizedText.fromJson(json['summary'])
-          : null,
-      categoryName: json['category_name'] != null
-          ? LocalizedText.fromJson(json['category_name'])
-          : null,
-      imageUrl: json['image_url'] ?? '',
-      slug: json['slug'] ?? '',
+      id: json['id'] as int?,
+      name: json['name'] as String?,
+      type: json['type'] as String?,
+      quantity: json['quantity'] as int?,
+      warehouse: json['warehouse'] as String?,
+      image: json['image'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type,
+      'quantity': quantity,
+      'warehouse': warehouse,
+      'image': image,
+    };
   }
 }
 
-class BlogModel {
-  final int id;
-  final LocalizedText? title;
-  final LocalizedText? excerpt;
-  final LocalizedText? tag;
-  final String imageUrl;
-  final AuthorModel? author;
-  final String createdAt;
+class OrderStatusModel {
+  final String? label;
+  final String? value;
 
-  const BlogModel({
-    required this.id,
-    this.title,
-    this.excerpt,
-    this.tag,
-    required this.imageUrl,
-    this.author,
-    required this.createdAt,
+  OrderStatusModel({
+    this.label,
+    this.value,
   });
 
-  factory BlogModel.fromJson(Map<String, dynamic> json) {
-    return BlogModel(
-      id: json['id'] ?? 0,
-      title: json['title'] != null
-          ? LocalizedText.fromJson(json['title'])
-          : null,
-      excerpt: json['excerpt'] != null
-          ? LocalizedText.fromJson(json['excerpt'])
-          : null,
-      tag: json['tag'] != null
-          ? LocalizedText.fromJson(json['tag'])
-          : null,
-      imageUrl: json['image_url'] ?? '',
-      author: json['author'] != null
-          ? AuthorModel.fromJson(json['author'])
-          : null,
-      createdAt: json['created_at'] ?? '',
+  factory OrderStatusModel.fromJson(Map<String, dynamic> json) {
+    return OrderStatusModel(
+      label: json['label'] as String?,
+      value: json['value'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'label': label,
+      'value': value,
+    };
   }
 }
 
-class AuthorModel {
-  final int id;
-  final String name;
-  final String avatar;
+class CustomerModel {
+  final int? id;
+  final String? name;
+  final String? phone;
 
-  const AuthorModel({
-    required this.id,
-    required this.name,
-    required this.avatar,
+  CustomerModel({
+    this.id,
+    this.name,
+    this.phone,
   });
 
-  factory AuthorModel.fromJson(Map<String, dynamic> json) {
-    return AuthorModel(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      avatar: json['avatar'] ?? '',
+  factory CustomerModel.fromJson(Map<String, dynamic> json) {
+    return CustomerModel(
+      id: json['id'] as int?,
+      name: json['name'] as String?,
+      phone: json['phone'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'phone': phone,
+    };
   }
 }

@@ -22,10 +22,11 @@ class _HomeRetrofitClient implements HomeRetrofitClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HomeModel> getHomeData() async {
+  Future<HomeModel> getHomeData(String token) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HomeModel>(
       Options(
@@ -36,7 +37,7 @@ class _HomeRetrofitClient implements HomeRetrofitClient {
       )
           .compose(
             _dio.options,
-            'home',
+            'assigned-requests',
             queryParameters: queryParameters,
             data: _data,
           )
