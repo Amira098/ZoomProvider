@@ -119,37 +119,54 @@ class OrderDetailsScreen extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 16),
-                                    Container(
-                                      height: 180,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                              'https://maps.googleapis.com/maps/api/staticmap?center=${order.latitude ?? 30.0444},${order.longitude ?? 31.2357}&zoom=14&size=600x300&markers=color:yellow%7C${order.latitude ?? 30.0444},${order.longitude ?? 31.2357}'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            top: 12,
-                                            left: 12,
-                                            child: Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFF27AE60).withOpacity(0.8),
-                                                borderRadius: BorderRadius.circular(15),
-                                              ),
-                                              child: const Text(
-                                                'Open',
-                                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                              ),
+                                    Builder(
+                                      builder: (context) {
+                                        String mapUrl;
+                                        if (order.latitude != null && order.longitude != null) {
+                                          mapUrl =
+                                              'https://maps.googleapis.com/maps/api/staticmap?center=${order.latitude},${order.longitude}&zoom=14&size=600x300&markers=color:red%7C${order.latitude},${order.longitude}';
+                                        } else if (order.address != null && order.address!.isNotEmpty) {
+                                          final encodedAddress = Uri.encodeComponent(order.address!);
+                                          mapUrl =
+                                              'https://maps.googleapis.com/maps/api/staticmap?center=$encodedAddress&zoom=14&size=600x300&markers=color:red%7C$encodedAddress';
+                                        } else {
+                                          // Fallback to a default location if no lat/long or address
+                                          mapUrl =
+                                              'https://maps.googleapis.com/maps/api/staticmap?center=30.0444,31.2357&zoom=14&size=600x300&markers=color:red%7C30.0444,31.2357';
+                                        }
+
+                                        return Container(
+                                          height: 180,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20),
+                                            border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                                            image: DecorationImage(
+                                              image: NetworkImage(mapUrl),
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                top: 12,
+                                                left: 12,
+                                                child: Container(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFF27AE60).withOpacity(0.8),
+                                                    borderRadius: BorderRadius.circular(15),
+                                                  ),
+                                                  child: const Text(
+                                                    'Open',
+                                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
                                     ),
                                     const SizedBox(height: 24),
                                     _buildSectionTitle('Customer data'),
