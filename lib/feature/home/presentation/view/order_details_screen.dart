@@ -26,6 +26,8 @@ class OrderDetailsScreen extends StatelessWidget {
         return Colors.teal;
       case 'cancelled':
         return Colors.red;
+      case 'suspended':
+        return Colors.brown;
       default:
         return Colors.grey;
     }
@@ -101,7 +103,34 @@ class OrderDetailsScreen extends StatelessWidget {
                             painter: ToolsPatternPainter(),
                           ),
                         ),
-                        BlocBuilder<HomeCubit, HomeState>(
+                        BlocConsumer<HomeCubit, HomeState>(
+                          listener: (context, state) {
+                            if (state is ReceiveOrderSuccess) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Order received successfully')));
+                              context.read<HomeCubit>().getRequestsDetails(requestId);
+                            } else if (state is StartOrderSuccess) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Order started successfully')));
+                              context.read<HomeCubit>().getRequestsDetails(requestId);
+                            } else if (state is UnsuspendOrderSuccess) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Order unsuspended successfully')));
+                              context.read<HomeCubit>().getRequestsDetails(requestId);
+                            } else if (state is ReceiveOrderFailure) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      state.apiError?.message ?? 'Failed to receive order')));
+                            } else if (state is StartOrderFailure) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      state.apiError?.message ?? 'Failed to start order')));
+                            } else if (state is UnsuspendOrderFailure) {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                      state.apiError?.message ?? 'Failed to unsuspend order')));
+                            }
+                          },
                           builder: (context, state) {
                             if (state is RequestDetailsLoading) {
                               return const Center(child: CircularProgressIndicator());
@@ -109,10 +138,28 @@ class OrderDetailsScreen extends StatelessWidget {
                               return Center(
                                 child: Text('Error: ${state.apiError?.message ?? "Something went wrong"}'),
                               );
-                            } else if (state is RequestDetailsSuccess) {
-                              final order = state.requestsDetailsModel.data;
+                            } else if (state is RequestDetailsSuccess ||
+                                state is ReceiveOrderLoading ||
+                                state is StartOrderLoading ||
+                                state is UnsuspendOrderLoading ||
+                                state is ReceiveOrderSuccess ||
+                                state is StartOrderSuccess ||
+                                state is UnsuspendOrderSuccess ||
+                                state is ReceiveOrderFailure ||
+                                state is StartOrderFailure ||
+                                state is UnsuspendOrderFailure) {
+                              final OrderModel? order;
+                              if (context.read<HomeCubit>().state is RequestDetailsSuccess) {
+                                order = (context.read<HomeCubit>().state as RequestDetailsSuccess).requestsDetailsModel.data;
+                              } else {
+                                order = null;
+                              }
+
                               if (order == null) {
-                                return const Center(child: Text('Order not found'));
+                                if (state is RequestDetailsLoading) {
+                                  return const Center(child: CircularProgressIndicator());
+                                }
+                                return const Center(child: Text('Order not found or loading...'));
                               }
                               return SingleChildScrollView(
                                 padding: const EdgeInsets.all(20),
@@ -249,25 +296,64 @@ class OrderDetailsScreen extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 24),
                                     ],
-                                    InkWell(onTap: () {
-
-                                    },
-                                        child: _buildActionButton('Receive job', AppColors.accentRed)),
-                                    const SizedBox(height: 12),
-                                    _buildActionButton('start job', AppColors.accentRed),
-                                    const SizedBox(height: 12),
-                                    _buildActionButton(
-                                      'Status update',
-                                      AppColors.accentRed,
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => const StatusUpdateScreen(),
+                                    if (order.status?.value == 'pending')
+                                      Column(
+                                        children: [
+                                          _buildActionButton(
+                                            'Receive job',
+                                            AppColors.accentRed,
+                                            isLoading: state is ReceiveOrderLoading,
+                                            onPressed: () {
+                                              context.read<HomeCubit>().receiveOrder(order.id!);
+                                            },
                                           ),
-                                        );
-                                      },
-                                    ),
+                                          const SizedBox(height: 12),
+                                        ],
+                                      ),
+                                    if (order.status?.value == 'accepted')
+                                      Column(
+                                        children: [
+                                          _buildActionButton(
+                                            'start job',
+                                            AppColors.accentRed,
+                                            isLoading: state is StartOrderLoading,
+                                            onPressed: () {
+                                              context.read<HomeCubit>().startOrder(order.id!);
+                                            },
+                                          ),
+                                          const SizedBox(height: 12),
+                                        ],
+                                      ),
+                                    if (order.status?.value == 'suspended')
+                                      Column(
+                                        children: [
+                                          _buildActionButton(
+                                            'Unsuspend job',
+                                            Colors.green,
+                                            isLoading: state is UnsuspendOrderLoading,
+                                            onPressed: () {
+                                              context.read<HomeCubit>().unsuspendOrder(order.id!);
+                                            },
+                                          ),
+                                          const SizedBox(height: 12),
+                                        ],
+                                      ),
+                                    if (order.status?.value == 'started_by_technical')
+                                      _buildActionButton(
+                                        'Status update',
+                                        AppColors.accentRed,
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => StatusUpdateScreen(
+                                                orderId: order.id!,
+                                                customerName: order.customer?.name ?? '',
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     const SizedBox(height: 20),
 
                                     const SizedBox(height: 40),
@@ -350,11 +436,12 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(String label, Color color, {VoidCallback? onPressed}) {
+  Widget _buildActionButton(String label, Color color,
+      {VoidCallback? onPressed, bool isLoading = false}) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: onPressed ?? () {},
+        onPressed: isLoading ? null : (onPressed ?? () {}),
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.white,
@@ -364,10 +451,19 @@ class OrderDetailsScreen extends StatelessWidget {
           ),
           elevation: 0,
         ),
-        child: Text(
-          label,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                label,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
       ),
     );
   }
