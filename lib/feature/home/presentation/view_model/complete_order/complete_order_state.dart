@@ -1,5 +1,5 @@
-import '../../../../core/models/api_error.dart';
-import '../../data/model/complete_order_model.dart';
+import '../../../../../core/models/api_error.dart';
+import '../../../data/model/complete_order_model.dart';
 
 abstract class CompleteOrderState {}
 

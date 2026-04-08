@@ -129,7 +129,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is ReceiveOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message ?? 'Failed to receive order')));
+                                      content: Text(state.apiError?.message.toString() ?? 'Failed to receive order')));
                                 }
                               },
                             ),
@@ -141,7 +141,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is StartOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message ?? 'Failed to start order')));
+                                      content: Text(state.apiError?.message.toString() ?? 'Failed to start order')));
                                 }
                               },
                             ),
@@ -153,7 +153,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is UnsuspendOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message ?? 'Failed to unsuspend order')));
+                                      content: Text(state.apiError?.message .toString()?? 'Failed to unsuspend order')));
                                 }
                               },
                             ),

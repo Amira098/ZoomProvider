@@ -1,5 +1,5 @@
-import '../../../../core/models/api_error.dart';
-import '../../data/model/unsuspend_model.dart';
+import '../../../../../core/models/api_error.dart';
+import '../../../data/model/unsuspend_model.dart';
 
 abstract class UnsuspendOrderState {}
 
