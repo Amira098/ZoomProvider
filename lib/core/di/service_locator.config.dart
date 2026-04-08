@@ -53,8 +53,18 @@ import 'package:zoom_provider/feature/home/data/data_sources/home_data_sources.d
     as _i871;
 import 'package:zoom_provider/feature/home/data/data_sources/home_data_sources_imp.dart'
     as _i128;
+import 'package:zoom_provider/feature/home/presentation/view_model/complete_order/complete_order_cubit.dart'
+    as _i282;
 import 'package:zoom_provider/feature/home/presentation/view_model/home_cubit.dart'
     as _i152;
+import 'package:zoom_provider/feature/home/presentation/view_model/receive_order/receive_order_cubit.dart'
+    as _i919;
+import 'package:zoom_provider/feature/home/presentation/view_model/start_order/start_order_cubit.dart'
+    as _i139;
+import 'package:zoom_provider/feature/home/presentation/view_model/suspend_order/suspend_order_cubit.dart'
+    as _i973;
+import 'package:zoom_provider/feature/home/presentation/view_model/unsuspend_order/unsuspend_order_cubit.dart'
+    as _i179;
 import 'package:zoom_provider/feature/privacy_policy_screen/data/api/privacy_retrofit_client.dart'
     as _i24;
 import 'package:zoom_provider/feature/privacy_policy_screen/data/data_sources_imp/remote/remote_privacy_data_source.dart'
@@ -109,6 +119,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(() => dioModule.provideDio());
     gh.lazySingleton<_i528.PrettyDioLogger>(
         () => dioModule.providerInterceptor());
+    gh.factory<_i282.CompleteOrderCubit>(
+        () => _i282.CompleteOrderCubit(homeRepo: gh<InvalidType>()));
+    gh.factory<_i919.ReceiveOrderCubit>(
+        () => _i919.ReceiveOrderCubit(homeRepo: gh<InvalidType>()));
+    gh.factory<_i139.StartOrderCubit>(
+        () => _i139.StartOrderCubit(homeRepo: gh<InvalidType>()));
+    gh.factory<_i973.SuspendOrderCubit>(
+        () => _i973.SuspendOrderCubit(homeRepo: gh<InvalidType>()));
+    gh.factory<_i179.UnsuspendOrderCubit>(
+        () => _i179.UnsuspendOrderCubit(homeRepo: gh<InvalidType>()));
     gh.lazySingleton<_i236.TermsRetrofitClient>(
         () => _i236.TermsRetrofitClient(gh<_i361.Dio>()));
     gh.lazySingleton<_i1068.AboutUsRetrofitClient>(
