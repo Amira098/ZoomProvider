@@ -5,8 +5,13 @@ import 'package:retrofit/http.dart';
 import '../../../../core/models/custom_token_response.dart';
 import '../../../../core/network/remote/api_constants.dart';
 import '../model/all_requests_model.dart';
+import '../model/complete_order_model.dart';
 import '../model/home_model.dart';
+import '../model/receive_order_model.dart';
 import '../model/requests_details_model.dart';
+import '../model/start_order_model.dart';
+import '../model/suspend_order_model.dart';
+import '../model/unsuspend_model.dart';
 part 'home_retrofit_client.g.dart';
 
 @lazySingleton
@@ -33,5 +38,35 @@ abstract class HomeRetrofitClient {
         @Path("order") int requestsId,
        @Header("Authorization") String token,
   );
-
+  @POST("orders/{order-id}/receive")
+  @FormUrlEncoded()
+  Future<ReceiveOrderModel> receiveOrder(
+    @Path("order-id") int orderId,
+    @Header("Authorization") String token,
+  );
+  @POST("orders/{order-id}/start")
+  @FormUrlEncoded()
+  Future<StartOrderModel> startOrder(
+    @Path("order-id") int orderId,
+    @Header("Authorization") String token,
+  );
+@POST("orders/{order-id}/suspend")
+  @FormUrlEncoded()
+  Future<SuspendOrderModel> suspendOrder(
+    @Path("order-id") int orderId,
+    @Field("notes") String notes,
+    @Header("Authorization") String token,
+  );
+@POST("orders/{order-id}/unsuspend")
+  @FormUrlEncoded()
+  Future<UnsuspendOrderModel> unsuspendOrder(
+    @Path("order-id") int orderId,
+    @Header("Authorization") String token,
+  );
+@POST("orders/{order-id}/complete")
+  @FormUrlEncoded()
+  Future<CompleteOrderModel> completeOrder(
+    @Path("order-id") int orderId,
+    @Header("Authorization") String token,
+  );
 }

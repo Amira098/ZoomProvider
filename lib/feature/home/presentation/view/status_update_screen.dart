@@ -98,27 +98,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.grey.withOpacity(0.2)),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Expanded(
-                                    child: Text(
-                                      'An automatic notification will be sent to the admin and account management when the status is selected.',
-                                      style: TextStyle(color: AppColors.accentRed, fontSize: 12),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(Icons.notifications, color: Colors.red.shade400),
-                                ],
-                              ),
-                            ),
+
                             const SizedBox(height: 20),
                             _buildStatusCard(
                               index: 0,

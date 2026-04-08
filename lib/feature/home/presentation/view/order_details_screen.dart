@@ -249,9 +249,12 @@ class OrderDetailsScreen extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 24),
                                     ],
-                                    _buildActionButton('Start job', AppColors.accentRed),
+                                    InkWell(onTap: () {
+
+                                    },
+                                        child: _buildActionButton('Receive job', AppColors.accentRed)),
                                     const SizedBox(height: 12),
-                                    _buildActionButton('I reached the client — work began', AppColors.accentRed),
+                                   // _buildActionButton('I reached the client — work began', AppColors.accentRed),
                                     const SizedBox(height: 12),
                                     _buildActionButton(
                                       'Status update',
@@ -266,26 +269,26 @@ class OrderDetailsScreen extends StatelessWidget {
                                       },
                                     ),
                                     const SizedBox(height: 20),
-                                    Container(
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(color: Colors.grey.withOpacity(0.2)),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          const Expanded(
-                                            child: Text(
-                                              'Clicking will send an immediate notification to the admin and route manager.',
-                                              style: TextStyle(color: AppColors.accentRed, fontSize: 12),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Icon(Icons.notifications, color: Colors.red.shade400),
-                                        ],
-                                      ),
-                                    ),
+                                    // Container(
+                                    //   padding: const EdgeInsets.all(16),
+                                    //   decoration: BoxDecoration(
+                                    //     color: Colors.white,
+                                    //     borderRadius: BorderRadius.circular(20),
+                                    //     border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                                    //   ),
+                                    //   child: Row(
+                                    //     children: [
+                                    //       const Expanded(
+                                    //         child: Text(
+                                    //           'Clicking will send an immediate notification to the admin and route manager.',
+                                    //           style: TextStyle(color: AppColors.accentRed, fontSize: 12),
+                                    //         ),
+                                    //       ),
+                                    //       const SizedBox(width: 8),
+                                    //       Icon(Icons.notifications, color: Colors.red.shade400),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     const SizedBox(height: 40),
                                   ],
                                 ),

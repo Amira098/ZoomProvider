@@ -95,36 +95,19 @@ class HomeScreen extends StatelessWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const SizedBox(height: 10),
-                                      const EarningsCard(),
+
                                       const SizedBox(height: 25),
                                       StatisticsSection(stats: homeModel.stats),
                                       const SizedBox(height: 25),
                                       if (newOrders.isNotEmpty) ...[
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                             Text(
-                                              'New requests',
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.primary,
-                                              ),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {},
-                                              child: const Text(
-                                                'See All',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  decoration: TextDecoration.none,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                        Text(
+                                         'New requests',
+                                         style: TextStyle(
+                                           fontSize: 20,
+                                           fontWeight: FontWeight.bold,
+                                           color: AppColors.primary,
+                                         ),
+                                                                                    ),
                                         const SizedBox(height: 10),
                                         ...newOrders.map((order) => RequestCard(order: order)),
                                       ],
