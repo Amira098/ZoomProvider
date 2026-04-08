@@ -142,24 +142,11 @@ class _ContactUsFormState extends State<ContactUsForm> {
                                     title: 'Call Center',
                                     onTap: () {},
                                   ),
-                                  _ContactCard(
-                                    icon: Icons.help_rounded,
-                                    iconColor: const Color(0xffF1C40F),
-                                    bgColor: const Color(0xffFEF9E7),
-                                    title: 'FAQ',
-                                    subtitle: '+50 Answers',
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const FaqScreen()),
-                                      );
-                                    },
-                                  ),
+
                                 ],
                               ),
                               const SizedBox(height: 24),
 
-                              // ================= Contact Form =================
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 24, horizontal: 18),
@@ -279,7 +266,7 @@ class _ContactUsFormState extends State<ContactUsForm> {
                                 ),
                               ),
                               const SizedBox(height: 24),
-                              const GlassFaqSection(),
+
                               const SizedBox(height: 30),
                             ],
                           ),

@@ -29,10 +29,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String password = '';
   String image = '';
 
+
   late final TextEditingController _nameCtrl;
   late final TextEditingController _emailCtrl;
   late final TextEditingController _phoneCtrl;
   late final TextEditingController _passCtrl;
+  late final TextEditingController _addressCtrl;
 
   final ProfileUpdateCubit _profileUpdateCubit = serviceLocator<ProfileUpdateCubit>();
 
@@ -43,6 +45,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _emailCtrl = TextEditingController();
     _phoneCtrl = TextEditingController();
     _passCtrl = TextEditingController();
+    _addressCtrl = TextEditingController();
     _readPrefsIntoState();
   }
 
@@ -86,6 +89,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'email': _emailCtrl.text.trim(),
         'phone': _phoneCtrl.text.trim(),
         'password': _passCtrl.text,
+        'address': _addressCtrl.text.trim(),
       };
       await SharedPreferencesUtils.saveData(
         key: AppValues.user,
@@ -105,7 +109,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       phone: _phoneCtrl.text.trim(),
       email: _emailCtrl.text.trim(),
       image: image,
-      address: address,
+      address: _addressCtrl.text.trim(),
     );
   }
 
@@ -202,12 +206,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               ),
                               const SizedBox(height: 24),
                               CommonTextFormField(
-                                 label: LocaleKeys.contactus_phone.tr(),
+                                label: LocaleKeys.contactus_phone.tr(),
                                 hint: "+33 2 94 27 84 11",
                                 controller: _phoneCtrl,
                                 textInputType: TextInputType.phone,
                               ),
-
+                              const SizedBox(height: 24),
+                              CommonTextFormField(
+                                label: LocaleKeys.profile_address.tr(),
+                                hint: "ادخل العنوان بالتفصيل",
+                                controller: _addressCtrl,
+                                textInputType: TextInputType.streetAddress,
+                                maxLines: 2,
+                              ),
                             ],
                           ),
                         );
@@ -235,13 +246,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: _saving
                                 ? const CircularProgressIndicator(color: Colors.white)
                                 : Text(
-                                    LocaleKeys.Profile_Update.tr(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
+                              LocaleKeys.Profile_Update.tr(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                           ),
                         ),
                       ),
