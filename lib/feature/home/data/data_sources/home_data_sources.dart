@@ -1,9 +1,19 @@
 import '../../../../core/network/common/api_result.dart';
 import '../model/all_requests_model.dart';
+import '../model/complete_order_model.dart';
 import '../model/home_model.dart';
+import '../model/receive_order_model.dart';
 import '../model/requests_details_model.dart';
+import '../model/start_order_model.dart';
+import '../model/suspend_order_model.dart';
+import '../model/unsuspend_model.dart';
 abstract class HomeDataSources {
   Future<Result<HomeModel>> getHomeData();
   Future<Result<AllRequestsModel>> getAllRequests();
   Future<Result<RequestsDetailsModel>> getRequestsDetails(int requestsId);
+  Future<Result<ReceiveOrderModel>> receiveOrder(int orderId);
+  Future<Result<StartOrderModel>> startOrder(int orderId);
+  Future<Result<SuspendOrderModel>> suspendOrder(int orderId, String notes);
+  Future<Result<UnsuspendOrderModel>> unsuspendOrder(int orderId);
+  Future<Result<CompleteOrderModel>> completeOrder(int orderId);
 }

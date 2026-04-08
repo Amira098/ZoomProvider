@@ -1,6 +1,11 @@
 import 'package:injectable/injectable.dart';
 import 'package:zoom_provider/feature/home/data/model/all_requests_model.dart';
+import 'package:zoom_provider/feature/home/data/model/complete_order_model.dart';
+import 'package:zoom_provider/feature/home/data/model/receive_order_model.dart';
 import 'package:zoom_provider/feature/home/data/model/requests_details_model.dart';
+import 'package:zoom_provider/feature/home/data/model/start_order_model.dart';
+import 'package:zoom_provider/feature/home/data/model/suspend_order_model.dart';
+import 'package:zoom_provider/feature/home/data/model/unsuspend_model.dart';
 
 import '../../../../core/constants/app_values.dart';
 import '../../../../core/network/common/api_result.dart';
@@ -70,6 +75,106 @@ class HomeDataSourcesImp implements HomeDataSources {
 
       case FailureResult<RequestsDetailsModel>():
         return FailureResult<RequestsDetailsModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<CompleteOrderModel>> completeOrder(int orderId)async {
+    final result = await _apiManager.execute<CompleteOrderModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.completeOrder(orderId,auth);
+    });
+
+    switch (result) {
+      case SuccessResult<CompleteOrderModel>():
+        return SuccessResult<CompleteOrderModel>(result.data);
+
+      case FailureResult<CompleteOrderModel>():
+        return FailureResult<CompleteOrderModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<ReceiveOrderModel>> receiveOrder(int orderId)async {
+    final result = await _apiManager.execute<ReceiveOrderModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.receiveOrder(orderId,auth);
+    });
+
+    switch (result) {
+      case SuccessResult<ReceiveOrderModel>():
+        return SuccessResult<ReceiveOrderModel>(result.data);
+
+      case FailureResult<ReceiveOrderModel>():
+        return FailureResult<ReceiveOrderModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<StartOrderModel>> startOrder(int orderId) async{
+    final result = await _apiManager.execute<StartOrderModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.startOrder(orderId,auth);
+    });
+
+    switch (result) {
+      case SuccessResult<StartOrderModel>():
+        return SuccessResult<StartOrderModel>(result.data);
+
+      case FailureResult<StartOrderModel>():
+        return FailureResult<StartOrderModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<SuspendOrderModel>> suspendOrder(int orderId, String notes)async {
+    final result = await _apiManager.execute<SuspendOrderModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.suspendOrder(orderId,notes,auth);
+    });
+
+    switch (result) {
+      case SuccessResult<SuspendOrderModel>():
+        return SuccessResult<SuspendOrderModel>(result.data);
+
+      case FailureResult<SuspendOrderModel>():
+        return FailureResult<SuspendOrderModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<UnsuspendOrderModel>> unsuspendOrder(int orderId)async {
+    final result = await _apiManager.execute<UnsuspendOrderModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.unsuspendOrder(orderId,auth);
+    });
+
+    switch (result) {
+      case SuccessResult<UnsuspendOrderModel>():
+        return SuccessResult<UnsuspendOrderModel>(result.data);
+
+      case FailureResult<UnsuspendOrderModel>():
+        return FailureResult<UnsuspendOrderModel>(
           exception: result.exception,
           apiError: result.apiError,
         );
