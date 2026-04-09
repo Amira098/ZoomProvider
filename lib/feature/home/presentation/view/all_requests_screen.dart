@@ -6,8 +6,8 @@ import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../data/model/request_card_data.dart';
-import '../view_model/home_cubit.dart';
-import '../view_model/home_state.dart';
+import '../view_model/home/home_cubit.dart';
+import '../view_model/home/home_state.dart';
 import '../widgets/request_card.dart';
 import 'store_screen.dart';
 
