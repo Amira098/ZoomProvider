@@ -5,8 +5,8 @@ import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../home/presentation/view/store_screen.dart';
-import '../../../home/presentation/view_model/home_cubit.dart';
-import '../../../home/presentation/view_model/home_state.dart';
+import '../../../home/presentation/view_model/home/home_cubit.dart';
+import '../../../home/presentation/view_model/home/home_state.dart';
 import '../../../home/presentation/widgets/request_card.dart';
 
 class NotificationScreen extends StatelessWidget {

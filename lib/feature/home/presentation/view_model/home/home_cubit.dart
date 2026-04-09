@@ -2,9 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:zoom_provider/feature/home/data/model/all_requests_model.dart';
 import 'package:zoom_provider/feature/home/data/model/requests_details_model.dart';
-import '../../../../core/network/common/api_result.dart';
-import '../../data/data_sources/home_data_sources.dart';
-import '../../data/model/home_model.dart';
+import '../../../../../core/network/common/api_result.dart';
+import '../../../data/data_sources/home_data_sources.dart';
+import '../../../data/model/home_model.dart';
+
 import 'home_state.dart';
 
 @injectable

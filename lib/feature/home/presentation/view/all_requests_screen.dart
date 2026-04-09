@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
-import '../view_model/home_cubit.dart';
-import '../view_model/home_state.dart';
+import '../view_model/home/home_cubit.dart';
+import '../view_model/home/home_state.dart';
 import '../widgets/request_card.dart';
 import 'store_screen.dart';
 
@@ -28,7 +28,6 @@ class AllRequestsScreen extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        // In MainLayout, we don't pop, but we are here from MainLayout or direct push
                         if (Navigator.canPop(context)) {
                           Navigator.pop(context);
                         }

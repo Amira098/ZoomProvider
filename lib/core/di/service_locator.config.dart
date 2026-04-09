@@ -55,7 +55,7 @@ import 'package:zoom_provider/feature/home/data/data_sources/home_data_sources_i
     as _i128;
 import 'package:zoom_provider/feature/home/presentation/view_model/complete_order/complete_order_cubit.dart'
     as _i282;
-import 'package:zoom_provider/feature/home/presentation/view_model/home_cubit.dart'
+import 'package:zoom_provider/feature/home/presentation/view_model/home/home_cubit.dart'
     as _i152;
 import 'package:zoom_provider/feature/home/presentation/view_model/receive_order/receive_order_cubit.dart'
     as _i919;
