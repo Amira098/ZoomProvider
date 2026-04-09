@@ -1,5 +1,7 @@
-import '../../../../core/models/api_error.dart';
-import '../../data/model/suspend_order_model.dart';
+
+
+import '../../../../../core/models/api_error.dart';
+import '../../../data/model/suspend_order_model.dart';
 
 abstract class SuspendOrderState {}
 

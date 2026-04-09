@@ -54,7 +54,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                 Navigator.pop(context, true);
               } else if (state is CompleteOrderFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.apiError?.message ?? 'Failed to complete order')),
+                  SnackBar(content: Text(state.apiError?.message.toString() ?? 'Failed to complete order')),
                 );
               }
             },
@@ -68,7 +68,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                 Navigator.pop(context, true);
               } else if (state is SuspendOrderFailure) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.apiError?.message ?? 'Failed to suspend order')),
+                  SnackBar(content: Text(state.apiError?.message.toString() ?? 'Failed to suspend order')),
                 );
               }
             },
@@ -141,11 +141,6 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                               ),
                               child: Stack(
                                 children: [
-                                  Positioned.fill(
-                                    child: CustomPaint(
-                                      painter: ToolsPatternPainter(),
-                                    ),
-                                  ),
                                   SingleChildScrollView(
                                     padding: const EdgeInsets.all(20),
                                     child: Column(

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../home/data/model/request_card_data.dart';
 import '../../../home/presentation/view/store_screen.dart';
 import '../../../home/presentation/view_model/home_cubit.dart';
 import '../../../home/presentation/view_model/home_state.dart';
@@ -54,7 +56,10 @@ class NotificationScreen extends StatelessWidget {
                       },
                       child: SvgPicture.asset(
                         'assets/svg/shopping_cart.svg',
-                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
                         width: 24,
                       ),
                     ),
@@ -78,33 +83,65 @@ class NotificationScreen extends StatelessWidget {
                     ),
                     child: Stack(
                       children: [
-                        Positioned.fill(
-                          child: CustomPaint(
-                            painter: ToolsPatternPainter(),
-                          ),
-                        ),
+
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is HomeLoading) {
-                              return const Center(child: CircularProgressIndicator());
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
                             } else if (state is HomeFailure) {
-                            return Center(child: Text('Error: ${state.apiError?.message ?? "Something went wrong"}'));
+                              return Center(
+                                child: Text(
+                                  state.apiError?.message?.toString() ??
+                                      'Something went wrong',
+                                ),
+                              );
                             } else if (state is HomeSuccess) {
                               final orders = state.homeModel.data ?? [];
+
                               if (orders.isEmpty) {
-                                return const Center(child: Text('No notifications found'));
+                                return const Center(
+                                  child: Text('No notifications found'),
+                                );
                               }
+
+                              RequestCardData mapToRequestCardData(order) {
+                                return RequestCardData(
+                                  id: order.id,
+                                  code: (order.code ?? order.id ?? '').toString(),
+                                  customerName:
+                                  order.customer?.name ?? 'Unknown Customer',
+                                  address: order.address ?? '',
+                                  date: order.customerDate ?? order.createdAt ?? '',
+                                  note: order.customerNotes ??
+                                      (order.products?.isNotEmpty == true
+                                          ? order.products!.first.name ?? ''
+                                          : ''),
+                                  statusValue: order.status?.value ?? '',
+                                  statusLabel: order.status?.label ?? '',
+                                );
+                              }
+
                               return RefreshIndicator(
-                                onRefresh: () => context.read<HomeCubit>().getHomeData(),
-                                child: ListView.builder(
+                                onRefresh: () =>
+                                    context.read<HomeCubit>().getHomeData(),
+                                child: ListView.separated(
                                   padding: const EdgeInsets.all(20),
                                   itemCount: orders.length,
+                                  separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 12),
                                   itemBuilder: (context, index) {
-                                    return RequestCard(order: orders[index]);
+                                    return RequestCard(
+                                      order: mapToRequestCardData(
+                                        orders[index],
+                                      ),
+                                    );
                                   },
                                 ),
                               );
                             }
+
                             return const SizedBox.shrink();
                           },
                         ),

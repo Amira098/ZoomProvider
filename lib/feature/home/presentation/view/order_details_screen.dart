@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/service_locator.dart';
-import '../../data/model/home_model.dart';
+import '../../data/model/requests_details_model.dart';
 import '../view_model/home_cubit.dart';
 import '../view_model/home_state.dart';
 import '../view_model/receive_order/receive_order_cubit.dart';
@@ -20,9 +21,36 @@ import 'store_screen.dart';
 class OrderDetailsScreen extends StatelessWidget {
   final int requestId;
 
-  const OrderDetailsScreen({super.key, required this.requestId});
+  const OrderDetailsScreen({
+    super.key,
+    required this.requestId,
+  });
 
-  Color _getStatusColor(String status) {
+  Color _getStatusBackgroundColor(String? status) {
+    switch (status) {
+      case 'pending':
+        return Colors.orange.withOpacity(0.15);
+      case 'accepted':
+        return Colors.blue.withOpacity(0.15);
+      case 'started_by_technical':
+        return Colors.green.withOpacity(0.15);
+      case 'completed':
+      case 'completed_unpaid':
+        return Colors.teal.withOpacity(0.15);
+      case 'cancelled':
+        return Colors.red.withOpacity(0.15);
+      case 'suspended':
+        return Colors.brown.withOpacity(0.15);
+      case 'assigned_to_technician':
+        return AppColors.paleBlue2;
+      case 'order_is_done_from_warehose':
+        return AppColors.paleOrange;
+      default:
+        return Colors.grey.withOpacity(0.15);
+    }
+  }
+
+  Color _getStatusTextColor(String? status) {
     switch (status) {
       case 'pending':
         return Colors.orange;
@@ -31,11 +59,16 @@ class OrderDetailsScreen extends StatelessWidget {
       case 'started_by_technical':
         return Colors.green;
       case 'completed':
+      case 'completed_unpaid':
         return Colors.teal;
       case 'cancelled':
         return Colors.red;
       case 'suspended':
         return Colors.brown;
+      case 'assigned_to_technician':
+        return AppColors.primary;
+      case 'order_is_done_from_warehose':
+        return AppColors.orange;
       default:
         return Colors.grey;
     }
@@ -46,11 +79,18 @@ class OrderDetailsScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => serviceLocator<HomeCubit>()..getRequestsDetails(requestId),
+          create: (context) =>
+          serviceLocator<HomeCubit>()..getRequestsDetails(requestId),
         ),
-        BlocProvider(create: (context) => serviceLocator<ReceiveOrderCubit>()),
-        BlocProvider(create: (context) => serviceLocator<StartOrderCubit>()),
-        BlocProvider(create: (context) => serviceLocator<UnsuspendOrderCubit>()),
+        BlocProvider(
+          create: (context) => serviceLocator<ReceiveOrderCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => serviceLocator<StartOrderCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => serviceLocator<UnsuspendOrderCubit>(),
+        ),
       ],
       child: Scaffold(
         backgroundColor: AppColors.surface,
@@ -90,13 +130,17 @@ class OrderDetailsScreen extends StatelessWidget {
                       },
                       child: SvgPicture.asset(
                         'assets/svg/shopping_cart.svg',
-                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
                         width: 24,
                       ),
                     ),
                   ],
                 ),
               ),
+
               Expanded(
                 child: Container(
                   width: double.infinity,
@@ -129,7 +173,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is ReceiveOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message ?? 'Failed to receive order')));
+                                      content: Text(state.apiError?.message.toString() ?? 'Failed to receive order')));
                                 }
                               },
                             ),
@@ -141,7 +185,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is StartOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message ?? 'Failed to start order')));
+                                      content: Text(state.apiError?.message.toString() ?? 'Failed to start order')));
                                 }
                               },
                             ),
@@ -153,7 +197,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is UnsuspendOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message ?? 'Failed to unsuspend order')));
+                                      content: Text(state.apiError?.message .toString()?? 'Failed to unsuspend order')));
                                 }
                               },
                             ),
@@ -229,31 +273,31 @@ class OrderDetailsScreen extends StatelessWidget {
                                                 Positioned.fill(
                                                   child: mapUrl != null
                                                       ? Image.network(
-                                                          mapUrl,
-                                                          fit: BoxFit.cover,
-                                                          errorBuilder: (context, error, stackTrace) {
-                                                            return Container(
-                                                              color: Colors.grey.shade200,
-                                                              child: const Center(
-                                                                child: Icon(
-                                                                  Icons.location_off,
-                                                                  size: 50,
-                                                                  color: Colors.grey,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                        )
-                                                      : Container(
-                                                          color: Colors.grey.shade200,
-                                                          child: const Center(
-                                                            child: Icon(
-                                                              Icons.location_on,
-                                                              size: 50,
-                                                              color: Colors.grey,
-                                                            ),
+                                                    mapUrl,
+                                                    fit: BoxFit.cover,
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      return Container(
+                                                        color: Colors.grey.shade200,
+                                                        child: const Center(
+                                                          child: Icon(
+                                                            Icons.location_off,
+                                                            size: 50,
+                                                            color: Colors.grey,
                                                           ),
                                                         ),
+                                                      );
+                                                    },
+                                                  )
+                                                      : Container(
+                                                    color: Colors.grey.shade200,
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons.location_on,
+                                                        size: 50,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -263,9 +307,8 @@ class OrderDetailsScreen extends StatelessWidget {
                                       const SizedBox(height: 24),
                                       _buildSectionTitle('Customer data'),
                                       _buildDataContainer([
-                                        _buildDataRow(order.customer?.name ?? 'N/A', 'Name'),
-                                        _buildDataRow(order.customer?.phone ?? 'N/A', 'Phone'),
-                                        _buildDataRow(order.address ?? 'N/A', 'Address'),
+                                        _buildDataRow(order.customer ?? '-', 'Name'),
+                                        _buildDataRow(order.address ?? '-', 'Address'),
                                       ]),
                                       const SizedBox(height: 24),
                                       _buildSectionTitle('Service details'),
@@ -294,7 +337,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 24),
                                       ],
-                                      if (order.status?.value == 'pending')
+                                      if (order.status?.value == 'order_is_done_from_warehose')
                                         BlocBuilder<ReceiveOrderCubit, ReceiveOrderState>(
                                           builder: (context, receiveState) {
                                             return Column(
@@ -312,7 +355,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             );
                                           },
                                         ),
-                                      if (order.status?.value == 'accepted')
+                                      if (order.status?.value == 'received_by_technical')
                                         BlocBuilder<StartOrderCubit, StartOrderState>(
                                           builder: (context, startState) {
                                             return Column(
@@ -330,7 +373,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             );
                                           },
                                         ),
-                                      if (order.status?.value == 'suspended')
+                                      if (order.status?.value == 'suspended_by_technical')
                                         BlocBuilder<UnsuspendOrderCubit, UnsuspendOrderState>(
                                           builder: (context, unsuspendState) {
                                             return Column(
@@ -358,7 +401,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                               MaterialPageRoute(
                                                 builder: (context) => StatusUpdateScreen(
                                                   orderId: order.id!,
-                                                  customerName: order.customer?.name ?? '',
+                                                  customerName: order.customer??'',
                                                 ),
                                               ),
                                             );
@@ -389,6 +432,68 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildMapSection(OrderModel order) {
+    final hasLat = order.latitude != null && order.latitude!.trim().isNotEmpty;
+    final hasLng = order.longitude != null && order.longitude!.trim().isNotEmpty;
+    final hasLatLng = hasLat && hasLng;
+    final hasAddress = order.address != null && order.address!.trim().isNotEmpty;
+
+    String? mapUrl;
+
+    if (hasLatLng) {
+      mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
+          '?center=${order.latitude},${order.longitude}'
+          '&zoom=14'
+          '&size=600x300'
+          '&markers=color:red%7C${order.latitude},${order.longitude}'
+          '&key=$googleMapsApiKey';
+    } else if (hasAddress) {
+      final encodedAddress = Uri.encodeComponent(order.address!);
+      mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
+          '?center=$encodedAddress'
+          '&zoom=14'
+          '&size=600x300'
+          '&markers=color:red%7C$encodedAddress'
+          '&key=$googleMapsApiKey';
+    }
+
+    return Container(
+      height: 180,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: mapUrl != null
+          ? Image.network(
+        mapUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            color: Colors.grey.shade200,
+            child: const Center(
+              child: Icon(
+                Icons.location_off,
+                size: 50,
+                color: Colors.grey,
+              ),
+            ),
+          );
+        },
+      )
+          : Container(
+        color: Colors.grey.shade200,
+        child: const Center(
+          child: Icon(
+            Icons.location_on,
+            size: 50,
+            color: Colors.grey,
+          ),
+        ),
+      ),
+    );
+  }
   Widget _buildSectionTitle(String title) {
     return Center(
       child: Column(
@@ -420,7 +525,13 @@ class OrderDetailsScreen extends StatelessWidget {
             children: [
               rows[index],
               if (index < rows.length - 1)
-                Divider(height: 1, thickness: 1, color: Colors.grey.withOpacity(0.1), indent: 16, endIndent: 16),
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Colors.grey.withOpacity(0.1),
+                  indent: 16,
+                  endIndent: 16,
+                ),
             ],
           );
         }),
@@ -437,23 +548,35 @@ class OrderDetailsScreen extends StatelessWidget {
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
+          const SizedBox(width: 12),
           Text(
             label,
-            style: const TextStyle(fontSize: 13, color: Colors.grey),
+            style: const TextStyle(
+              fontSize: 13,
+              color: Colors.grey,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton(String label, Color color, {VoidCallback? onPressed, bool isLoading = false}) {
+  Widget _buildActionButton(
+      String label,
+      Color color, {
+        VoidCallback? onPressed,
+        bool isLoading = false,
+      }) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: isLoading ? null : (onPressed ?? () {}),
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.white,
@@ -465,17 +588,20 @@ class OrderDetailsScreen extends StatelessWidget {
         ),
         child: isLoading
             ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(
+            color: Colors.white,
+            strokeWidth: 2,
+          ),
+        )
             : Text(
-                label,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+          label,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

@@ -119,16 +119,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(() => dioModule.provideDio());
     gh.lazySingleton<_i528.PrettyDioLogger>(
         () => dioModule.providerInterceptor());
-    gh.factory<_i282.CompleteOrderCubit>(
-        () => _i282.CompleteOrderCubit(homeRepo: gh<InvalidType>()));
-    gh.factory<_i919.ReceiveOrderCubit>(
-        () => _i919.ReceiveOrderCubit(homeRepo: gh<InvalidType>()));
-    gh.factory<_i139.StartOrderCubit>(
-        () => _i139.StartOrderCubit(homeRepo: gh<InvalidType>()));
-    gh.factory<_i973.SuspendOrderCubit>(
-        () => _i973.SuspendOrderCubit(homeRepo: gh<InvalidType>()));
-    gh.factory<_i179.UnsuspendOrderCubit>(
-        () => _i179.UnsuspendOrderCubit(homeRepo: gh<InvalidType>()));
     gh.lazySingleton<_i236.TermsRetrofitClient>(
         () => _i236.TermsRetrofitClient(gh<_i361.Dio>()));
     gh.lazySingleton<_i1068.AboutUsRetrofitClient>(
@@ -198,8 +188,18 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i431.AboutUsCubit(gh<_i547.AboutUsUseCase>()));
     gh.factory<_i1027.ProfileUpdateCubit>(() =>
         _i1027.ProfileUpdateCubit(gh<_i457.RemoteProfileUpdateDataSource>()));
+    gh.factory<_i282.CompleteOrderCubit>(
+        () => _i282.CompleteOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i152.HomeCubit>(
         () => _i152.HomeCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i919.ReceiveOrderCubit>(
+        () => _i919.ReceiveOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i139.StartOrderCubit>(
+        () => _i139.StartOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i973.SuspendOrderCubit>(
+        () => _i973.SuspendOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i179.UnsuspendOrderCubit>(
+        () => _i179.UnsuspendOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i610.LoginCubit>(
         () => _i610.LoginCubit(gh<_i930.RemoteAuthDataSource>()));
     gh.factory<_i954.RegisterCubit>(

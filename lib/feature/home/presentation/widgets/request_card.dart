@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:zoom_provider/feature/home/presentation/view/order_details_screen.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../data/model/home_model.dart';
-import '../view/order_details_screen.dart';
+import '../../data/model/request_card_data.dart';
 
 class RequestCard extends StatelessWidget {
-  final OrderModel order;
+  final RequestCardData order;
 
   const RequestCard({
     super.key,
@@ -14,24 +14,38 @@ class RequestCard extends StatelessWidget {
   Color _getStatusColor(String? status) {
     switch (status) {
       case 'new':
+      case 'assigned_to_technician':
+      case 'started_by_technical':
         return AppColors.paleBlue2;
+
       case 'pending':
+      case 'order_is_done_from_warehose':
         return AppColors.paleOrange;
+
       case 'completed':
+      case 'completed_unpaid':
         return AppColors.paleRed;
+
       default:
-        return AppColors.primary;
+        return AppColors.primary.withOpacity(0.1);
     }
   }
 
   Color _getStatusTextColor(String? status) {
     switch (status) {
       case 'new':
-        return AppColors.primary;
+      case 'assigned_to_technician':
+      case 'started_by_technical':
+        return AppColors.blue500;
+
       case 'pending':
+      case 'order_is_done_from_warehose':
         return AppColors.orange;
+
       case 'completed':
+      case 'completed_unpaid':
         return AppColors.accentRed;
+
       default:
         return AppColors.primary;
     }
@@ -39,10 +53,8 @@ class RequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status = order.status?.value;
-    final statusLabel = order.status?.label ?? '';
-    final statusColor = _getStatusColor(status);
-    final statusTextColor = _getStatusTextColor(status);
+    final statusColor = _getStatusColor(order.statusValue);
+    final statusTextColor = _getStatusTextColor(order.statusValue);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -50,28 +62,36 @@ class RequestCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primaryLight.withOpacity(0.3)),
+        border: Border.all(
+          color: AppColors.primaryLight.withOpacity(0.3),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '# ORD- ${order.code ?? order.id ?? ""}',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              Expanded(
+                child: Text(
+                  '# ORD- ${order.code}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
               ),
-              if (order.status?.label != null)
+              if (order.statusLabel.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
-
                   ),
                   child: Text(
-                    statusLabel,
+                    order.statusLabel,
                     style: TextStyle(
                       fontSize: 10,
                       color: statusTextColor,
@@ -83,28 +103,38 @@ class RequestCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            order.customer?.name ?? 'Unknown Customer',
+            order.customerName,
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          const SizedBox(height: 4),
-          if (order.address != null && order.address!.isNotEmpty)
+          if (order.address.isNotEmpty) ...[
+            const SizedBox(height: 4),
             Text(
-              order.address!,
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              order.address,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
             ),
+          ],
           const SizedBox(height: 4),
           Text(
-            order.customerDate ?? order.createdAt ?? '',
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
+            order.date,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
-            order.customerNotes ?? (order.products?.isNotEmpty == true ? order.products!.first.name ?? "" : ""),
-            style: const TextStyle(fontSize: 12, color: Colors.black87),
+            order.note,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black87,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -118,7 +148,9 @@ class RequestCard extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => OrderDetailsScreen(requestId: order.id!),
+                        builder: (context) => OrderDetailsScreen(
+                          requestId: order.id!,
+                        ),
                       ),
                     );
                   }
@@ -126,7 +158,10 @@ class RequestCard extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accentRed,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(
