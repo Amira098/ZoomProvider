@@ -22,24 +22,6 @@ class OrderDetailsScreen extends StatelessWidget {
 
   const OrderDetailsScreen({super.key, required this.requestId});
 
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'pending':
-        return Colors.orange;
-      case 'accepted':
-        return Colors.blue;
-      case 'started_by_technical':
-        return Colors.green;
-      case 'completed':
-        return Colors.teal;
-      case 'cancelled':
-        return Colors.red;
-      case 'suspended':
-        return Colors.brown;
-      default:
-        return Colors.grey;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -294,7 +276,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 24),
                                       ],
-                                      if (order.status?.value == 'pending')
+                                      if (order.status?.value == 'order_is_done_from_warehose')
                                         BlocBuilder<ReceiveOrderCubit, ReceiveOrderState>(
                                           builder: (context, receiveState) {
                                             return Column(
@@ -312,7 +294,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             );
                                           },
                                         ),
-                                      if (order.status?.value == 'accepted')
+                                      if (order.status?.value == 'received_by_technical')
                                         BlocBuilder<StartOrderCubit, StartOrderState>(
                                           builder: (context, startState) {
                                             return Column(

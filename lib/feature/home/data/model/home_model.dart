@@ -100,8 +100,8 @@ class OrderModel {
   final OrderStatusModel? status;
   final int? code;
   final String? createdAt;
-  final double? latitude;
-  final double? longitude;
+  final String? latitude;
+  final String? longitude;
   final String? address;
   final CustomerModel? customer;
   final String? customerNotes;
@@ -136,8 +136,8 @@ class OrderModel {
           : null,
       code: json['code'] as int?,
       createdAt: json['created_at'] as String?,
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
+      latitude: json['latitude'] as String?,
+      longitude: json['longitude'] as String?,
       address: json['address'] as String?,
       customer: json['customer'] != null
           ? (json['customer'] is String
