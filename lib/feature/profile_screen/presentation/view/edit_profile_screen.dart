@@ -211,14 +211,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 controller: _phoneCtrl,
                                 textInputType: TextInputType.phone,
                               ),
-                              const SizedBox(height: 24),
-                              CommonTextFormField(
-                                label: LocaleKeys.profile_address.tr(),
-                                hint: "ادخل العنوان بالتفصيل",
-                                controller: _addressCtrl,
-                                textInputType: TextInputType.streetAddress,
-                                maxLines: 2,
-                              ),
+                              // const SizedBox(height: 24),
+                              // CommonTextFormField(
+                              //   label: LocaleKeys.profile_address.tr(),
+                              //   hint: "ادخل العنوان بالتفصيل",
+                              //   controller: _addressCtrl,
+                              //   textInputType: TextInputType.streetAddress,
+                              //   maxLines: 2,
+                              // ),
                             ],
                           ),
                         );

@@ -1,5 +1,5 @@
-
 import '../../../../../core/models/api_error.dart';
+
 import '../../../data/model/receive_order_model.dart';
 
 abstract class ReceiveOrderState {}
