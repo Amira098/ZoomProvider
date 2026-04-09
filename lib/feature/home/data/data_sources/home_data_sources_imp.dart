@@ -82,11 +82,24 @@ class HomeDataSourcesImp implements HomeDataSources {
   }
 
   @override
-  Future<Result<CompleteOrderModel>> completeOrder(int orderId)async {
+  Future<Result<CompleteOrderModel>> completeOrder(
+    int orderId, {
+    String? notes,
+    String? amount,
+    String? paymentStatus,
+    String? completionType,
+  }) async {
     final result = await _apiManager.execute<CompleteOrderModel>(() async {
       final token = await SharedPreferencesUtils.getString(AppValues.token);
       final auth = 'Bearer $token';
-      return await _apiService.completeOrder(orderId,auth);
+      return await _apiService.completeOrder(
+        orderId,
+        auth,
+        notes,
+        amount,
+        paymentStatus,
+        completionType,
+      );
     });
 
     switch (result) {

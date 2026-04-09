@@ -68,5 +68,9 @@ abstract class HomeRetrofitClient {
   Future<CompleteOrderModel> completeOrder(
     @Path("order-id") int orderId,
     @Header("Authorization") String token,
+    @Field("notes") String? notes,
+    @Field("amount") String? amount,
+    @Field("payment_status") String? paymentStatus,
+    @Field("completion_type") String? completionType,
   );
 }

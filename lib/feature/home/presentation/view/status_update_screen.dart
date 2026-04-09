@@ -8,16 +8,20 @@ import '../view_model/complete_order/complete_order_cubit.dart';
 import '../view_model/complete_order/complete_order_state.dart';
 import '../view_model/suspend_order/suspend_order_cubit.dart';
 import '../view_model/suspend_order/suspend_order_state.dart';
+import '../view_model/unsuspend_order/unsuspend_order_cubit.dart';
+import '../view_model/unsuspend_order/unsuspend_order_state.dart';
 import 'store_screen.dart';
 
 class StatusUpdateScreen extends StatefulWidget {
   final int orderId;
   final String customerName;
+  final String? orderStatus;
 
   const StatusUpdateScreen({
     super.key,
     required this.orderId,
     required this.customerName,
+    this.orderStatus,
   });
 
   @override
@@ -42,6 +46,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
       providers: [
         BlocProvider(create: (context) => serviceLocator<CompleteOrderCubit>()),
         BlocProvider(create: (context) => serviceLocator<SuspendOrderCubit>()),
+        BlocProvider(create: (context) => serviceLocator<UnsuspendOrderCubit>()),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -73,12 +78,30 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
               }
             },
           ),
+          BlocListener<UnsuspendOrderCubit, UnsuspendOrderState>(
+            listener: (context, state) {
+              if (state is UnsuspendOrderSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Order unsuspended successfully')),
+                );
+                Navigator.pop(context, true);
+              } else if (state is UnsuspendOrderFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.apiError?.message.toString() ?? 'Failed to unsuspend order')),
+                );
+              }
+            },
+          ),
         ],
         child: BlocBuilder<CompleteOrderCubit, CompleteOrderState>(
           builder: (context, completeState) {
             return BlocBuilder<SuspendOrderCubit, SuspendOrderState>(
               builder: (context, suspendState) {
-                final isLoading = completeState is CompleteOrderLoading || suspendState is SuspendOrderLoading;
+                return BlocBuilder<UnsuspendOrderCubit, UnsuspendOrderState>(
+                  builder: (context, unsuspendState) {
+                    final isLoading = completeState is CompleteOrderLoading ||
+                        suspendState is SuspendOrderLoading ||
+                        unsuspendState is UnsuspendOrderLoading;
                 return Scaffold(
                   backgroundColor: AppColors.surface,
                   body: SafeArea(
@@ -162,11 +185,21 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                           ),
                                         ),
                                         const SizedBox(height: 20),
+                                        if (widget.orderStatus == 'suspended') ...[
+                                          _buildStatusCard(
+                                            index: 4,
+                                            icon: '▶️',
+                                            title: 'Unsuspend Order',
+                                            description: 'Resume the work on this order.',
+                                          ),
+                                          const SizedBox(height: 20),
+                                        ],
                                         _buildStatusCard(
                                           index: 0,
-                                          icon: '✅',
-                                          title: 'Installation completed and payments collected',
-                                          description: 'The work is complete and the amount due has been fully collected from the client.',
+                                          icon: '💰',
+                                          title: 'Complete Paid',
+                                          description:
+                                              'The work is complete and the amount due has been fully collected from the client.',
                                         ),
                                         if (_selectedStatus == 0) ...[
                                           const SizedBox(height: 20),
@@ -199,26 +232,24 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                         const SizedBox(height: 20),
                                         _buildStatusCard(
                                           index: 1,
-                                          icon: '🔧',
-                                          title: 'Installation completed, no payment received',
+                                          icon: '📝',
+                                          title: 'Complete Unpaid',
                                           description:
-                                              'The work is completed but the payment has not been collected — an alert will be sent to the Accounts',
+                                              'The work is completed but the payment has not been collected.',
                                         ),
                                         const SizedBox(height: 20),
                                         _buildStatusCard(
                                           index: 2,
-                                          icon: '📦',
-                                          title: 'Installation not completed — Goods at customer\'s location',
-                                          description:
-                                              'The work was not completed and the goods were left with the customer for later follow-up.',
+                                          icon: '♻️',
+                                          title: 'Complete with resort',
+                                          description: 'The work is completed with a resort.',
                                         ),
                                         const SizedBox(height: 20),
                                         _buildStatusCard(
                                           index: 3,
-                                          icon: '↩️',
-                                          title: 'Installation not completed — Return the goods',
-                                          description:
-                                              'The work was not completed and all the goods were retrieved from the customer and returned.',
+                                          icon: '⏸️',
+                                          title: 'Suspend order',
+                                          description: 'Temporarily stop the work on this order.',
                                         ),
                                         const SizedBox(height: 24),
                                         const Center(
@@ -253,13 +284,32 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             onPressed: isLoading
                                                 ? null
                                                 : () {
-                                                    if (_selectedStatus == 0 || _selectedStatus == 1) {
-                                                      context.read<CompleteOrderCubit>().completeOrder(widget.orderId);
-                                                    } else {
+                                                    if (_selectedStatus == 0) {
+                                                      context.read<CompleteOrderCubit>().completeOrder(
+                                                            widget.orderId,
+                                                            amount: _amountController.text,
+                                                            paymentStatus: 'paid',
+                                                            notes: _notesController.text,
+                                                          );
+                                                    } else if (_selectedStatus == 1) {
+                                                      context.read<CompleteOrderCubit>().completeOrder(
+                                                            widget.orderId,
+                                                            paymentStatus: 'unpaid',
+                                                            notes: _notesController.text,
+                                                          );
+                                                    } else if (_selectedStatus == 2) {
+                                                      context.read<CompleteOrderCubit>().completeOrder(
+                                                            widget.orderId,
+                                                            completionType: 'resort',
+                                                            notes: _notesController.text,
+                                                          );
+                                                    } else if (_selectedStatus == 3) {
                                                       context.read<SuspendOrderCubit>().suspendOrder(
                                                             widget.orderId,
                                                             _notesController.text,
                                                           );
+                                                    } else if (_selectedStatus == 4) {
+                                                      context.read<UnsuspendOrderCubit>().unsuspendOrder(widget.orderId);
                                                     }
                                                   },
                                             style: ElevatedButton.styleFrom(
@@ -298,6 +348,8 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                       ],
                     ),
                   ),
+                );
+                  },
                 );
               },
             );

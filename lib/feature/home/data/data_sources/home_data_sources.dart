@@ -15,5 +15,11 @@ abstract class HomeDataSources {
   Future<Result<StartOrderModel>> startOrder(int orderId);
   Future<Result<SuspendOrderModel>> suspendOrder(int orderId, String notes);
   Future<Result<UnsuspendOrderModel>> unsuspendOrder(int orderId);
-  Future<Result<CompleteOrderModel>> completeOrder(int orderId);
+  Future<Result<CompleteOrderModel>> completeOrder(
+    int orderId, {
+    String? notes,
+    String? amount,
+    String? paymentStatus,
+    String? completionType,
+  });
 }
