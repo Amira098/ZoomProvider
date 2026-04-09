@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../data/model/requests_details_model.dart';
+import '../view_model/completed_paid/completed_paid_cubit.dart';
 import '../view_model/home/home_cubit.dart';
 import '../view_model/home/home_state.dart';
 import '../view_model/receive_order/receive_order_cubit.dart';
@@ -90,6 +91,9 @@ class OrderDetailsScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => serviceLocator<UnsuspendOrderCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => serviceLocator<CompletedPaidCubit>(),
         ),
       ],
       child: Scaffold(
@@ -401,6 +405,11 @@ class OrderDetailsScreen extends StatelessWidget {
                                               MaterialPageRoute(
                                                 builder: (context) => StatusUpdateScreen(
                                                   orderId: order.id!,
+                                                  servicesIds: order.products
+                                                      ?.map((e) => e.id)
+                                                      .whereType<int>()
+                                                      .toList() ??
+                                                      [],
                                                   customerName: order.customer??'',
                                                 ),
                                               ),

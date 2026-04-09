@@ -6,6 +6,7 @@ import '../../../../core/models/custom_token_response.dart';
 import '../../../../core/network/remote/api_constants.dart';
 import '../model/all_requests_model.dart';
 import '../model/complete_order_model.dart';
+import '../model/completed_paid_model.dart';
 import '../model/home_model.dart';
 import '../model/receive_order_model.dart';
 import '../model/requests_details_model.dart';
@@ -69,4 +70,12 @@ abstract class HomeRetrofitClient {
     @Path("order-id") int orderId,
     @Header("Authorization") String token,
   );
+@POST("orders/{order-id}}/request-new-payment")
+@FormUrlEncoded()
+Future<CompletedPaidModel> completedPaid(
+    @Path("order-id") int orderId,
+    @Body() FormData body,
+    @Header("Authorization") String token,
+    );
+
 }

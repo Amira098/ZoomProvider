@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
+
 import '../../../../core/network/common/api_result.dart';
 import '../model/all_requests_model.dart';
 import '../model/complete_order_model.dart';
+import '../model/completed_paid_model.dart';
 import '../model/home_model.dart';
 import '../model/receive_order_model.dart';
 import '../model/requests_details_model.dart';
@@ -16,4 +19,5 @@ abstract class HomeDataSources {
   Future<Result<SuspendOrderModel>> suspendOrder(int orderId, String notes);
   Future<Result<UnsuspendOrderModel>> unsuspendOrder(int orderId);
   Future<Result<CompleteOrderModel>> completeOrder(int orderId);
+  Future<Result<CompletedPaidModel>> completedPaid(int orderId, FormData body);
 }
