@@ -329,7 +329,8 @@ class OrderDetailsScreen extends StatelessWidget {
                                             );
                                           },
                                         ),
-                                      if (order.status?.value == 'started_by_technical')
+                                      if (order.status?.value == 'started_by_technical' ||
+                                          order.status?.value == 'suspended')
                                         _buildActionButton(
                                           'Status update',
                                           AppColors.accentRed,
@@ -340,6 +341,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                                 builder: (context) => StatusUpdateScreen(
                                                   orderId: order.id!,
                                                   customerName: order.customer?.name ?? '',
+                                                  orderStatus: order.status?.value,
                                                 ),
                                               ),
                                             );

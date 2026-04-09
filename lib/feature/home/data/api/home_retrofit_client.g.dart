@@ -260,12 +260,26 @@ class _HomeRetrofitClient implements HomeRetrofitClient {
   }
 
   @override
-  Future<CompleteOrderModel> completeOrder(int orderId, String token) async {
+  Future<CompleteOrderModel> completeOrder(
+    int orderId,
+    String token,
+    String? notes,
+    String? amount,
+    String? paymentStatus,
+    String? completionType,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
+    final _data = {
+      'notes': notes,
+      'amount': amount,
+      'payment_status': paymentStatus,
+      'completion_type': completionType,
+    };
+    _data.removeWhere((k, v) => v == null);
     final _options = _setStreamType<CompleteOrderModel>(
       Options(
         method: 'POST',

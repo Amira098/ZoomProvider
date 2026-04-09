@@ -11,10 +11,22 @@ class CompleteOrderCubit extends Cubit<CompleteOrderState> {
 
   CompleteOrderCubit({required this.homeRepo}) : super(CompleteOrderInitial());
 
-  Future<void> completeOrder(int orderId) async {
+  Future<void> completeOrder(
+    int orderId, {
+    String? notes,
+    String? amount,
+    String? paymentStatus,
+    String? completionType,
+  }) async {
     emit(CompleteOrderLoading());
 
-    final result = await homeRepo.completeOrder(orderId);
+    final result = await homeRepo.completeOrder(
+      orderId,
+      notes: notes,
+      amount: amount,
+      paymentStatus: paymentStatus,
+      completionType: completionType,
+    );
 
     switch (result) {
       case SuccessResult<CompleteOrderModel>():
