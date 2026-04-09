@@ -23,13 +23,7 @@ class ProfileScreen extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
+
                   Text(
                     LocaleKeys.Profile_Profile.tr(),
                     style: const TextStyle(

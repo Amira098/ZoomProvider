@@ -26,16 +26,7 @@ class AllRequestsScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                 child: Row(
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        }
-                      },
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
+
                     const Expanded(
                       child: Text(
                         'All requests',
@@ -47,21 +38,7 @@ class AllRequestsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const StoreScreen(),
-                          ),
-                        );
-                      },
-                      child: SvgPicture.asset(
-                        'assets/svg/shopping_cart.svg',
-                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                        width: 24,
-                      ),
-                    ),
+
                   ],
                 ),
               ),

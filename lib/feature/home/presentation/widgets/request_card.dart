@@ -56,33 +56,29 @@ class RequestCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '# ORD- ${order.code ?? order.id ?? ""}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  if (order.status?.label != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-
-                      ),
-                      child: Text(
-                        statusLabel,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: statusTextColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                ],
+              Text(
+                '# ORD- ${order.code ?? order.id ?? ""}',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
+              if (order.status?.label != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+
+                  ),
+                  child: Text(
+                    statusLabel,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: statusTextColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 4),

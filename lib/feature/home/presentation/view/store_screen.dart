@@ -36,11 +36,7 @@ class StoreScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SvgPicture.asset(
-                    'assets/svg/shopping_cart.svg',
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                    width: 24,
-                  ),
+
                 ],
               ),
             ),
