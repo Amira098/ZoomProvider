@@ -4,11 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../app_section/presentation/view/app_section.dart';
 import '../view_model/complete_order/complete_order_cubit.dart';
 import '../view_model/complete_order/complete_order_state.dart';
 import '../view_model/completed_paid/completed_paid_cubit.dart';
 import '../view_model/completed_paid/completed_paid_state.dart';
-import '../view_model/receive_order/receive_order_cubit.dart';
 import '../view_model/suspend_order/suspend_order_cubit.dart';
 import '../view_model/suspend_order/suspend_order_state.dart';
 import 'store_screen.dart';
@@ -30,11 +30,20 @@ class StatusUpdateScreen extends StatefulWidget {
 }
 
 class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   int _selectedStatus = 0;
 
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _materialsController = TextEditingController();
+
+  bool get _isCompletedWithPayment => _selectedStatus == 0;
+  bool get _isCompletedWithoutPayment => _selectedStatus == 1;
+  bool get _isGoodsLeftWithCustomer => _selectedStatus == 2;
+  bool get _isGoodsReturned => _selectedStatus == 3;
+
+  bool get _isNotesRequired => _isGoodsLeftWithCustomer;
 
   @override
   void dispose() {
@@ -44,17 +53,22 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     super.dispose();
   }
 
-  bool get _isCompletedWithPayment => _selectedStatus == 0;
-  bool get _isCompletedWithoutPayment => _selectedStatus == 1;
-  bool get _isGoodsLeftWithCustomer => _selectedStatus == 2;
-  bool get _isGoodsReturned => _selectedStatus == 3;
-
   void _showMessage(String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: isError ? Colors.red : Colors.green,
+        behavior: SnackBarBehavior.floating,
       ),
+    );
+  }
+
+  void _navigateToMainLayout() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const MainLayout()),
+          (route) => false,
     );
   }
 
@@ -63,33 +77,73 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     return double.tryParse(normalized);
   }
 
+  void _onStatusSelected(int index) {
+    setState(() {
+      _selectedStatus = index;
+    });
+    _formKey.currentState?.validate();
+  }
+
+  String? _validateAmount(String? value) {
+    if (!_isCompletedWithPayment) return null;
+
+    final amountText = value?.trim() ?? '';
+    if (amountText.isEmpty) {
+      return 'Amount is required';
+    }
+
+    final amount = _parseDouble(amountText);
+    if (amount == null || amount <= 0) {
+      return 'Please enter a valid amount';
+    }
+
+    return null;
+  }
+
+  String? _validateMaterials(String? value) {
+    if (!_isCompletedWithPayment) return null;
+
+    final materialsText = value?.trim() ?? '';
+    if (materialsText.isEmpty) return null;
+
+    final materials = _parseDouble(materialsText);
+    if (materials == null) {
+      return 'Please enter a valid materials amount';
+    }
+
+    return null;
+  }
+
+  String? _validateNotes(String? value) {
+    if (!_isNotesRequired) return null;
+
+    final note = value?.trim() ?? '';
+    if (note.isEmpty) {
+      return 'Note is required for this status';
+    }
+
+    return null;
+  }
+
   void _submit() {
+    FocusScope.of(context).unfocus();
+
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) {
+      _showMessage('Please review the required fields', isError: true);
+      return;
+    }
+
     if (_isCompletedWithPayment) {
-      final amountText = _amountController.text.trim();
-      final amount = _parseDouble(amountText);
-      final materialsText = _materialsController.text.trim();
-      final materials =
-      materialsText.isEmpty ? null : _parseDouble(materialsText);
-
-      if (amountText.isEmpty) {
-        _showMessage('Please enter amount', isError: true);
-        return;
-      }
-
-      if (amount == null || amount <= 0) {
-        _showMessage('Please enter a valid amount', isError: true);
-        return;
-      }
-
       if (widget.servicesIds.isEmpty) {
         _showMessage('Services list is empty', isError: true);
         return;
       }
 
-      if (materialsText.isNotEmpty && materials == null) {
-        _showMessage('Please enter a valid materials amount', isError: true);
-        return;
-      }
+      final amount = _parseDouble(_amountController.text.trim())!;
+      final materialsText = _materialsController.text.trim();
+      final materials =
+      materialsText.isEmpty ? null : _parseDouble(materialsText);
 
       context.read<CompletedPaidCubit>().completedPaid(
         orderId: widget.orderId,
@@ -121,7 +175,6 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
         BlocProvider(create: (_) => serviceLocator<CompleteOrderCubit>()),
         BlocProvider(create: (_) => serviceLocator<SuspendOrderCubit>()),
         BlocProvider(create: (_) => serviceLocator<CompletedPaidCubit>()),
-
       ],
       child: MultiBlocListener(
         listeners: [
@@ -129,7 +182,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
             listener: (context, state) {
               if (state is CompleteOrderSuccess) {
                 _showMessage('Order completed successfully');
-                Navigator.pop(context, true);
+                _navigateToMainLayout();
               } else if (state is CompleteOrderFailure) {
                 _showMessage(
                   state.apiError?.message.toString() ??
@@ -143,7 +196,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
             listener: (context, state) {
               if (state is SuspendOrderSuccess) {
                 _showMessage('Order suspended successfully');
-                Navigator.pop(context, true);
+                _navigateToMainLayout();
               } else if (state is SuspendOrderFailure) {
                 _showMessage(
                   state.apiError?.message.toString() ??
@@ -159,7 +212,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                 final successMessage =
                     state.data.message?.toString() ?? 'Payment request sent';
                 _showMessage(successMessage);
-                Navigator.pop(context, true);
+                _navigateToMainLayout();
               } else if (state is CompletedPaidFailure) {
                 _showMessage(state.message, isError: true);
               }
@@ -245,165 +298,192 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                   ),
                                   child: SingleChildScrollView(
                                     padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Text(
-                                            'Select the visit result for customer ${widget.customerName}',
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 14,
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Center(
+                                            child: Text(
+                                              'Select the visit result for customer ${widget.customerName}',
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 14,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 20),
-
-                                        _buildStatusCard(
-                                          index: 0,
-                                          icon: '✅',
-                                          title:
-                                          'Installation completed and payment received from the customer',
-                                          description: '',
-                                        ),
-
-                                        if (_isCompletedWithPayment) ...[
                                           const SizedBox(height: 20),
-                                          const Center(
-                                            child: Text(
-                                              'Amount collected (Omani Rial)',
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 13,
+
+                                          _buildStatusCard(
+                                            index: 0,
+                                            icon: '✅',
+                                            title:
+                                            'Installation completed and payment received from the customer',
+                                            description: '',
+                                          ),
+
+                                          if (_isCompletedWithPayment) ...[
+                                            const SizedBox(height: 20),
+                                            const Center(
+                                              child: Text(
+                                                'Amount collected (Omani Rial)',
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            _buildInputField(
+                                              controller: _amountController,
+                                              hintText: 'Set amount...',
+                                              keyboardType:
+                                              const TextInputType.numberWithOptions(
+                                                decimal: true,
+                                              ),
+                                              validator: _validateAmount,
+                                            ),
+                                            const SizedBox(height: 16),
+                                            const Center(
+                                              child: Text(
+                                                'Materials amount (optional)',
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            _buildInputField(
+                                              controller: _materialsController,
+                                              hintText:
+                                              'Set materials amount...',
+                                              keyboardType:
+                                              const TextInputType.numberWithOptions(
+                                                decimal: true,
+                                              ),
+                                              validator: _validateMaterials,
+                                            ),
+                                          ],
+
+                                          const SizedBox(height: 20),
+
+                                          _buildStatusCard(
+                                            index: 1,
+                                            icon: '🔧',
+                                            title:
+                                            'Installation completed, no payment received',
+                                            description:
+                                            'The work is completed but the payment has not been collected — an alert will be sent to the Accounts',
+                                          ),
+
+                                          const SizedBox(height: 20),
+
+                                          _buildStatusCard(
+                                            index: 2,
+                                            icon: '📦',
+                                            title:
+                                            'Installation was not completed and the goods were left with the customer.',
+                                            description:
+                                            'A note is required in this case to explain the reason clearly.',
+                                          ),
+
+                                          const SizedBox(height: 20),
+
+                                          _buildStatusCard(
+                                            index: 3,
+                                            icon: '↩️',
+                                            title:
+                                            'The installation was not completed and the goods were returned by the customer.',
+                                            description:
+                                            'The work was not completed and all the goods were retrieved from the customer and returned.',
+                                          ),
+
+                                          const SizedBox(height: 24),
+
+                                          Center(
+                                            child: RichText(
+                                              text: TextSpan(
+                                                text: 'Additional notes',
+                                                style: TextStyle(
+                                                  color: Colors.grey.shade700,
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                children: [
+                                                  if (_isNotesRequired)
+                                                    const TextSpan(
+                                                      text: ' *',
+                                                      style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                ],
                                               ),
                                             ),
                                           ),
                                           const SizedBox(height: 10),
+
                                           _buildInputField(
-                                            controller: _amountController,
-                                            hintText: 'Set amount...',
-                                            keyboardType:
-                                            const TextInputType.numberWithOptions(
-                                              decimal: true,
-                                            ),
+                                            controller: _notesController,
+                                            hintText: _isNotesRequired
+                                                ? 'Add a required note for the admin...'
+                                                : 'Add a note for the admin...',
+                                            maxLines: 3,
+                                            validator: _validateNotes,
                                           ),
-                                          const SizedBox(height: 16),
-                                          const Center(
-                                            child: Text(
-                                              'Materials amount (optional)',
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 13,
+
+                                          const SizedBox(height: 24),
+
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton(
+                                              onPressed:
+                                              isLoading ? null : _submit,
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                AppColors.accentRed,
+                                                foregroundColor: Colors.white,
+                                                disabledBackgroundColor:
+                                                AppColors.accentRed
+                                                    .withOpacity(0.6),
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                  vertical: 16,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(20),
+                                                ),
+                                                elevation: 0,
+                                              ),
+                                              child: isLoading
+                                                  ? const SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child:
+                                                CircularProgressIndicator(
+                                                  color: Colors.white,
+                                                  strokeWidth: 2,
+                                                ),
+                                              )
+                                                  : const Text(
+                                                'Submit the final report ←',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(height: 10),
-                                          _buildInputField(
-                                            controller: _materialsController,
-                                            hintText:
-                                            'Set materials amount...',
-                                            keyboardType:
-                                            const TextInputType.numberWithOptions(
-                                              decimal: true,
-                                            ),
-                                          ),
+                                          const SizedBox(height: 40),
                                         ],
-
-                                        const SizedBox(height: 20),
-
-                                        _buildStatusCard(
-                                          index: 1,
-                                          icon: '🔧',
-                                          title:
-                                          'Installation completed, no payment received',
-                                          description:
-                                          'The work is completed but the payment has not been collected — an alert will be sent to the Accounts',
-                                        ),
-
-                                        const SizedBox(height: 20),
-
-                                        _buildStatusCard(
-                                          index: 2,
-                                          icon: '📦',
-                                          title:
-                                          'Installation was not completed and the goods were left with the customer.',
-                                          description: '',
-                                        ),
-
-                                        const SizedBox(height: 20),
-
-                                        _buildStatusCard(
-                                          index: 3,
-                                          icon: '↩️',
-                                          title:
-                                          'The installation was not completed and the goods were returned by the customer.',
-                                          description:
-                                          'The work was not completed and all the goods were retrieved from the customer and returned.',
-                                        ),
-
-                                        const SizedBox(height: 24),
-
-                                        const Center(
-                                          child: Text(
-                                            'Additional notes',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-
-                                        _buildInputField(
-                                          controller: _notesController,
-                                          hintText: 'Add a note for the admin...',
-                                          maxLines: 3,
-                                        ),
-
-                                        const SizedBox(height: 24),
-
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: ElevatedButton(
-                                            onPressed: isLoading ? null : _submit,
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                              AppColors.accentRed,
-                                              foregroundColor: Colors.white,
-                                              padding:
-                                              const EdgeInsets.symmetric(
-                                                vertical: 16,
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                BorderRadius.circular(20),
-                                              ),
-                                              elevation: 0,
-                                            ),
-                                            child: isLoading
-                                                ? const SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child:
-                                              CircularProgressIndicator(
-                                                color: Colors.white,
-                                                strokeWidth: 2,
-                                              ),
-                                            )
-                                                : const Text(
-                                              'Submit the final report ←',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight:
-                                                FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 40),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -428,24 +508,37 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     required String hintText,
     TextInputType? keyboardType,
     int maxLines = 1,
+    String? Function(String?)? validator,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
-      ),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          hintText: hintText,
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      decoration: InputDecoration(
+        hintText: hintText,
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding:
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(
+            color: AppColors.accentRed.withOpacity(0.6),
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.red),
         ),
       ),
     );
@@ -461,7 +554,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
     return InkWell(
       borderRadius: BorderRadius.circular(30),
-      onTap: () => setState(() => _selectedStatus = index),
+      onTap: () => _onStatusSelected(index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.all(16),
@@ -472,7 +565,17 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
             color: isSelected
                 ? AppColors.accentRed.withOpacity(0.6)
                 : Colors.grey.withOpacity(0.12),
+            width: isSelected ? 1.4 : 1,
           ),
+          boxShadow: isSelected
+              ? [
+            BoxShadow(
+              color: AppColors.accentRed.withOpacity(0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ]
+              : [],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,7 +591,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      height: 1.2,
+                      height: 1.3,
                     ),
                   ),
                 ),

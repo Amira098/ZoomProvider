@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../../../core/network/common/api_result.dart';
 import '../../../data/data_sources/home_data_sources.dart';
 import '../../../data/model/completed_paid_model.dart';
 import 'completed_paid_state.dart';
-
+@injectable
 class CompletedPaidCubit extends Cubit<CompletedPaidState> {
   final HomeDataSources repository;
 

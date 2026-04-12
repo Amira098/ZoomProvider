@@ -55,6 +55,8 @@ import 'package:zoom_provider/feature/home/data/data_sources/home_data_sources_i
     as _i128;
 import 'package:zoom_provider/feature/home/presentation/view_model/complete_order/complete_order_cubit.dart'
     as _i282;
+import 'package:zoom_provider/feature/home/presentation/view_model/completed_paid/completed_paid_cubit.dart'
+    as _i1063;
 import 'package:zoom_provider/feature/home/presentation/view_model/home/home_cubit.dart'
     as _i514;
 import 'package:zoom_provider/feature/home/presentation/view_model/receive_order/receive_order_cubit.dart'
@@ -188,6 +190,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i431.AboutUsCubit(gh<_i547.AboutUsUseCase>()));
     gh.factory<_i1027.ProfileUpdateCubit>(() =>
         _i1027.ProfileUpdateCubit(gh<_i457.RemoteProfileUpdateDataSource>()));
+    gh.factory<_i1063.CompletedPaidCubit>(
+        () => _i1063.CompletedPaidCubit(gh<_i871.HomeDataSources>()));
     gh.factory<_i282.CompleteOrderCubit>(
         () => _i282.CompleteOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i514.HomeCubit>(

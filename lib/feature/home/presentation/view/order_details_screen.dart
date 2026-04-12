@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:zoom_provider/feature/home/presentation/view/status_updates_screen_wrapper.dart';
 
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -403,17 +404,18 @@ class OrderDetailsScreen extends StatelessWidget {
                                             final result = await Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => StatusUpdateScreen(
+                                                builder: (context) => StatusUpdateScreenWrapper(
                                                   orderId: order.id!,
                                                   servicesIds: order.products
                                                       ?.map((e) => e.id)
                                                       .whereType<int>()
                                                       .toList() ??
                                                       [],
-                                                  customerName: order.customer??'',
+                                                  customerName: order.customer ?? '',
                                                 ),
                                               ),
                                             );
+
                                             if (result == true) {
                                               context.read<HomeCubit>().getRequestsDetails(requestId);
                                             }
@@ -441,68 +443,6 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMapSection(OrderModel order) {
-    final hasLat = order.latitude != null && order.latitude!.trim().isNotEmpty;
-    final hasLng = order.longitude != null && order.longitude!.trim().isNotEmpty;
-    final hasLatLng = hasLat && hasLng;
-    final hasAddress = order.address != null && order.address!.trim().isNotEmpty;
-
-    String? mapUrl;
-
-    if (hasLatLng) {
-      mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
-          '?center=${order.latitude},${order.longitude}'
-          '&zoom=14'
-          '&size=600x300'
-          '&markers=color:red%7C${order.latitude},${order.longitude}'
-          '&key=$googleMapsApiKey';
-    } else if (hasAddress) {
-      final encodedAddress = Uri.encodeComponent(order.address!);
-      mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
-          '?center=$encodedAddress'
-          '&zoom=14'
-          '&size=600x300'
-          '&markers=color:red%7C$encodedAddress'
-          '&key=$googleMapsApiKey';
-    }
-
-    return Container(
-      height: 180,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.withOpacity(0.3)),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: mapUrl != null
-          ? Image.network(
-        mapUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey.shade200,
-            child: const Center(
-              child: Icon(
-                Icons.location_off,
-                size: 50,
-                color: Colors.grey,
-              ),
-            ),
-          );
-        },
-      )
-          : Container(
-        color: Colors.grey.shade200,
-        child: const Center(
-          child: Icon(
-            Icons.location_on,
-            size: 50,
-            color: Colors.grey,
-          ),
-        ),
-      ),
-    );
-  }
   Widget _buildSectionTitle(String title) {
     return Center(
       child: Column(
