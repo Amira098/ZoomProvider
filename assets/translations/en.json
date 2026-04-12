@@ -117,7 +117,12 @@
     "hero_default_text": "Build, Launch, Scale",
     "all": "All",
     "no_products_found": "No products found in this section",
-    "start_your_project": "Start your project"
+    "start_your_project": "Start your project",
+    "no_requests_found": "No requests found",
+    "canceled_requests": "Canceled requests",
+    "completed_requests": "Completed requests",
+    "pending_requests": "Pending requests",
+    "premium_candle_set": "Premium Candle Set"
   },
   "NewAndUsed": {
     "Search": "Search",
@@ -236,7 +241,8 @@
     "message": "Message",
     "send": "Send",
     "success": "Message sent successfully!",
-    "failure": "Failed to send message"
+    "failure": "Failed to send message",
+    "call_center": "Call Center"
   },
   "finished_product": {
     "finished": "Finished",
@@ -325,7 +331,9 @@
     "home": "Home",
     "account": "Account",
     "support": "Support",
-    "unexpected_error": "Unexpected error occurred"
+    "unexpected_error": "Unexpected error occurred",
+    "all_requests": "All requests",
+    "alerts": "Alerts"
   },
   "start_project": {
     "title": "Start your Project",
@@ -365,6 +373,10 @@
     "total_price": "Total Price"
   },
   "product_details": {
+    "title": "Product details",
+    "description": "Description",
+    "price": "Price",
+    "add_to_cart": "Add to cart",
     "key_features": "Key Features",
     "tech_used": "Technologies Used",
     "guarantee_access": "Guarantee your access",
@@ -461,5 +473,51 @@
   "cash": "Cash",
   "online_payment": "Online payment",
   "confirm": "Confirm",
-  "Payment": " Payment"
+  "Payment": " Payment",
+  "OrderDetails": {
+    "Title": "Order Details",
+    "ReceivedSuccess": "Order received successfully",
+    "StartedSuccess": "Order started successfully",
+    "UnsuspendedSuccess": "Order unsuspended successfully",
+    "NotFound": "Order not found",
+    "Error": "Something went wrong",
+    "CustomerData": "Customer data",
+    "ServiceDetails": "Service details",
+    "Notice": "Notice",
+    "ReceiveJob": "Receive job",
+    "StartJob": "start job",
+    "UnsuspendJob": "Unsuspend job",
+    "StatusUpdate": "Status update",
+    "Address": "Address",
+    "ServiceType": "Service type",
+    "OrderCode": "Order Code",
+    "Materials": "Materials",
+    "ImplementationDate": "Implementation date"
+  },
+  "notifications": {
+    "no_notifications_found": "No notifications found"
+  },
+  "status_update": {
+    "select_result": "Select the visit result for customer {}",
+    "completed_paid": "Installation completed and payment received from the customer",
+    "amount_collected": "Amount collected (Omani Rial)",
+    "set_amount": "Set amount...",
+    "materials_amount": "Materials amount (optional)",
+    "set_materials_amount": "Set materials amount...",
+    "completed_unpaid": "Installation completed, no payment received",
+    "completed_unpaid_desc": "The work is completed but the payment has not been collected — an alert will be sent to the Accounts",
+    "suspended_left": "Installation was not completed and the goods were left with the customer.",
+    "suspended_returned": "The installation was not completed and the goods were returned by the customer.",
+    "suspended_returned_desc": "The work was not completed and all the goods were retrieved from the customer and returned.",
+    "additional_notes": "Additional notes",
+    "add_note": "Add a note for the admin...",
+    "submit": "Submit the final report ←",
+    "success_complete": "Order completed successfully",
+    "success_suspend": "Order suspended successfully",
+    "success_payment": "Payment request sent",
+    "error_amount_empty": "Please enter amount",
+    "error_amount_invalid": "Please enter a valid amount",
+    "error_services_empty": "Services list is empty",
+    "error_materials_invalid": "Please enter a valid materials amount"
+  }
 }

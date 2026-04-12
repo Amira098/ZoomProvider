@@ -1,10 +1,9 @@
 import 'package:injectable/injectable.dart';
-import '../../../../../core/constants/app_values.dart';
 import '../../../../../core/network/common/api_result.dart';
 import '../../../../../core/network/remote/api_manager.dart';
 
-import '../../../../../core/utils/app_shared_preference.dart';
 import '../../api/contact_us_retrofit_client.dart';
+import '../../models/contact_requests_model.dart';
 import '../../models/contact_us.dart';
 import '../../models/services_faqs_model.dart';
 import 'remote_contact_us_data_source.dart';
@@ -56,6 +55,22 @@ class RemoteContactUsDataSourceImp extends RemoteContactUsDataSource {
       case SuccessResult<ServicesFaqsModel>():
         return SuccessResult(result.data);
       case FailureResult<ServicesFaqsModel>():
+        return FailureResult(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<ContactRequestsModel>> contactRequests() async{
+    final result = await _apiManager.execute<ContactRequestsModel>(() async {
+      return await _apiService.contactRequests();
+    });
+    switch (result) {
+      case SuccessResult<ContactRequestsModel>():
+        return SuccessResult(result.data);
+      case FailureResult<ContactRequestsModel>():
         return FailureResult(
           exception: result.exception,
           apiError: result.apiError,

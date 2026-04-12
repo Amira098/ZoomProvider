@@ -1,20 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_values.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/utils/app_shared_preference.dart';
-import '../../../../core/utils/custom_button.dart';
-import '../../../../core/utils/utils/customTextField.dart';
+import '../../../../core/utils/pick_localized_dyn.dart';
 import '../../../../generated/locale_keys.g.dart';
+import '../../../../core/utils/show_pretty_snack.dart';
 import '../view_model/contact_us_cubit/contact_us_cubit.dart';
 import '../view_model/contact_us_cubit/contact_us_state.dart';
-import 'faq_screen.dart';
-import 'glass_faq_section.dart';
 
 class ContactUsForm extends StatefulWidget {
   const ContactUsForm({super.key});
@@ -37,6 +36,7 @@ class _ContactUsFormState extends State<ContactUsForm> {
   void initState() {
     super.initState();
     _loadUserData();
+    _cubit.getContactDetails();
   }
 
   void _loadUserData() {
@@ -63,6 +63,138 @@ class _ContactUsFormState extends State<ContactUsForm> {
     super.dispose();
   }
 
+  Widget _buildContactForm() {
+    return Column(
+      children: [
+        TextFormField(
+          controller: _subjectController,
+          decoration: InputDecoration(
+            labelText: LocaleKeys.contactus_subject.tr(),
+            hintText: LocaleKeys.contactus_subject.tr(),
+            disabledBorder:OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)) ,
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.r),borderSide: BorderSide(color:AppColors.primary )),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return LocaleKeys.general_required.tr();
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: 16.h),
+        TextFormField(
+          controller: _nameController,
+          decoration: InputDecoration(
+            labelText: LocaleKeys.contactus_fullname.tr(),
+            disabledBorder:OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)) ,
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.r),borderSide: BorderSide(color:AppColors.primary )),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return LocaleKeys.general_required.tr();
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: 16.h),
+        TextFormField(
+          controller: _emailController,
+          decoration: InputDecoration(
+            labelText: LocaleKeys.contactus_email.tr(),
+
+            disabledBorder:OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)) ,
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.r),borderSide: BorderSide(color:AppColors.primary )),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return LocaleKeys.general_required.tr();
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: 16.h),
+        TextFormField(
+          controller: _phoneController,
+          decoration: InputDecoration(
+            labelText: LocaleKeys.contactus_phone.tr(),
+
+            disabledBorder:OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)) ,
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.r),borderSide: BorderSide(color:AppColors.primary )),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return LocaleKeys.general_required.tr();
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: 16.h),
+        TextFormField(
+          controller: _messageController,
+          maxLines: 5,
+          decoration: InputDecoration(
+
+            labelText: LocaleKeys.contactus_message.tr(),
+            hintText: LocaleKeys.contactus_message.tr(),
+            disabledBorder:OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)) ,
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(22.r),borderSide: BorderSide(color:AppColors.primary )),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return LocaleKeys.general_required.tr();
+            }
+            return null;
+          },
+        ),
+        SizedBox(height: 24.h),
+        BlocBuilder<ContactUsCubit, ContactUsState>(
+          builder: (context, state) {
+            return SizedBox(
+              width: double.infinity,
+              height: 56.h,
+              child: ElevatedButton(
+                onPressed: state is ContactUsLoading
+                    ? null
+                    : () {
+                        if (formKey.currentState!.validate()) {
+                          _cubit.contactUs(
+                            name: _nameController.text,
+                            email: _emailController.text,
+                            message: _messageController.text,
+                            subject: _subjectController.text,
+                            phoneNumber: _phoneController.text,
+                          );
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xffF3212D),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                child: state is ContactUsLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(
+                        LocaleKeys.contactus_send.tr(),
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,23 +204,21 @@ class _ContactUsFormState extends State<ContactUsForm> {
           SafeArea(
             bottom: false,
             child: Container(
-              height: 70,
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: Stack(
-                alignment: Alignment.center,
+              height: 70.h,
+              padding: EdgeInsets.symmetric(horizontal: 18.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
+                  IconButton(
+                    icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
                   ),
+                  SizedBox(width: 16.w),
                   Text(
                     LocaleKeys.contactus_title.tr(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -99,176 +229,120 @@ class _ContactUsFormState extends State<ContactUsForm> {
           Expanded(
             child: Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Color(0xffF6F6F6),
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
+                  topLeft: Radius.circular(30.r),
+                  topRight: Radius.circular(30.r),
                 ),
               ),
               child: Stack(
                 children: [
                   BlocProvider(
                     create: (_) => _cubit,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Form(
-                        key: formKey,
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.symmetric(vertical: 24),
-                          child: Column(
-                            children: [
-                              // ================= Contact Cards =================
-                              GridView.count(
-                                crossAxisCount: 2,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                crossAxisSpacing: 16,
-                                mainAxisSpacing: 16,
-                                childAspectRatio: 0.9,
-                                children: [
-                                  _ContactCard(
-                                    icon: Icons.email_rounded,
-                                    iconColor: const Color(0xff8E44AD),
-                                    bgColor: const Color(0xffF5EEF8),
-                                    title: 'Email',
-                                    subtitle: 'admin@zoom.com',
-                                    onTap: () {},
-                                  ),
-                                  _ContactCard(
-                                    icon: Icons.phone_in_talk_rounded,
-                                    iconColor: const Color(0xffF3212D),
-                                    bgColor: const Color(0xffFDEDEE),
-                                    title: 'Call Center',
-                                    onTap: () {},
-                                  ),
+                    child: BlocListener<ContactUsCubit, ContactUsState>(
+                      listener: (context, state) {
+                        if (state is ContactUsSuccess) {
+                          showPrettySnack(
+                            context,
+                            pickLocalizedDyn(state.message, context.locale.languageCode == 'ar') ??
+                                (context.locale.languageCode == 'ar' ? 'تم إرسال الرسالة بنجاح' : 'Message sent successfully'),
+                            success: true,
+                          );
+                          _subjectController.clear();
+                          _messageController.clear();
+                        } else if (state is ContactUsFailure) {
+                          showPrettySnack(context, state.error, success: false);
+                        }
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Form(
+                          key: formKey,
+                          child: SingleChildScrollView(
+                            padding: EdgeInsets.symmetric(vertical: 24.h),
+                            child: Column(
+                              children: [
+                                BlocBuilder<ContactUsCubit, ContactUsState>(
+                                  buildWhen: (previous, current) =>
+                                      current is ContactDetailsLoading ||
+                                      current is ContactDetailsSuccess ||
+                                      current is ContactDetailsFailure,
+                                builder: (context, state) {
+                                  String email = '...';
+                                  String phone = '...';
 
-                                ],
-                              ),
-                              const SizedBox(height: 24),
+                                  if (state is ContactDetailsSuccess) {
+                                    email = state.email;
+                                    phone = state.number;
+                                  }
 
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 24, horizontal: 18),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  children: [
-                                    CommonTextFormField(
-                                      fillColor: const Color(0xffF8F8F8),
-                                      controller: _subjectController,
-                                      hint: LocaleKeys.contactus_subject.tr(),
-                                      prefixIcon: const Icon(Icons.subject_rounded),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: CommonTextFormField(
-                                            fillColor: const Color(0xffF8F8F8),
-                                            controller: _nameController,
-                                            hint: LocaleKeys.contactus_fullname.tr(),
-                                            prefixIcon: const Icon(Icons.person_outline_rounded),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: CommonTextFormField(
-                                            fillColor: const Color(0xffF8F8F8),
-                                            controller: _emailController,
-                                            hint: LocaleKeys.contactus_email.tr(),
-                                            prefixIcon: const Icon(Icons.email_outlined),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12),
-                                    CommonTextFormField(
-                                      fillColor: const Color(0xffF8F8F8),
-                                      controller: _phoneController,
-                                      hint: LocaleKeys.contactus_phone.tr(),
-                                      prefixIcon: const Icon(Icons.phone_outlined),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    CommonTextFormField(
-                                      fillColor: const Color(0xffF8F8F8),
-                                      controller: _messageController,
-                                      hint: LocaleKeys.contactus_message.tr(),
-                                      maxLines: 6,
-                                    ),
-                                    const SizedBox(height: 30),
-                                    BlocConsumer<ContactUsCubit, ContactUsState>(
-                                      listener: (context, state) {
-                                        if (state is ContactUsSuccess) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                LocaleKeys.contactus_success.tr(),
-                                                style: const TextStyle(color: Colors.white),
-                                              ),
-                                              backgroundColor: Colors.green,
-                                            ),
-                                          );
-                                          _messageController.clear();
-                                          _subjectController.clear();
-                                        } else if (state is ContactUsFailure) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                LocaleKeys.contactus_failure.tr(),
-                                                style: const TextStyle(color: Colors.white),
-                                              ),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      builder: (context, state) {
-                                        if (state is ContactUsLoading) {
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        }
-                                        return CustomButton(
-                                          btnColor: AppColors.primary,
-                                          btnWidth: double.infinity,
-                                          btnHeight: 56,
-                                          text: LocaleKeys.contactus_send.tr(),
-                                          styleFromTheme: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w800,
-                                            color: Colors.white,
-                                          ),
-                                          onTap: () {
-                                            if (formKey.currentState!.validate()) {
-                                              _cubit.contactUs(
-                                                subject: _subjectController.text,
-                                                name: _nameController.text,
-                                                email: _emailController.text,
-                                                phoneNumber: _phoneController.text,
-                                                message: _messageController.text,
-                                              );
+                                  return GridView.count(
+                                    crossAxisCount: 2,
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    crossAxisSpacing: 16,
+                                    mainAxisSpacing: 16,
+                                    childAspectRatio: 0.9,
+                                    children: [
+                                      _ContactCard(
+                                        icon: Icons.email_rounded,
+                                        iconColor: const Color(0xff8E44AD),
+                                        bgColor: const Color(0xffF5EEF8),
+                                        title: LocaleKeys.contactus_email.tr(),
+                                        subtitle: email,
+                                        onTap: () async {
+                                          if (email.isNotEmpty && email != '...') {
+                                            final Uri emailLaunchUri = Uri(
+                                              scheme: 'mailto',
+                                              path: email,
+                                            );
+                                            if (await canLaunchUrl(emailLaunchUri)) {
+                                              await launchUrl(emailLaunchUri);
                                             }
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                          }
+                                        },
+                                      ),
+                                      _ContactCard(
+                                        icon: Icons.phone_in_talk_rounded,
+                                        iconColor: const Color(0xffF3212D),
+                                        bgColor: const Color(0xffFDEDEE),
+                                        title: "call center",
+                                        subtitle: phone,
+                                        onTap: () async {
+                                          if (phone.isNotEmpty && phone != '...') {
+                                            final Uri phoneLaunchUri = Uri(
+                                              scheme: 'tel',
+                                              path: phone,
+                                            );
+                                            if (await canLaunchUrl(phoneLaunchUri)) {
+                                              await launchUrl(phoneLaunchUri);
+                                            }
+                                          }
+                                        },
+                                      ),
+                                      // _ContactCard(
+                                      //   icon: Icons.help_rounded,
+                                      //   iconColor: const Color(0xffF1C40F),
+                                      //   bgColor: const Color(0xffFEF9E7),
+                                      //   title: LocaleKeys.faq_header.tr(),
+                                      //   subtitle: LocaleKeys.contactus_answers.tr(args: ['+50']),
+                                      //   onTap: () {
+                                      //     Navigator.push(
+                                      //       context,
+                                      //       MaterialPageRoute(builder: (context) => const FaqScreen()),
+                                      //     );
+                                      //   },
+                                      // ),
+                                    ],
+                                  );
+                                },
                               ),
-                              const SizedBox(height: 24),
-
-                              const SizedBox(height: 30),
-                            ],
+                                // SizedBox(height: 24.h),
+                                // _buildContactForm(),
+                                SizedBox(height: 30.h),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -305,17 +379,17 @@ class _ContactCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(24.r),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(24.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              blurRadius: 12.r,
+              offset: Offset(0.w, 4.h),
             ),
           ],
         ),
@@ -323,7 +397,7 @@ class _ContactCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16.r),
               decoration: BoxDecoration(
                 color: bgColor,
                 shape: BoxShape.circle,
@@ -331,25 +405,25 @@ class _ContactCard extends StatelessWidget {
               child: Icon(
                 icon,
                 color: iconColor,
-                size: 28,
+                size: 28.sp,
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 15,
+              style: TextStyle(
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w800,
                 color: Color(0xff1E1E1E),
               ),
             ),
             if (subtitle != null) ...[
-              const SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 subtitle!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 12,
+                style: TextStyle(
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                   color: Color(0xff8A8A8A),
                 ),

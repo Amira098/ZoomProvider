@@ -1,5 +1,6 @@
 
 import '../../../../../core/network/common/api_result.dart';
+import '../../models/contact_requests_model.dart';
 import '../../models/contact_us.dart';
 import '../../models/services_faqs_model.dart';
 
@@ -14,4 +15,5 @@ abstract class RemoteContactUsDataSource {
 
   });
   Future<Result<ServicesFaqsModel>> servicesFaqs();
+  Future<Result<ContactRequestsModel>> contactRequests();
 }

@@ -115,7 +115,12 @@
     "hero_default_text": "بناء، إطلاق، توسيع",
     "all": "الكل",
     "no_products_found": "لا توجد منتجات في هذا القسم",
-    "start_your_project": "ابدأ مشروعك"
+    "start_your_project": "ابدأ مشروعك",
+    "no_requests_found": "لم يتم العثور على طلبات",
+    "canceled_requests": "طلبات ملغاة",
+    "completed_requests": "طلبات مكتملة",
+    "pending_requests": "طلبات معلقة",
+    "premium_candle_set": "طقم شمعات بريميوم"
   },
   "NewAndUsed": {
     "Search": "بحث",
@@ -234,7 +239,8 @@
     "message": "الرسالة",
     "send": "إرسال",
     "success": "تم إرسال الرسالة بنجاح!",
-    "failure": "فشل في إرسال الرسالة"
+    "failure": "فشل في إرسال الرسالة",
+    "call_center": "مركز الاتصال"
   },
   "finished_product": {
     "finished": "انتهى",
@@ -323,7 +329,9 @@
     "home": "الرئيسية",
     "account": "الحساب",
     "support": "الدعم",
-    "unexpected_error": "حدث خطأ غير متوقع"
+    "unexpected_error": "حدث خطأ غير متوقع",
+    "all_requests": "كل الطلبات",
+    "alerts": "التنبيهات"
   },
   "start_project": {
     "title": "ابدأ مشروعك",
@@ -363,6 +371,10 @@
     "total_price": "السعر الإجمالي"
   },
   "product_details": {
+    "title": "تفاصيل المنتج",
+    "description": "الوصف",
+    "price": "السعر",
+    "add_to_cart": "أضف إلى السلة",
     "key_features": "الميزات الرئيسية",
     "tech_used": "التقنيات المستخدمة",
     "guarantee_access": "ضمان الوصول الخاص بك",
@@ -459,5 +471,51 @@
   "cash": "نقدًا",
   "online_payment": "الدفع الإلكتروني",
   "confirm": "تأكيد",
-  "Payment": " الدفع"
+  "Payment": " الدفع",
+  "OrderDetails": {
+    "Title": "تفاصيل الطلب",
+    "ReceivedSuccess": "تم استلام الطلب بنجاح",
+    "StartedSuccess": "تم بدء الطلب بنجاح",
+    "UnsuspendedSuccess": "تم إلغاء تعليق الطلب بنجاح",
+    "NotFound": "لم يتم العثور على الطلب",
+    "Error": "حدث خطأ ما",
+    "CustomerData": "بيانات العميل",
+    "ServiceDetails": "تفاصيل الخدمة",
+    "Notice": "ملاحظة",
+    "ReceiveJob": "استلام المهمة",
+    "StartJob": "بدء المهمة",
+    "UnsuspendJob": "إلغاء تعليق المهمة",
+    "StatusUpdate": "تحديث الحالة",
+    "Address": "العنوان",
+    "ServiceType": "نوع الخدمة",
+    "OrderCode": "كود الطلب",
+    "Materials": "المواد",
+    "ImplementationDate": "تاريخ التنفيذ"
+  },
+  "notifications": {
+    "no_notifications_found": "لا توجد إشعارات"
+  },
+  "status_update": {
+    "select_result": "حدد نتيجة الزيارة للعميل {}",
+    "completed_paid": "تم اكتمال التركيب واستلام المبلغ من العميل",
+    "amount_collected": "المبلغ المحصل (ريال عماني)",
+    "set_amount": "حدد المبلغ...",
+    "materials_amount": "مبلغ المواد (اختياري)",
+    "set_materials_amount": "حدد مبلغ المواد...",
+    "completed_unpaid": "تم اكتمال التركيب ولم يتم استلام المبلغ",
+    "completed_unpaid_desc": "تم إنجاز العمل ولكن لم يتم تحصيل المبلغ - سيتم إرسال تنبيه إلى الحسابات",
+    "suspended_left": "لم يتم اكتمال التركيب وتركت البضاعة عند العميل.",
+    "suspended_returned": "لم يتم اكتمال التركيب وتم استرجاع البضاعة من قبل العميل.",
+    "suspended_returned_desc": "لم يتم اكتمال العمل وتم استعادة جميع البضائع من العميل وإعادتها.",
+    "additional_notes": "ملاحظات إضافية",
+    "add_note": "أضف ملاحظة للمسؤول...",
+    "submit": "إرسال التقرير النهائي ←",
+    "success_complete": "تم إكمال الطلب بنجاح",
+    "success_suspend": "تم تعليق الطلب بنجاح",
+    "success_payment": "تم إرسال طلب الدفع",
+    "error_amount_empty": "يرجى إدخال المبلغ",
+    "error_amount_invalid": "يرجى إدخال مبلغ صالح",
+    "error_services_empty": "قائمة الخدمات فارغة",
+    "error_materials_invalid": "يرجى إدخال مبلغ مواد صالح"
+  }
 }

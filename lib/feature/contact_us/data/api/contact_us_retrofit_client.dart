@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 import '../../../../core/network/remote/api_constants.dart';
+import '../models/contact_requests_model.dart';
 import '../models/contact_us.dart';
 import '../models/services_faqs_model.dart';
 part 'contact_us_retrofit_client.g.dart';
@@ -25,4 +26,6 @@ abstract class ContactUsRetrofitClient {
   @GET(ApiConstants.servicesFaqs)
   @FormUrlEncoded()
   Future<ServicesFaqsModel> servicesFaqs();
+  @GET(ApiConstants.contact)
+  Future<ContactRequestsModel> contactRequests();
 }
