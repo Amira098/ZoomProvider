@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../../core/common/widget/empty_state_widget.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../generated/locale_keys.g.dart';
 import '../../../../core/di/service_locator.dart';
@@ -191,10 +192,11 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
           if (orders.isEmpty)
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: 40.h),
-                child: Text(LocaleKeys.Home_no_requests_found.tr()),
+            Padding(
+              padding: EdgeInsets.only(top: 100.h),
+              child: EmptyStateWidget(
+                icon: Icons.inbox_outlined,
+                text: LocaleKeys.Home_no_requests_found.tr(),
               ),
             ),
         ],

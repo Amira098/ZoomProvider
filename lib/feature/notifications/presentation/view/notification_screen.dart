@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:zoom_provider/generated/locale_keys.g.dart';
 
+import '../../../../core/common/widget/empty_state_widget.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
@@ -110,10 +112,11 @@ class NotificationScreen extends StatelessWidget {
                               final orders = state.homeModel.data ?? [];
 
                               if (orders.isEmpty) {
-                                return Center(
-                                  child: Text(LocaleKeys
+                                return EmptyStateWidget(
+                                  svgPath: SvgAsset.notification,
+                                  text: LocaleKeys
                                       .notifications_no_notifications_found
-                                      .tr()),
+                                      .tr(),
                                 );
                               }
 
