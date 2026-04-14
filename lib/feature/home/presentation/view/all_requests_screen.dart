@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../generated/locale_keys.g.dart';
 
+import '../../../../core/common/widget/empty_state_widget.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
@@ -150,7 +151,10 @@ class _Body extends StatelessWidget {
                     final orders = state.allRequestsModel.data ?? [];
 
                     if (orders.isEmpty) {
-                      return const _EmptyState();
+                      return EmptyStateWidget(
+                        icon: Icons.inbox_outlined,
+                        text: LocaleKeys.Home_no_requests_found.tr(),
+                      );
                     }
 
                     return RefreshIndicator(
@@ -211,27 +215,6 @@ class _Body extends StatelessWidget {
           customerNotes: 'Order notes go here ' * 5,
           status: StatusModel(label: 'Status', value: 'new'),
         ),
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.inbox_outlined, size: 60.sp, color: Colors.grey),
-          SizedBox(height: 10.h),
-          Text(
-            LocaleKeys.Home_no_requests_found.tr(),
-            style: const TextStyle(color: Colors.grey),
-          ),
-        ],
       ),
     );
   }
