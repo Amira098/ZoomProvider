@@ -2,11 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../data/model/all_requests_model.dart';
 import '../../data/model/request_card_data.dart';
 import '../view_model/home/home_cubit.dart';
 import '../view_model/home/home_state.dart';
@@ -125,8 +127,12 @@ class _Body extends StatelessWidget {
               BlocBuilder<HomeCubit, HomeState>(
                 builder: (context, state) {
                   if (state is AllRequestsLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return Skeletonizer(
+                      enabled: true,
+                      child: _buildListContent(
+                        context,
+                        _getDummyAllRequestsModel(),
+                      ),
                     );
                   }
 
@@ -149,31 +155,7 @@ class _Body extends StatelessWidget {
                     return RefreshIndicator(
                       onRefresh: () =>
                           context.read<HomeCubit>().getAllRequests(),
-                      child: ListView.separated(
-                        padding: const EdgeInsets.all(20),
-                        itemCount: orders.length,
-                        separatorBuilder: (_, __) =>
-                        const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final item = orders[index];
-
-                          final cardData = RequestCardData(
-                            id: item.id,
-                            code: (item.code ?? item.id ?? '').toString(),
-                            customerName: item.customer ?? 'Unknown Customer',
-                            address: item.address ?? '',
-                            date: item.customerDate ?? item.createdAt ?? '',
-                            note: item.customerNotes ??
-                                (item.products?.isNotEmpty == true
-                                    ? item.products!.first.name ?? ''
-                                    : ''),
-                            statusValue: item.status?.value ?? '',
-                            statusLabel: item.status?.label ?? '',
-                          );
-
-                          return RequestCard(order: cardData);
-                        },
-                      ),
+                      child: _buildListContent(context, state.allRequestsModel),
                     );
                   }
 
@@ -182,6 +164,51 @@ class _Body extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListContent(BuildContext context, AllRequestsModel model) {
+    final orders = model.data ?? [];
+    return ListView.separated(
+      padding: const EdgeInsets.all(20),
+      itemCount: orders.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        final item = orders[index];
+
+        final cardData = RequestCardData(
+          id: item.id,
+          code: (item.code ?? item.id ?? '').toString(),
+          customerName: item.customer ?? 'Unknown Customer',
+          address: item.address ?? '',
+          date: item.customerDate ?? item.createdAt ?? '',
+          note: item.customerNotes ??
+              (item.products?.isNotEmpty == true
+                  ? item.products!.first.name ?? ''
+                  : ''),
+          statusValue: item.status?.value ?? '',
+          statusLabel: item.status?.label ?? '',
+        );
+
+        return RequestCard(order: cardData);
+      },
+    );
+  }
+
+  AllRequestsModel _getDummyAllRequestsModel() {
+    return AllRequestsModel(
+      data: List.generate(
+        6,
+        (index) => OrderModel(
+          id: index,
+          code: 12345,
+          customer: 'Customer Name ' * 2,
+          address: 'Address Details ' * 3,
+          customerDate: '2023-01-01',
+          customerNotes: 'Order notes go here ' * 5,
+          status: StatusModel(label: 'Status', value: 'new'),
         ),
       ),
     );

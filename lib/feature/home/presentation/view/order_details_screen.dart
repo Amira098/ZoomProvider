@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:zoom_provider/feature/home/presentation/view/status_updates_screen_wrapper.dart';
 import 'package:zoom_provider/generated/locale_keys.g.dart';
 
@@ -163,7 +164,13 @@ class OrderDetailsScreen extends StatelessWidget {
                           child: BlocBuilder<HomeCubit, HomeState>(
                             builder: (context, state) {
                               if (state is RequestDetailsLoading) {
-                                return const Center(child: CircularProgressIndicator());
+                                return Skeletonizer(
+                                  enabled: true,
+                                  child: _buildOrderDetailsContent(
+                                    context,
+                                    _getDummyOrderModel(),
+                                  ),
+                                );
                               } else if (state is RequestDetailsFailure) {
                                 return Center(
                                   child: Text('${LocaleKeys.OrderDetails_Error.tr()}: ${state.apiError?.message ?? LocaleKeys.error_SomethingWentWrong.tr()}'),
@@ -171,214 +178,11 @@ class OrderDetailsScreen extends StatelessWidget {
                               } else if (state is RequestDetailsSuccess) {
                                 final order = state.requestsDetailsModel.data;
                                 if (order == null) {
-                                  return Center(child: Text(LocaleKeys.OrderDetails_NotFound.tr()));
+                                  return Center(
+                                      child: Text(
+                                          LocaleKeys.OrderDetails_NotFound.tr()));
                                 }
-                                return SingleChildScrollView(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.paleRed,
-                                          borderRadius: BorderRadius.circular(15),
-                                        ),
-                                        child: Text(
-                                          order.status?.label ?? 'No Status',
-                                          style: const TextStyle(
-                                            color: AppColors.accentRed,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Builder(
-                                        builder: (context) {
-                                          final hasLatLng = order.latitude != null && order.longitude != null;
-                                          final hasAddress = order.address != null && order.address!.trim().isNotEmpty;
-
-                                          String? mapUrl;
-
-                                          if (hasLatLng) {
-                                            mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
-                                                '?center=${order.latitude},${order.longitude}'
-                                                '&zoom=14'
-                                                '&size=600x300'
-                                                '&markers=color:red%7C${order.latitude},${order.longitude}'
-                                                '&key=$googleMapsApiKey';
-                                          } else if (hasAddress) {
-                                            final encodedAddress = Uri.encodeComponent(order.address!);
-                                            mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
-                                                '?center=$encodedAddress'
-                                                '&zoom=14'
-                                                '&size=600x300'
-                                                '&markers=color:red%7C$encodedAddress'
-                                                '&key=$googleMapsApiKey';
-                                          }
-
-                                          return Container(
-                                            height: 180,
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                                            ),
-                                            clipBehavior: Clip.antiAlias,
-                                            child: Stack(
-                                              children: [
-                                                Positioned.fill(
-                                                  child: mapUrl != null
-                                                      ? Image.network(
-                                                    mapUrl,
-                                                    fit: BoxFit.cover,
-                                                    errorBuilder: (context, error, stackTrace) {
-                                                      return Container(
-                                                        color: Colors.grey.shade200,
-                                                        child: const Center(
-                                                          child: Icon(
-                                                            Icons.location_off,
-                                                            size: 50,
-                                                            color: Colors.grey,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  )
-                                                      : Container(
-                                                    color: Colors.grey.shade200,
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        Icons.location_on,
-                                                        size: 50,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      const SizedBox(height: 24),
-                                      _buildSectionTitle(LocaleKeys.OrderDetails_CustomerData.tr()),
-                                      _buildDataContainer([
-                                        _buildDataRow(order.customer ?? '-', LocaleKeys.OrderDetails_Name.tr()),
-                                        _buildDataRow(order.address ?? '-', LocaleKeys.OrderDetails_Address.tr()),
-                                      ]),
-                                      const SizedBox(height: 24),
-                                      _buildSectionTitle(LocaleKeys.OrderDetails_ServiceDetails.tr()),
-                                      _buildDataContainer([
-                                        _buildDataRow(order.products?.map((e) => e.name).join(', ') ?? 'N/A', LocaleKeys.OrderDetails_ServiceType.tr()),
-                                        _buildDataRow('# ORD- ${order.code ?? order.id}', LocaleKeys.OrderDetails_OrderCode.tr()),
-                                        _buildDataRow(
-                                            order.products?.map((e) => '${e.name} (x${e.quantity})').join('\n') ?? 'N/A', LocaleKeys.OrderDetails_Materials.tr()),
-                                        _buildDataRow(order.customerDate ?? order.createdAt ?? 'N/A', LocaleKeys.OrderDetails_ImplementationDate.tr()),
-                                      ]),
-                                      const SizedBox(height: 24),
-                                      if (order.customerNotes != null && order.customerNotes!.isNotEmpty) ...[
-                                        _buildSectionTitle(LocaleKeys.OrderDetails_Notice.tr()),
-                                        Container(
-                                          padding: const EdgeInsets.all(16),
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20),
-                                            border: Border.all(color: Colors.grey.withOpacity(0.1)),
-                                          ),
-                                          child: Text(
-                                            order.customerNotes!,
-                                            style: const TextStyle(fontSize: 13, height: 1.5),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 24),
-                                      ],
-                                      if (order.status?.value == 'order_is_done_from_warehose')
-                                        BlocBuilder<ReceiveOrderCubit, ReceiveOrderState>(
-                                          builder: (context, receiveState) {
-                                            return Column(
-                                              children: [
-                                                _buildActionButton(
-                                                  LocaleKeys.OrderDetails_ReceiveJob.tr(),
-                                                  AppColors.accentRed,
-                                                  isLoading: receiveState is ReceiveOrderLoading,
-                                                  onPressed: () {
-                                                    context.read<ReceiveOrderCubit>().receiveOrder(order.id!);
-                                                  },
-                                                ),
-                                                const SizedBox(height: 12),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      if (order.status?.value == 'received_by_technical')
-                                        BlocBuilder<StartOrderCubit, StartOrderState>(
-                                          builder: (context, startState) {
-                                            return Column(
-                                              children: [
-                                                _buildActionButton(
-                                                  LocaleKeys.OrderDetails_StartJob.tr(),
-                                                  AppColors.accentRed,
-                                                  isLoading: startState is StartOrderLoading,
-                                                  onPressed: () {
-                                                    context.read<StartOrderCubit>().startOrder(order.id!);
-                                                  },
-                                                ),
-                                                const SizedBox(height: 12),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      if (order.status?.value == 'suspended_by_technical')
-                                        BlocBuilder<UnsuspendOrderCubit, UnsuspendOrderState>(
-                                          builder: (context, unsuspendState) {
-                                            return Column(
-                                              children: [
-                                                _buildActionButton(
-                                                  LocaleKeys.OrderDetails_UnsuspendJob.tr(),
-                                                  Colors.green,
-                                                  isLoading: unsuspendState is UnsuspendOrderLoading,
-                                                  onPressed: () {
-                                                    context.read<UnsuspendOrderCubit>().unsuspendOrder(order.id!);
-                                                  },
-                                                ),
-                                                const SizedBox(height: 12),
-                                              ],
-                                            );
-                                          },
-                                        ),
-                                      if (order.status?.value == 'started_by_technical')
-                                        _buildActionButton(
-                                          LocaleKeys.OrderDetails_StatusUpdate.tr(),
-                                          AppColors.accentRed,
-                                          onPressed: () async {
-                                            final result = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => StatusUpdateScreenWrapper(
-                                                  orderId: order.id!,
-                                                  servicesIds: order.products
-                                                      ?.map((e) => e.id)
-                                                      .whereType<int>()
-                                                      .toList() ??
-                                                      [],
-                                                  customerName: order.customer ?? '',
-                                                ),
-                                              ),
-                                            );
-
-                                            if (result == true) {
-                                              context.read<HomeCubit>().getRequestsDetails(requestId);
-                                            }
-                                          },
-                                        ),
-                                      const SizedBox(height: 20),
-                                      const SizedBox(height: 40),
-                                    ],
-                                  ),
-                                );
+                                return _buildOrderDetailsContent(context, order);
                               }
                               return const SizedBox.shrink();
                             },
@@ -438,6 +242,243 @@ class OrderDetailsScreen extends StatelessWidget {
           );
         }),
       ),
+    );
+  }
+
+  Widget _buildOrderDetailsContent(BuildContext context, OrderModel order) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: AppColors.paleRed,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Text(
+              order.status?.label ?? 'No Status',
+              style: const TextStyle(
+                color: AppColors.accentRed,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Builder(
+            builder: (context) {
+              final hasLatLng =
+                  order.latitude != null && order.longitude != null;
+              final hasAddress =
+                  order.address != null && order.address!.trim().isNotEmpty;
+
+              String? mapUrl;
+
+              if (hasLatLng) {
+                mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
+                    '?center=${order.latitude},${order.longitude}'
+                    '&zoom=14'
+                    '&size=600x300'
+                    '&markers=color:red%7C${order.latitude},${order.longitude}'
+                    '&key=$googleMapsApiKey';
+              } else if (hasAddress) {
+                final encodedAddress = Uri.encodeComponent(order.address!);
+                mapUrl = 'https://maps.googleapis.com/maps/api/staticmap'
+                    '?center=$encodedAddress'
+                    '&zoom=14'
+                    '&size=600x300'
+                    '&markers=color:red%7C$encodedAddress'
+                    '&key=$googleMapsApiKey';
+              }
+
+              return Container(
+                height: 180,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: mapUrl != null
+                          ? Image.network(
+                              mapUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey.shade200,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.location_off,
+                                      size: 50,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Container(
+                              color: Colors.grey.shade200,
+                              child: const Center(
+                                child: Icon(
+                                  Icons.location_on,
+                                  size: 50,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          _buildSectionTitle(LocaleKeys.OrderDetails_CustomerData.tr()),
+          _buildDataContainer([
+            _buildDataRow(
+                order.customer ?? '-', LocaleKeys.OrderDetails_Name.tr()),
+            _buildDataRow(
+                order.address ?? '-', LocaleKeys.OrderDetails_Address.tr()),
+          ]),
+          const SizedBox(height: 24),
+          _buildSectionTitle(LocaleKeys.OrderDetails_ServiceDetails.tr()),
+          _buildDataContainer([
+            _buildDataRow(order.products?.map((e) => e.name).join(', ') ?? 'N/A',
+                LocaleKeys.OrderDetails_ServiceType.tr()),
+            _buildDataRow('# ORD- ${order.code ?? order.id}',
+                LocaleKeys.OrderDetails_OrderCode.tr()),
+            _buildDataRow(
+                order.products
+                        ?.map((e) => '${e.name} (x${e.quantity})')
+                        .join('\n') ??
+                    'N/A',
+                LocaleKeys.OrderDetails_Materials.tr()),
+            _buildDataRow(order.customerDate ?? order.createdAt ?? 'N/A',
+                LocaleKeys.OrderDetails_ImplementationDate.tr()),
+          ]),
+          const SizedBox(height: 24),
+          if (order.customerNotes != null && order.customerNotes!.isNotEmpty) ...[
+            _buildSectionTitle(LocaleKeys.OrderDetails_Notice.tr()),
+            Container(
+              padding: const EdgeInsets.all(16),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.grey.withOpacity(0.1)),
+              ),
+              child: Text(
+                order.customerNotes!,
+                style: const TextStyle(fontSize: 13, height: 1.5),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+          if (order.status?.value == 'order_is_done_from_warehose')
+            BlocBuilder<ReceiveOrderCubit, ReceiveOrderState>(
+              builder: (context, receiveState) {
+                return Column(
+                  children: [
+                    _buildActionButton(
+                      LocaleKeys.OrderDetails_ReceiveJob.tr(),
+                      AppColors.accentRed,
+                      isLoading: receiveState is ReceiveOrderLoading,
+                      onPressed: () {
+                        context.read<ReceiveOrderCubit>().receiveOrder(order.id!);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                );
+              },
+            ),
+          if (order.status?.value == 'received_by_technical')
+            BlocBuilder<StartOrderCubit, StartOrderState>(
+              builder: (context, startState) {
+                return Column(
+                  children: [
+                    _buildActionButton(
+                      LocaleKeys.OrderDetails_StartJob.tr(),
+                      AppColors.accentRed,
+                      isLoading: startState is StartOrderLoading,
+                      onPressed: () {
+                        context.read<StartOrderCubit>().startOrder(order.id!);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                );
+              },
+            ),
+          if (order.status?.value == 'suspended_by_technical')
+            BlocBuilder<UnsuspendOrderCubit, UnsuspendOrderState>(
+              builder: (context, unsuspendState) {
+                return Column(
+                  children: [
+                    _buildActionButton(
+                      LocaleKeys.OrderDetails_UnsuspendJob.tr(),
+                      Colors.green,
+                      isLoading: unsuspendState is UnsuspendOrderLoading,
+                      onPressed: () {
+                        context
+                            .read<UnsuspendOrderCubit>()
+                            .unsuspendOrder(order.id!);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                );
+              },
+            ),
+          if (order.status?.value == 'started_by_technical')
+            _buildActionButton(
+              LocaleKeys.OrderDetails_StatusUpdate.tr(),
+              AppColors.accentRed,
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => StatusUpdateScreenWrapper(
+                      orderId: order.id!,
+                      servicesIds: order.products
+                              ?.map((e) => e.id)
+                              .whereType<int>()
+                              .toList() ??
+                          [],
+                      customerName: order.customer ?? '',
+                    ),
+                  ),
+                );
+
+                if (result == true) {
+                  context.read<HomeCubit>().getRequestsDetails(requestId);
+                }
+              },
+            ),
+          const SizedBox(height: 20),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  OrderModel _getDummyOrderModel() {
+    return OrderModel(
+      id: 1,
+      code: 12345,
+      customer: 'Customer Name ' * 2,
+      address: 'Address Details ' * 3,
+      customerDate: '2023-01-01',
+      customerNotes: 'Order notes go here ' * 5,
+      status: StatusModel(label: 'Status Label', value: 'new'),
+      products: [
+        ProductModel(name: 'Product Name', quantity: 1),
+      ],
     );
   }
 

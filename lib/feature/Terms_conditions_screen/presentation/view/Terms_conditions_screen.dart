@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
@@ -83,22 +84,13 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
                       },
                       builder: (context, state) {
                         if (state is TermsAndConditionsLoading) {
-                          return const Center(child: CircularProgressIndicator());
-                        } else if (state is TermsAndConditionsSuccess) {
-                          return SingleChildScrollView(
-                            padding: const EdgeInsets.all(24),
-                            child: Html(
-                              data: _getLocalizedPrivacyText(state),
-                              style: {
-                                'body': Style(
-                                  color: AppColors.black,
-                                  fontSize: FontSize(14),
-                                  fontWeight: FontWeight.normal,
-                                  textAlign: TextAlign.center,
-                                ),
-                              },
-                            ),
+                          return Skeletonizer(
+                            enabled: true,
+                            child: _buildTermsContent(
+                                "This is a dummy text for terms and conditions section. " * 30),
                           );
+                        } else if (state is TermsAndConditionsSuccess) {
+                          return _buildTermsContent(_getLocalizedPrivacyText(state));
                         } else if (state is TermsAndConditionsFailure) {
                           return Center(child: Text(state.message));
                         } else {
@@ -112,6 +104,23 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTermsContent(String htmlData) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Html(
+        data: htmlData,
+        style: {
+          'body': Style(
+            color: AppColors.black,
+            fontSize: FontSize(14),
+            fontWeight: FontWeight.normal,
+            textAlign: TextAlign.center,
+          ),
+        },
       ),
     );
   }

@@ -2,11 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:zoom_provider/generated/locale_keys.g.dart';
 
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../home/data/model/home_model.dart';
 import '../../../home/data/model/request_card_data.dart';
 import '../../../home/presentation/view/store_screen.dart';
 import '../../../home/presentation/view_model/home/home_cubit.dart';
@@ -89,8 +91,12 @@ class NotificationScreen extends StatelessWidget {
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is HomeLoading) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
+                              return Skeletonizer(
+                                enabled: true,
+                                child: _buildNotificationContent(
+                                  context,
+                                  _getDummyHomeModel(),
+                                ),
                               );
                             } else if (state is HomeFailure) {
                               return Center(
@@ -104,42 +110,18 @@ class NotificationScreen extends StatelessWidget {
 
                               if (orders.isEmpty) {
                                 return Center(
-                                  child: Text(LocaleKeys.notifications_no_notifications_found.tr()),
-                                );
-                              }
-
-                              RequestCardData mapToRequestCardData(order) {
-                                return RequestCardData(
-                                  id: order.id,
-                                  code: (order.code ?? order.id ?? '').toString(),
-                                  customerName:
-                                  order.customer?.name ?? 'Unknown Customer',
-                                  address: order.address ?? '',
-                                  date: order.customerDate ?? order.createdAt ?? '',
-                                  note: order.customerNotes ??
-                                      (order.products?.isNotEmpty == true
-                                          ? order.products!.first.name ?? ''
-                                          : ''),
-                                  statusValue: order.status?.value ?? '',
-                                  statusLabel: order.status?.label ?? '',
+                                  child: Text(LocaleKeys
+                                      .notifications_no_notifications_found
+                                      .tr()),
                                 );
                               }
 
                               return RefreshIndicator(
                                 onRefresh: () =>
                                     context.read<HomeCubit>().getHomeData(),
-                                child: ListView.separated(
-                                  padding: const EdgeInsets.all(20),
-                                  itemCount: orders.length,
-                                  separatorBuilder: (_, __) =>
-                                  const SizedBox(height: 12),
-                                  itemBuilder: (context, index) {
-                                    return RequestCard(
-                                      order: mapToRequestCardData(
-                                        orders[index],
-                                      ),
-                                    );
-                                  },
+                                child: _buildNotificationContent(
+                                  context,
+                                  state.homeModel,
                                 ),
                               );
                             }
@@ -154,6 +136,56 @@ class NotificationScreen extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationContent(BuildContext context, HomeModel homeModel) {
+    final orders = homeModel.data ?? [];
+
+    RequestCardData mapToRequestCardData(OrderModel order) {
+      return RequestCardData(
+        id: order.id,
+        code: (order.code ?? order.id ?? '').toString(),
+        customerName: order.customer?.name ?? 'Unknown Customer',
+        address: order.address ?? '',
+        date: order.customerDate ?? order.createdAt ?? '',
+        note: order.customerNotes ??
+            (order.products?.isNotEmpty == true
+                ? order.products!.first.name ?? ''
+                : ''),
+        statusValue: order.status?.value ?? '',
+        statusLabel: order.status?.label ?? '',
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.all(20),
+      itemCount: orders.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        return RequestCard(
+          order: mapToRequestCardData(
+            orders[index],
+          ),
+        );
+      },
+    );
+  }
+
+  HomeModel _getDummyHomeModel() {
+    return HomeModel(
+      data: List.generate(
+        6,
+        (index) => OrderModel(
+          id: index,
+          code: 12345,
+          customer: CustomerModel(name: 'Customer Name ' * 2),
+          address: 'Address Details ' * 3,
+          customerDate: '2023-01-01',
+          customerNotes: 'Order notes go here ' * 5,
+          status: OrderStatusModel(label: 'Status', value: 'new'),
         ),
       ),
     );
