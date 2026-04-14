@@ -5,10 +5,12 @@ import '../model/all_requests_model.dart';
 import '../model/complete_order_model.dart';
 import '../model/completed_paid_model.dart';
 import '../model/home_model.dart';
+import '../model/products_in_orders.dart';
 import '../model/receive_order_model.dart';
 import '../model/requests_details_model.dart';
 import '../model/start_order_model.dart';
 import '../model/suspend_order_model.dart';
+import '../model/suspend_with_goods_returned.dart';
 import '../model/unsuspend_model.dart';
 abstract class HomeDataSources {
   Future<Result<HomeModel>> getHomeData();
@@ -20,4 +22,7 @@ abstract class HomeDataSources {
   Future<Result<UnsuspendOrderModel>> unsuspendOrder(int orderId);
   Future<Result<CompleteOrderModel>> completeOrder(int orderId);
   Future<Result<CompletedPaidModel>> completedPaid(int orderId, FormData body);
+  Future<Result<SuspendWithGoodsReturnedModel>> suspendWithGoodsReturned(int orderId, FormData body);
+  Future<Result<ProductsInOrders>> productsInOrders(int orderId,);
+
 }

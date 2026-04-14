@@ -3,10 +3,12 @@ import 'package:injectable/injectable.dart';
 import 'package:zoom_provider/feature/home/data/model/all_requests_model.dart';
 import 'package:zoom_provider/feature/home/data/model/complete_order_model.dart';
 import 'package:zoom_provider/feature/home/data/model/completed_paid_model.dart';
+import 'package:zoom_provider/feature/home/data/model/products_in_orders.dart';
 import 'package:zoom_provider/feature/home/data/model/receive_order_model.dart';
 import 'package:zoom_provider/feature/home/data/model/requests_details_model.dart';
 import 'package:zoom_provider/feature/home/data/model/start_order_model.dart';
 import 'package:zoom_provider/feature/home/data/model/suspend_order_model.dart';
+import 'package:zoom_provider/feature/home/data/model/suspend_with_goods_returned.dart';
 import 'package:zoom_provider/feature/home/data/model/unsuspend_model.dart';
 
 import '../../../../core/constants/app_values.dart';
@@ -197,6 +199,46 @@ class HomeDataSourcesImp implements HomeDataSources {
 
       case FailureResult<CompletedPaidModel>():
         return FailureResult<CompletedPaidModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<ProductsInOrders>> productsInOrders(int orderId) async{
+    final result = await _apiManager.execute<ProductsInOrders>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.productsInOrders(orderId,auth);
+    });
+
+    switch (result) {
+      case SuccessResult<ProductsInOrders>():
+        return SuccessResult<ProductsInOrders>(result.data);
+
+      case FailureResult<ProductsInOrders>():
+        return FailureResult<ProductsInOrders>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<SuspendWithGoodsReturnedModel>> suspendWithGoodsReturned(int orderId, FormData body) async{
+    final result = await _apiManager.execute<SuspendWithGoodsReturnedModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.suspendWithGoodsReturned(orderId,body,auth);
+    });
+
+    switch (result) {
+      case SuccessResult<SuspendWithGoodsReturnedModel>():
+        return SuccessResult<SuspendWithGoodsReturnedModel>(result.data);
+
+      case FailureResult<SuspendWithGoodsReturnedModel>():
+        return FailureResult<SuspendWithGoodsReturnedModel>(
           exception: result.exception,
           apiError: result.apiError,
         );

@@ -8,10 +8,12 @@ import '../model/all_requests_model.dart';
 import '../model/complete_order_model.dart';
 import '../model/completed_paid_model.dart';
 import '../model/home_model.dart';
+import '../model/products_in_orders.dart';
 import '../model/receive_order_model.dart';
 import '../model/requests_details_model.dart';
 import '../model/start_order_model.dart';
 import '../model/suspend_order_model.dart';
+import '../model/suspend_with_goods_returned.dart';
 import '../model/unsuspend_model.dart';
 part 'home_retrofit_client.g.dart';
 
@@ -75,6 +77,18 @@ abstract class HomeRetrofitClient {
 Future<CompletedPaidModel> completedPaid(
     @Path("order-id") int orderId,
     @Body() FormData body,
+    @Header("Authorization") String token,
+    );
+@POST("orders/{order}/suspend-with-goods-returned")
+Future<SuspendWithGoodsReturnedModel> suspendWithGoodsReturned(
+    @Path("order") int orderId,
+    @Body() FormData body,
+    @Header("Authorization") String token,
+    );
+
+@GET("products-orders/{order}/products")
+Future<ProductsInOrders> productsInOrders(
+    @Path("order") int orderId,
     @Header("Authorization") String token,
     );
 
