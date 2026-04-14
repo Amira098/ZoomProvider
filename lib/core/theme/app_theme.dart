@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_fonts_family.dart';
 
@@ -12,7 +13,7 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.white,
     primaryColor: AppColors.skyBlue[AppColors.colorCode50],
     secondaryHeaderColor: AppColors.black,
-    fontFamily: AppFontsFamily.inter,
+    fontFamily: GoogleFonts.cairo().fontFamily,
     dialogTheme: DialogThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
@@ -26,7 +27,7 @@ class AppTheme {
         fontSize: 32.sp,
       ),
       titleMedium: TextStyle(
-          color: AppColors.tealDark,
+          color: AppColors.black,
           fontWeight: FontWeight.w500,
           fontSize: 20.sp),
       titleSmall: TextStyle(
@@ -42,7 +43,7 @@ class AppTheme {
       bodyLarge: TextStyle(
           color: AppColors.darkRed, fontWeight: FontWeight.w500, fontSize: 18.sp),
       bodyMedium: TextStyle(
-          color: AppColors.tealDark,
+          color: AppColors.black,
           fontWeight: FontWeight.w700,
           fontSize: 25.sp),
       bodySmall: TextStyle(
@@ -54,7 +55,7 @@ class AppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor:
-            WidgetStateProperty.all(AppColors.blue),
+        WidgetStateProperty.all(AppColors.blue),
         foregroundColor: WidgetStateProperty.all(AppColors.white),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
@@ -142,7 +143,7 @@ class AppTheme {
       style: ButtonStyle(
         overlayColor: WidgetStateProperty.all(Colors.transparent),
         foregroundColor:
-            WidgetStateProperty.all(AppColors.blue),
+        WidgetStateProperty.all(AppColors.blue),
         textStyle: WidgetStateProperty.all(
           TextStyle(
             decoration: TextDecoration.underline,
@@ -155,7 +156,7 @@ class AppTheme {
     ),
     navigationBarTheme: NavigationBarThemeData(
       labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-        (Set<WidgetState> states) {
+            (Set<WidgetState> states) {
           if (states.contains(WidgetState.selected)) {
             return TextStyle(
                 color: AppColors.blue,
@@ -175,9 +176,9 @@ class AppTheme {
     ),
     radioTheme: RadioThemeData(
         fillColor:
-            WidgetStatePropertyAll((AppColors.blue)),
+        WidgetStatePropertyAll((AppColors.blue)),
         overlayColor:
-            WidgetStatePropertyAll(AppColors.blue)),
+        WidgetStatePropertyAll(AppColors.blue)),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       elevation: 0,
       selectedItemColor: AppColors.skyBlue[AppColors.colorCode50],
@@ -188,12 +189,12 @@ class AppTheme {
         fontSize: 14.sp,
         color: AppColors.skyBlue[AppColors.colorCode50],
         fontWeight: FontWeight.bold,
-        fontFamily: AppFontsFamily.inter,
+        fontFamily: GoogleFonts.cairo().fontFamily,
       ),
       unselectedLabelStyle: TextStyle(
         fontSize: 14.sp,
         color: AppColors.gray,
-        fontFamily: AppFontsFamily.inter,
+        fontFamily: GoogleFonts.cairo().fontFamily,
       ),
     ),
     tabBarTheme: TabBarThemeData(
@@ -206,7 +207,7 @@ class AppTheme {
         fontSize: 16.sp,
       ),
       unselectedLabelStyle:
-          TextStyle(fontWeight: FontWeight.w400, fontSize: 16.sp),
+      TextStyle(fontWeight: FontWeight.w400, fontSize: 16.sp),
       indicator: UnderlineTabIndicator(
         insets: EdgeInsets.zero,
         borderSide: BorderSide(

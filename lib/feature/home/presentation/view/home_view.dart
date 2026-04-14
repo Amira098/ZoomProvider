@@ -27,12 +27,18 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.surface,
         body: SafeArea(
-          bottom: false,
+
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(
+                height: 20,
+              ),
               Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 20.h),
                 child: Row(
+                  crossAxisAlignment:CrossAxisAlignment.center  ,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       LocaleKeys.Home_welcome.tr(),
@@ -44,25 +50,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     Text('👋', style: TextStyle(fontSize: 24.sp)),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const StoreScreen(),
-                          ),
-                        );
-                      },
-                      child: SvgPicture.asset(
-                        'assets/svg/shopping_cart.svg',
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                        width: 24.w,
-                      ),
-                    ),
+
                   ],
                 ),
               ),
@@ -195,7 +183,7 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 100.h),
               child: EmptyStateWidget(
-                icon: Icons.inbox_outlined,
+                icon: Icons.receipt_long,
                 text: LocaleKeys.Home_no_requests_found.tr(),
               ),
             ),

@@ -165,19 +165,7 @@ abstract class AppColors {
     colorCode100: Color(0xFF080D18),
   });
 
-  static const MaterialColor tealDark = MaterialColor(0xFF086F82, <int, Color>{
-    baseColor: Color(0xFF086F82),
-    colorCode10: Color(0xFF208A99),
-    colorCode20: Color(0xFF39A6B1),
-    colorCode30: Color(0xFF51C1C8),
-    colorCode40: Color(0xFF6ADCE0),
-    colorCode50: Color(0xFF83F7F7),
-    colorCode60: Color(0xFF06636F),
-    colorCode70: Color(0xFF05585D),
-    colorCode80: Color(0xFF044C4B),
-    colorCode90: Color(0xFF034138),
-    colorCode100: Color(0xFF023625),
-  });
+
 
   static const MaterialColor neonGreen = MaterialColor(0xFF31CB00, <int, Color>{
     baseColor: Color(0xFF31CB00),
