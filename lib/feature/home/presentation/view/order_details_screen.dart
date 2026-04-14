@@ -29,55 +29,6 @@ class OrderDetailsScreen extends StatelessWidget {
     super.key,
     required this.requestId,
   });
-
-  Color _getStatusBackgroundColor(String? status) {
-    switch (status) {
-      case 'pending':
-        return Colors.orange.withOpacity(0.15);
-      case 'accepted':
-        return Colors.blue.withOpacity(0.15);
-      case 'started_by_technical':
-        return Colors.green.withOpacity(0.15);
-      case 'completed':
-      case 'completed_unpaid':
-        return Colors.teal.withOpacity(0.15);
-      case 'cancelled':
-        return Colors.red.withOpacity(0.15);
-      case 'suspended':
-        return Colors.brown.withOpacity(0.15);
-      case 'assigned_to_technician':
-        return AppColors.paleBlue2;
-      case 'order_is_done_from_warehose':
-        return AppColors.paleOrange;
-      default:
-        return Colors.grey.withOpacity(0.15);
-    }
-  }
-
-  Color _getStatusTextColor(String? status) {
-    switch (status) {
-      case 'pending':
-        return Colors.orange;
-      case 'accepted':
-        return Colors.blue;
-      case 'started_by_technical':
-        return Colors.green;
-      case 'completed':
-      case 'completed_unpaid':
-        return Colors.teal;
-      case 'cancelled':
-        return Colors.red;
-      case 'suspended':
-        return Colors.brown;
-      case 'assigned_to_technician':
-        return AppColors.primary;
-      case 'order_is_done_from_warehose':
-        return AppColors.orange;
-      default:
-        return Colors.grey;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
