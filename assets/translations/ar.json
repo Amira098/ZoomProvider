@@ -552,6 +552,11 @@
     "error_review_fields": "يرجى مراجعة الحقول المطلوبة",
     "failed_complete": "فشل في إكمال الطلب",
     "failed_suspend": "فشل في تعليق الطلب",
-    "error_note_required": "الملاحظة مطلوبة لهذه الحالة"
+    "error_note_required": "الملاحظة مطلوبة لهذه الحالة",
+    "select_product": "اختر المنتج",
+    "quantity": "الكمية",
+    "product_note": "ملاحظة المنتج",
+    "error_select_product": "يرجى اختيار المنتج",
+    "error_enter_quantity": "يرجى إدخال الكمية"
   }
 }

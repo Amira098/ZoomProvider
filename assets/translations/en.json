@@ -554,6 +554,11 @@
     "error_review_fields": "Please review the required fields",
     "failed_complete": "Failed to complete order",
     "failed_suspend": "Failed to suspend order",
-    "error_note_required": "Note is required for this status"
+    "error_note_required": "Note is required for this status",
+    "select_product": "Select Product",
+    "quantity": "Quantity",
+    "product_note": "Product Note",
+    "error_select_product": "Please select a product",
+    "error_enter_quantity": "Please enter quantity"
   }
 }

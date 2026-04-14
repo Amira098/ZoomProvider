@@ -59,12 +59,16 @@ import 'package:zoom_provider/feature/home/presentation/view_model/completed_pai
     as _i1063;
 import 'package:zoom_provider/feature/home/presentation/view_model/home/home_cubit.dart'
     as _i514;
+import 'package:zoom_provider/feature/home/presentation/view_model/products_in_orders/products_in_orders_cubit.dart'
+    as _i194;
 import 'package:zoom_provider/feature/home/presentation/view_model/receive_order/receive_order_cubit.dart'
     as _i919;
 import 'package:zoom_provider/feature/home/presentation/view_model/start_order/start_order_cubit.dart'
     as _i139;
 import 'package:zoom_provider/feature/home/presentation/view_model/suspend_order/suspend_order_cubit.dart'
     as _i973;
+import 'package:zoom_provider/feature/home/presentation/view_model/suspend_with_goods_returned/suspend_with_goods_returned_cubit.dart'
+    as _i888;
 import 'package:zoom_provider/feature/home/presentation/view_model/unsuspend_order/unsuspend_order_cubit.dart'
     as _i179;
 import 'package:zoom_provider/feature/privacy_policy_screen/data/api/privacy_retrofit_client.dart'
@@ -196,12 +200,17 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i282.CompleteOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i514.HomeCubit>(
         () => _i514.HomeCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i194.ProductsInOrdersCubit>(() =>
+        _i194.ProductsInOrdersCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i919.ReceiveOrderCubit>(
         () => _i919.ReceiveOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i139.StartOrderCubit>(
         () => _i139.StartOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i973.SuspendOrderCubit>(
         () => _i973.SuspendOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i888.SuspendWithGoodsReturnedCubit>(() =>
+        _i888.SuspendWithGoodsReturnedCubit(
+            homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i179.UnsuspendOrderCubit>(
         () => _i179.UnsuspendOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i610.LoginCubit>(

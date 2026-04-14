@@ -519,6 +519,11 @@ abstract class  LocaleKeys {
   static const status_update_failed_complete = 'status_update.failed_complete';
   static const status_update_failed_suspend = 'status_update.failed_suspend';
   static const status_update_error_note_required = 'status_update.error_note_required';
+  static const status_update_select_product = 'status_update.select_product';
+  static const status_update_quantity = 'status_update.quantity';
+  static const status_update_product_note = 'status_update.product_note';
+  static const status_update_error_select_product = 'status_update.error_select_product';
+  static const status_update_error_enter_quantity = 'status_update.error_enter_quantity';
   static const status_update = 'status_update';
 
 }
