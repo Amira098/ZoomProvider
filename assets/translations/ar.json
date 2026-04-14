@@ -46,7 +46,20 @@
     "CreateAccount": "إنشاء حساب",
     "fillInTheForm ": "مرحباً، يرجى ملء النموذج للانتقال إلى التطبيق",
     "PasswordChangedSuccessfully": "تم تغيير كلمة المرور بنجاح!",
-    "LoginSuccess": "تم تسجيل الدخول بنجاح"
+    "LoginSuccess": "تم تسجيل الدخول بنجاح",
+    "Enter6DigitCode": "يرجى إدخال الكود المكون من 6 أرقام",
+    "EnterAndConfirmPassword": "يرجى إدخال كلمة المرور وتأكيدها",
+    "full_name": "الاسم الكامل",
+    "email_address": "البريد الإلكتروني",
+    "phone_number": "رقم الهاتف",
+    "password": "كلمة المرور",
+    "confirm_password": "تأكيد كلمة المرور",
+    "must_be_8_chars": "يجب أن يكون 8 أحرف",
+    "repeat_password": "كرر كلمة المرور",
+    "forgot_password": "نسيت كلمة المرور؟",
+    "full_name_hint": "الاسم بالكامل",
+    "email_hint": "البريد الإلكتروني",
+    "phone_hint": "رقم الهاتف"
   },
   "Profile": {
     "Profile": "الملف الشخصي",
@@ -230,7 +243,11 @@
     "Afterpayment": "بعد إتمام عملية الدفع، سيتم إضافة النقاط إلى رصيدك على الفور."
   },
   "Messages": {
-    "OtpSentToYourEmail": "تم إرسال رمز OTP إلى بريدك الإلكتروني"
+    "OtpSentToYourEmail": "تم إرسال رمز OTP إلى بريدك الإلكتروني",
+    "service_request_success": "تم طلب الخدمة بنجاح",
+    "service_request_failed": "فشل طلب الخدمة",
+    "service_details_error": "خطأ في تحميل تفاصيل الخدمة",
+    "code_resent": "تم إعادة إرسال الرمز"
   },
   "cart": {
     "title": "سلتي",

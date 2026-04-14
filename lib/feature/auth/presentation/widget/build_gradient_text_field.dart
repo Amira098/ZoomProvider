@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_colors.dart';
 
@@ -17,21 +18,21 @@ Widget buildGradientTextField({
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12.r),
     ),
     child: TextFormField(
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hint,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide.none,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
         filled: true,
         fillColor: Colors.transparent,
       ),
-      style: const TextStyle(color: Colors.black),
+      style: TextStyle(color: Colors.black),
     ),
   );
 }

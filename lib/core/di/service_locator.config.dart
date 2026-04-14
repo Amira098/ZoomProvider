@@ -33,6 +33,8 @@ import 'package:zoom_provider/feature/auth/data/data_sources_imp/remote/remote_a
     as _i930;
 import 'package:zoom_provider/feature/auth/data/data_sources_imp/remote/remote_auth_data_source_imp.dart'
     as _i481;
+import 'package:zoom_provider/feature/auth/presentation/view_model/forget_password/forget_password_cubit.dart'
+    as _i171;
 import 'package:zoom_provider/feature/auth/presentation/view_model/login/login_cubit.dart'
     as _i610;
 import 'package:zoom_provider/feature/auth/presentation/view_model/register/register_cubit.dart'
@@ -213,6 +215,8 @@ extension GetItInjectableX on _i174.GetIt {
             homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i179.UnsuspendOrderCubit>(
         () => _i179.UnsuspendOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i171.ForgetPasswordCubit>(
+        () => _i171.ForgetPasswordCubit(gh<_i930.RemoteAuthDataSource>()));
     gh.factory<_i610.LoginCubit>(
         () => _i610.LoginCubit(gh<_i930.RemoteAuthDataSource>()));
     gh.factory<_i954.RegisterCubit>(
