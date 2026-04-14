@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/utils/show_pretty_snack.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class AddressEditingScreen extends StatefulWidget {
@@ -141,12 +142,9 @@ class _AddressEditingScreenState extends State<AddressEditingScreen> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  LocaleKeys.address_saved_success.tr(),
-                                ),
-                              ),
+                            showPrettySnack(
+                              context,
+                              LocaleKeys.address_saved_success.tr(),
                             );
                             Navigator.pop(context);
                           }

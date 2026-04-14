@@ -1,9 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../generated/locale_keys.g.dart';
+import '../utils/pick_localized_dyn.dart';
 
 class ApiError {
-  final Map<String, dynamic>? message;
+  final dynamic message;
   final Map<String, dynamic>? errors;
 
   ApiError({this.message, this.errors});
@@ -18,14 +19,7 @@ class ApiError {
   /// ✅ يرجع الرسالة حسب اللغة الحالية للتطبيق
   String getLocalizedMessage(BuildContext context) {
     if (message == null) return LocaleKeys.general_unexpected_error.tr();
-
-    final currentLocale = EasyLocalization.of(context)?.locale.languageCode;
-
-    if (currentLocale == "ar") {
-      return message?['ar'] ?? LocaleKeys.general_unexpected_error.tr();
-    } else {
-      return message?['en'] ?? LocaleKeys.general_unexpected_error.tr();
-    }
+    return context.getLocalizedMessage(message, fallback: LocaleKeys.general_unexpected_error.tr());
   }
 
 

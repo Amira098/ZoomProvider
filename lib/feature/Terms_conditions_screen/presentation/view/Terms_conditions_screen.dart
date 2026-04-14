@@ -7,6 +7,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/utils/pick_localized_dyn.dart';
+import '../../../../core/utils/show_pretty_snack.dart';
 import '../../../../generated/locale_keys.g.dart';
 import '../view_model/terms-and-conditions/terms_and_conditions_cubit.dart';
 import '../view_model/terms-and-conditions/terms_and_conditions_state.dart';
@@ -78,9 +80,7 @@ class _TermsConditionsScreenState extends State<TermsConditionsScreen> {
                     child: BlocConsumer<TermsAndConditionsCubit, TermsAndConditionsState>(
                       listener: (context, state) {
                         if (state is TermsAndConditionsFailure) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.message)),
-                          );
+                          showPrettySnack(context, state.message, success: false);
                         }
                       },
                       builder: (context, state) {

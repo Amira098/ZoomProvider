@@ -7,6 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:zoom_provider/generated/locale_keys.g.dart';
 
+import '../../../../core/utils/pick_localized_dyn.dart';
+import '../../../../core/utils/show_pretty_snack.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../app_section/presentation/view/app_section.dart';
 import '../../data/model/products_in_orders.dart';
@@ -69,14 +71,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
   }
 
   void _showMessage(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    showPrettySnack(context, message, success: !isError);
   }
 
   void _navigateToMainLayout() {
@@ -220,7 +215,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
               _navigateToMainLayout();
             } else if (state is CompleteOrderFailure) {
               _showMessage(
-                state.apiError?.message.toString() ??
+                state.apiError?.getLocalizedMessage(context) ??
                     LocaleKeys.status_update_failed_complete.tr(),
                 isError: true,
               );
@@ -234,7 +229,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
               _navigateToMainLayout();
             } else if (state is SuspendOrderFailure) {
               _showMessage(
-                state.apiError?.message.toString() ??
+                state.apiError?.getLocalizedMessage(context) ??
                     LocaleKeys.status_update_failed_suspend.tr(),
                 isError: true,
               );
@@ -244,8 +239,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
         BlocListener<CompletedPaidCubit, CompletedPaidState>(
           listener: (context, state) {
             if (state is CompletedPaidSuccess) {
-              final successMessage = state.data.message?.toString() ??
-                  LocaleKeys.status_update_success_payment.tr();
+              final successMessage = state.data.getLocalizedMessage(context);
               _showMessage(successMessage);
               _navigateToMainLayout();
             } else if (state is CompletedPaidFailure) {
@@ -261,7 +255,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
               _navigateToMainLayout();
             } else if (state is SuspendWithGoodsReturnedFailure) {
               _showMessage(
-                state.apiError?.message.toString() ??
+                state.apiError?.getLocalizedMessage(context) ??
                     LocaleKeys.status_update_failed_suspend.tr(),
                 isError: true,
               );
@@ -485,7 +479,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                     return Center(
                                                         child: Text(state
                                                                 .apiError
-                                                                ?.message.toString() ??
+                                                                ?.getLocalizedMessage(context) ??
                                                             "Error loading products"));
                                                   }
                                                   return const SizedBox.shrink();

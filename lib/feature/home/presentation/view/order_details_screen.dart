@@ -21,6 +21,7 @@ import '../view_model/start_order/start_order_cubit.dart';
 import '../view_model/start_order/start_order_state.dart';
 import '../view_model/unsuspend_order/unsuspend_order_cubit.dart';
 import '../view_model/unsuspend_order/unsuspend_order_state.dart';
+import '../../../../core/utils/show_pretty_snack.dart';
 import 'status_update_screen.dart';
 import 'store_screen.dart';
 
@@ -128,36 +129,39 @@ class OrderDetailsScreen extends StatelessWidget {
                             BlocListener<ReceiveOrderCubit, ReceiveOrderState>(
                               listener: (context, state) {
                                 if (state is ReceiveOrderSuccess) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(LocaleKeys.OrderDetails_ReceivedSuccess.tr())));
+                                  showPrettySnack(context, LocaleKeys.OrderDetails_ReceivedSuccess.tr());
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is ReceiveOrderFailure) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message.toString() ?? LocaleKeys.OrderDetails_FailedReceive.tr())));
+                                  showPrettySnack(
+                                      context,
+                                      state.apiError?.getLocalizedMessage(context) ?? LocaleKeys.OrderDetails_FailedReceive.tr(),
+                                      success: false);
                                 }
                               },
                             ),
                             BlocListener<StartOrderCubit, StartOrderState>(
                               listener: (context, state) {
                                 if (state is StartOrderSuccess) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(LocaleKeys.OrderDetails_StartedSuccess.tr())));
+                                  showPrettySnack(context, LocaleKeys.OrderDetails_StartedSuccess.tr());
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is StartOrderFailure) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message.toString() ?? LocaleKeys.OrderDetails_FailedStart.tr())));
+                                  showPrettySnack(
+                                      context,
+                                      state.apiError?.getLocalizedMessage(context) ?? LocaleKeys.OrderDetails_FailedStart.tr(),
+                                      success: false);
                                 }
                               },
                             ),
                             BlocListener<UnsuspendOrderCubit, UnsuspendOrderState>(
                               listener: (context, state) {
                                 if (state is UnsuspendOrderSuccess) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(LocaleKeys.OrderDetails_UnsuspendedSuccess.tr())));
+                                  showPrettySnack(context, LocaleKeys.OrderDetails_UnsuspendedSuccess.tr());
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is UnsuspendOrderFailure) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message.toString() ?? LocaleKeys.OrderDetails_FailedUnsuspend.tr())));
+                                  showPrettySnack(
+                                      context,
+                                      state.apiError?.getLocalizedMessage(context) ?? LocaleKeys.OrderDetails_FailedUnsuspend.tr(),
+                                      success: false);
                                 }
                               },
                             ),
@@ -174,7 +178,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                 );
                               } else if (state is RequestDetailsFailure) {
                                 return Center(
-                                  child: Text('${LocaleKeys.OrderDetails_Error.tr()}: ${state.apiError?.message ?? LocaleKeys.error_SomethingWentWrong.tr()}'),
+                                  child: Text('${LocaleKeys.OrderDetails_Error.tr()}: ${state.apiError?.getLocalizedMessage(context) ?? LocaleKeys.error_SomethingWentWrong.tr()}'),
                                 );
                               } else if (state is RequestDetailsSuccess) {
                                 final order = state.requestsDetailsModel.data;

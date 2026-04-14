@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide NavigationBar;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/utils/pick_localized_dyn.dart';
 import '../../../../core/utils/show_pretty_snack.dart';
 import '../../../../generated/locale_keys.g.dart';
 import '../../../app_section/presentation/view/app_section.dart';
@@ -54,8 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   showPrettySnack(
                     context,
                     success: true,
-                    state.loginModel.message?.toString() ??
-                        LocaleKeys.Authentication_LoginSuccess.tr(),
+                    context.getLocalizedMessage(state.loginModel.message, fallback: LocaleKeys.Authentication_LoginSuccess.tr()),
                   );
 
                   Navigator.pushAndRemoveUntil(
@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   showPrettySnack(
                     context,
                     success: false,
-                    state.apiError?.message?.toString() ??
+                    state.apiError?.getLocalizedMessage(context) ??
                         state.exception?.toString() ??
                         LocaleKeys.Authentication_LoginFailed.tr(),
                   );

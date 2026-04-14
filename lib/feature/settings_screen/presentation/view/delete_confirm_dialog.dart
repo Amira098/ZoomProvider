@@ -3,6 +3,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/utils/pick_localized_dyn.dart';
+import '../../../../core/utils/show_pretty_snack.dart';
 import '../../../../generated/locale_keys.g.dart';
 import '../../../auth/presentation/view/login_screen.dart';
 import '../../../auth/presentation/view/sign_up.dart';
@@ -34,11 +36,10 @@ class _DeleteConfirmDialogState extends State<DeleteConfirmDialog> {
             );
           } else if (state is DeleteError) {
             if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.apiError!.message.toString()),
-                  backgroundColor: Colors.redAccent,
-                ),
+              showPrettySnack(
+                context,
+                state.apiError?.getLocalizedMessage(context) ?? LocaleKeys.general_unexpected_error.tr(),
+                success: false,
               );
             }
           }

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_values.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/utils/app_shared_preference.dart';
+import '../../../../core/utils/pick_localized_dyn.dart';
 import '../../../../core/utils/show_pretty_snack.dart';
 import '../../../../core/utils/utils/customTextField.dart';
 import '../../../../generated/locale_keys.g.dart';
@@ -170,16 +171,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           setState(() => _saving = false);
                           showPrettySnack(
                             context,
-                            state.profileData.message?.en.toString() ??
-                                state.profileData.message?.ar.toString() ??
-                                '',
+                            context.getLocalizedMessage(state.profileData.message),
                           );
                         } else if (state is ProfileUpdateFailure) {
                           if (!mounted) return;
                           setState(() => _saving = false);
                           showPrettySnack(
                             context,
-                            state.apiError?.message.toString() ??
+                            state.apiError?.getLocalizedMessage(context) ??
                                 LocaleKeys.error_SomethingWentWrong.tr(),
                             success: false,
                           );
