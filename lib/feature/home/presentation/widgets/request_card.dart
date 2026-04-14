@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zoom_provider/feature/home/presentation/view/order_details_screen.dart';
 import 'package:zoom_provider/generated/locale_keys.g.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -59,11 +60,11 @@ class RequestCard extends StatelessWidget {
     final statusTextColor = _getStatusTextColor(order.statusValue);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: AppColors.primaryLight.withOpacity(0.3),
         ),
@@ -76,26 +77,26 @@ class RequestCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   '# ORD- ${order.code}',
-                  style: const TextStyle(
-                    fontSize: 12,
+                  style: TextStyle(
+                    fontSize: 12.sp,
                     color: Colors.grey,
                   ),
                 ),
               ),
               if (order.statusLabel.isNotEmpty)
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8.w,
+                    vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
                   child: Text(
                     order.statusLabel,
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 10.sp,
                       color: statusTextColor,
                       fontWeight: FontWeight.bold,
                     ),
@@ -103,44 +104,44 @@ class RequestCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             order.customerName,
-            style: const TextStyle(
-              fontSize: 18,
+            style: TextStyle(
+              fontSize: 18.sp,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
           if (order.address.isNotEmpty) ...[
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               order.address,
-              style: const TextStyle(
-                fontSize: 12,
+              style: TextStyle(
+                fontSize: 12.sp,
                 color: Colors.grey,
               ),
             ),
           ],
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             order.date,
-            style: const TextStyle(
-              fontSize: 12,
+            style: TextStyle(
+              fontSize: 12.sp,
               color: Colors.grey,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             order.note,
-            style: const TextStyle(
-              fontSize: 12,
+            style: TextStyle(
+              fontSize: 12.sp,
               color: Colors.black87,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Row(
             children: [
               const Spacer(),
@@ -160,19 +161,19 @@ class RequestCard extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.accentRed,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 8,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 8.h,
                   ),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
                 child: Text(
                   LocaleKeys.Home_view_details.tr(),
-                  style: const TextStyle(fontSize: 12),
+                  style: TextStyle(fontSize: 12.sp),
                 ),
               ),
             ],

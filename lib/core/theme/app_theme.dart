@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_fonts_family.dart';
 
@@ -18,25 +19,34 @@ class AppTheme {
       ),
       backgroundColor: AppColors.white,
     ),
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       titleLarge: TextStyle(
-          color: AppColors.navy ,fontWeight: FontWeight.w700, fontSize: 32,),
+        color: AppColors.navy,
+        fontWeight: FontWeight.w700,
+        fontSize: 32.sp,
+      ),
       titleMedium: TextStyle(
-          color: AppColors.tealDark, fontWeight: FontWeight.w500, fontSize: 20),
+          color: AppColors.tealDark,
+          fontWeight: FontWeight.w500,
+          fontSize: 20.sp),
       titleSmall: TextStyle(
-          color: AppColors.black, fontWeight: FontWeight.w400, fontSize: 20),
+          color: AppColors.black, fontWeight: FontWeight.w400, fontSize: 20.sp),
       labelLarge: TextStyle(
-          color: AppColors.darkskyBlue, fontWeight: FontWeight.w500, fontSize: 24),
+          color: AppColors.darkskyBlue,
+          fontWeight: FontWeight.w500,
+          fontSize: 24.sp),
       labelMedium: TextStyle(
-          color: AppColors.rose, fontWeight: FontWeight.w500, fontSize: 12),
+          color: AppColors.rose, fontWeight: FontWeight.w500, fontSize: 12.sp),
       labelSmall: TextStyle(
-          color: AppColors.black, fontWeight: FontWeight.w700, fontSize: 12),
+          color: AppColors.black, fontWeight: FontWeight.w700, fontSize: 12.sp),
       bodyLarge: TextStyle(
-          color: AppColors.darkRed, fontWeight: FontWeight.w500, fontSize: 18),
+          color: AppColors.darkRed, fontWeight: FontWeight.w500, fontSize: 18.sp),
       bodyMedium: TextStyle(
-          color: AppColors.tealDark, fontWeight: FontWeight.w700, fontSize: 25),
+          color: AppColors.tealDark,
+          fontWeight: FontWeight.w700,
+          fontSize: 25.sp),
       bodySmall: TextStyle(
-          color: AppColors.grey500, fontWeight: FontWeight.w400, fontSize: 14),
+          color: AppColors.grey500, fontWeight: FontWeight.w400, fontSize: 14.sp),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
       color: AppColors.blue,
@@ -53,75 +63,77 @@ class AppTheme {
         ),
         elevation: WidgetStateProperty.all(0),
         textStyle: WidgetStateProperty.all(
-          const TextStyle(
+          TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 16,
+            fontSize: 16.sp,
             color: AppColors.white,
           ),
         ),
         padding: WidgetStateProperty.all(
-          const EdgeInsets.all(14),
+          EdgeInsets.all(14.w),
         ),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
-      errorStyle: const TextStyle(color: AppColors.grey300, fontSize: 8
-      ,fontStyle: FontStyle.italic),
-      contentPadding: const EdgeInsets.all(16),
+      errorStyle: TextStyle(
+          color: AppColors.grey300,
+          fontSize: 8.sp,
+          fontStyle: FontStyle.italic),
+      contentPadding: EdgeInsets.all(16.w),
       iconColor: AppColors.blue,
       hintStyle: TextStyle(
         color: AppColors.black26,
-        fontSize: 14,
+        fontSize: 14.sp,
       ),
       prefixIconColor: AppColors.black,
       suffixIconColor: AppColors.black,
       labelStyle: TextStyle(
-        fontSize: 12,
+        fontSize: 12.sp,
         color: AppColors.black38,
       ),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(4.r),
         borderSide: const BorderSide(
           width: 1,
           color: AppColors.black,
         ),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(4.r),
         borderSide: const BorderSide(
           width: 1,
           color: AppColors.black,
         ),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(4.r),
         borderSide: const BorderSide(
           width: 1,
           color: AppColors.black,
         ),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(4.r),
         borderSide: const BorderSide(
           width: 1,
           color: AppColors.red,
         ),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(4.r),
         borderSide: const BorderSide(
           width: 1,
           color: AppColors.red,
         ),
       ),
     ),
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.white,
       foregroundColor: AppColors.black,
       surfaceTintColor: AppColors.white,
       elevation: 0,
       titleTextStyle: TextStyle(
-        fontSize: 20,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w500,
         color: AppColors.black,
       ),
@@ -132,10 +144,10 @@ class AppTheme {
         foregroundColor:
             WidgetStateProperty.all(AppColors.blue),
         textStyle: WidgetStateProperty.all(
-          const TextStyle(
+          TextStyle(
             decoration: TextDecoration.underline,
             fontWeight: FontWeight.w400,
-            fontSize: 16,
+            fontSize: 16.sp,
             color: AppColors.white,
           ),
         ),
@@ -173,13 +185,13 @@ class AppTheme {
       showUnselectedLabels: true,
       unselectedItemColor: AppColors.gray,
       selectedLabelStyle: TextStyle(
-        fontSize: 14,
+        fontSize: 14.sp,
         color: AppColors.skyBlue[AppColors.colorCode50],
         fontWeight: FontWeight.bold,
         fontFamily: AppFontsFamily.inter,
       ),
       unselectedLabelStyle: TextStyle(
-        fontSize: 14,
+        fontSize: 14.sp,
         color: AppColors.gray,
         fontFamily: AppFontsFamily.inter,
       ),
@@ -190,28 +202,28 @@ class AppTheme {
       unselectedLabelColor: AppColors.white,
       dividerColor: Colors.transparent,
       labelStyle: TextStyle(
-          fontWeight: FontWeight.w400,
-          fontSize: 16,
-        ),
+        fontWeight: FontWeight.w400,
+        fontSize: 16.sp,
+      ),
       unselectedLabelStyle:
-          TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+          TextStyle(fontWeight: FontWeight.w400, fontSize: 16.sp),
       indicator: UnderlineTabIndicator(
         insets: EdgeInsets.zero,
-        borderSide:
-            BorderSide(width: 3, color: AppColors.skyBlue[AppColors.colorCode50]!),
+        borderSide: BorderSide(
+            width: 3.w, color: AppColors.skyBlue[AppColors.colorCode50]!),
       ),
-      labelPadding: const EdgeInsets.only(right: 24),
+      labelPadding: EdgeInsets.only(right: 24.w),
       tabAlignment: TabAlignment.start,
     ),
-    bottomSheetTheme: const BottomSheetThemeData(
+    bottomSheetTheme: BottomSheetThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+          topLeft: Radius.circular(24.r),
+          topRight: Radius.circular(24.r),
         ),
       ),
       backgroundColor: AppColors.white,
-      dragHandleSize: Size(80, 4),
+      dragHandleSize: Size(80.w, 4.h),
       dragHandleColor: AppColors.black,
       showDragHandle: true,
       elevation: 0,

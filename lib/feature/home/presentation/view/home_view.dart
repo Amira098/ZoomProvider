@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -29,19 +30,19 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 20.h),
                 child: Row(
                   children: [
                     Text(
                       LocaleKeys.Home_welcome.tr(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 28,
+                        fontSize: 28.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    const Text('👋', style: TextStyle(fontSize: 24)),
+                    SizedBox(width: 8.w),
+                    Text('👋', style: TextStyle(fontSize: 24.sp)),
                     const Spacer(),
                     GestureDetector(
                       onTap: () {
@@ -58,7 +59,7 @@ class HomeScreen extends StatelessWidget {
                           Colors.white,
                           BlendMode.srcIn,
                         ),
-                        width: 24,
+                        width: 24.w,
                       ),
                     ),
                   ],
@@ -67,17 +68,17 @@ class HomeScreen extends StatelessWidget {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.scaffoldBackground,
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                      topLeft: Radius.circular(30.r),
+                      topRight: Radius.circular(30.r),
                     ),
                   ),
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30.r),
+                      topRight: Radius.circular(30.r),
                     ),
                     child: Stack(
                       children: [
@@ -147,26 +148,26 @@ class HomeScreen extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       physics: const AlwaysScrollableScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 25),
+          SizedBox(height: 25.h),
           StatisticsSection(
             stats: homeModel.stats,
           ),
-          const SizedBox(height: 25),
+          SizedBox(height: 25.h),
           if (newOrders.isNotEmpty) ...[
             Text(
               LocaleKeys.Home_new_requests.tr(),
-              style: const TextStyle(
-                fontSize: 20,
+              style: TextStyle(
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             ...newOrders.map(
               (order) => RequestCard(
                 order: mapToRequestCardData(order),
@@ -174,15 +175,15 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
           if (completedOrders.isNotEmpty) ...[
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Text(
               LocaleKeys.Home_completed_today.tr(),
-              style: const TextStyle(
-                fontSize: 20,
+              style: TextStyle(
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             ...completedOrders.map(
               (order) => RequestCard(
                 order: mapToRequestCardData(order),
@@ -192,7 +193,7 @@ class HomeScreen extends StatelessWidget {
           if (orders.isEmpty)
             Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 40),
+                padding: EdgeInsets.only(top: 40.h),
                 child: Text(LocaleKeys.Home_no_requests_found.tr()),
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -35,8 +36,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           SafeArea(
             bottom: false,
             child: Container(
-              height: 70,
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+              height: 70.h,
+              padding: EdgeInsets.symmetric(horizontal: 18.w),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -49,9 +50,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                   ),
                   Text(
                     LocaleKeys.privacyPolicy_title.tr(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -62,11 +63,11 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           Expanded(
             child: Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Color(0xffF6F6F6),
+              decoration: BoxDecoration(
+                color: const Color(0xffF6F6F6),
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
+                  topLeft: Radius.circular(30.r),
+                  topRight: Radius.circular(30.r),
                 ),
               ),
               child: Stack(
@@ -115,13 +116,13 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
 
   Widget _buildPrivacyContent(String htmlData) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.w),
       child: Html(
         data: htmlData,
         style: {
           'body': Style(
             color: AppColors.black,
-            fontSize: FontSize(14),
+            fontSize: FontSize(14.sp),
             fontWeight: FontWeight.normal,
             textAlign: TextAlign.center,
           ),

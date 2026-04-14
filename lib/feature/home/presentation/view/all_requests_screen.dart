@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../generated/locale_keys.g.dart';
@@ -53,7 +54,7 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+      padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 20.h),
       child: Row(
         children: [
           IconButton(
@@ -70,9 +71,9 @@ class _Header extends StatelessWidget {
             child: Text(
               LocaleKeys.general_all_requests.tr(),
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -92,7 +93,7 @@ class _Header extends StatelessWidget {
                 Colors.white,
                 BlendMode.srcIn,
               ),
-              width: 24,
+              width: 24.w,
             ),
           ),
         ],
@@ -109,17 +110,17 @@ class _Body extends StatelessWidget {
     return Expanded(
       child: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.scaffoldBackground,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+            topLeft: Radius.circular(30.r),
+            topRight: Radius.circular(30.r),
           ),
         ),
         child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.r),
+            topRight: Radius.circular(30.r),
           ),
           child: Stack(
             children: [
@@ -172,9 +173,9 @@ class _Body extends StatelessWidget {
   Widget _buildListContent(BuildContext context, AllRequestsModel model) {
     final orders = model.data ?? [];
     return ListView.separated(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.w),
       itemCount: orders.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, __) => SizedBox(height: 12.h),
       itemBuilder: (context, index) {
         final item = orders[index];
 
@@ -224,8 +225,8 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.inbox_outlined, size: 60, color: Colors.grey),
-          const SizedBox(height: 10),
+          Icon(Icons.inbox_outlined, size: 60.sp, color: Colors.grey),
+          SizedBox(height: 10.h),
           Text(
             LocaleKeys.Home_no_requests_found.tr(),
             style: const TextStyle(color: Colors.grey),

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
@@ -42,9 +43,9 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
         centerTitle: true,
         title: Text(
           LocaleKeys.about_us_title.tr(),
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.black87,
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -110,13 +111,13 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
 
   Widget _buildAboutContent(String htmlData) {
     return Padding(
-      padding: const EdgeInsets.only(top: 90, left: 20, right: 20),
+      padding: EdgeInsets.only(top: 90.h, left: 20.w, right: 20.w),
       child: Column(
         children: [
           Divider(
             color: AppColors.grey500.withOpacity(0.5),
-            thickness: 4,
-            radius: BorderRadius.circular(20),
+            thickness: 4.h,
+            radius: BorderRadius.circular(20.r),
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.8,
@@ -126,7 +127,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                 style: {
                   'body': Style(
                     color: AppColors.black,
-                    fontSize: FontSize(14),
+                    fontSize: FontSize(14.sp),
                     fontWeight: FontWeight.normal,
                   ),
                 },

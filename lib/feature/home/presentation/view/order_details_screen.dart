@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:zoom_provider/feature/home/presentation/view/status_updates_screen_wrapper.dart';
@@ -206,13 +207,13 @@ class OrderDetailsScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: 16.sp,
               fontWeight: FontWeight.w500,
               color: Colors.grey,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
         ],
       ),
     );
@@ -222,7 +223,7 @@ class OrderDetailsScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: Colors.grey.withOpacity(0.1)),
       ),
       child: Column(
@@ -232,11 +233,11 @@ class OrderDetailsScreen extends StatelessWidget {
               rows[index],
               if (index < rows.length - 1)
                 Divider(
-                  height: 1,
-                  thickness: 1,
+                  height: 1.h,
+                  thickness: 1.h,
                   color: Colors.grey.withOpacity(0.1),
-                  indent: 16,
-                  endIndent: 16,
+                  indent: 16.w,
+                  endIndent: 16.w,
                 ),
             ],
           );
@@ -484,24 +485,24 @@ class OrderDetailsScreen extends StatelessWidget {
 
   Widget _buildDataRow(String value, String label) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                fontSize: 13,
+              style: TextStyle(
+                fontSize: 13.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: 12.w),
           Text(
             label,
-            style: const TextStyle(
-              fontSize: 13,
+            style: TextStyle(
+              fontSize: 13.sp,
               color: Colors.grey,
             ),
           ),
@@ -511,11 +512,11 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildActionButton(
-      String label,
-      Color color, {
-        VoidCallback? onPressed,
-        bool isLoading = false,
-      }) {
+    String label,
+    Color color, {
+    VoidCallback? onPressed,
+    bool isLoading = false,
+  }) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -523,28 +524,28 @@ class OrderDetailsScreen extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.symmetric(vertical: 16.h),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.r),
           ),
           elevation: 0,
         ),
         child: isLoading
-            ? const SizedBox(
-          height: 20,
-          width: 20,
-          child: CircularProgressIndicator(
-            color: Colors.white,
-            strokeWidth: 2,
-          ),
-        )
+            ? SizedBox(
+                height: 20.h,
+                width: 20.w,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.w,
+                ),
+              )
             : Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+                label,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
       ),
     );
   }
