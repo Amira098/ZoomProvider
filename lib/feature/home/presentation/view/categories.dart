@@ -75,9 +75,9 @@ class CategoriesScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        child: const _CategoryGridItem(
+                        child: _CategoryGridItem(
                           image: 'assets/svg/candle_change.png',
-                          title: 'Candle change',
+                          title: LocaleKeys.Home_candle_change.tr(),
                         ),
                       );
                     },

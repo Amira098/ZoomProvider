@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -62,11 +64,11 @@ class _Header extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
-              'All requests',
+              LocaleKeys.general_all_requests.tr(),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -132,7 +134,7 @@ class _Body extends StatelessWidget {
                     return Center(
                       child: Text(
                         state.apiError?.message?.toString() ??
-                            'Something went wrong',
+                            LocaleKeys.error_SomethingWentWrong.tr(),
                       ),
                     );
                   }
@@ -191,15 +193,15 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.inbox_outlined, size: 60, color: Colors.grey),
-          SizedBox(height: 10),
+          const Icon(Icons.inbox_outlined, size: 60, color: Colors.grey),
+          const SizedBox(height: 10),
           Text(
-            'No requests found',
-            style: TextStyle(color: Colors.grey),
+            LocaleKeys.Home_no_requests_found.tr(),
+            style: const TextStyle(color: Colors.grey),
           ),
         ],
       ),

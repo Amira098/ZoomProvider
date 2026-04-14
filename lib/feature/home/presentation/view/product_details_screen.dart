@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../../../../generated/locale_keys.g.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
@@ -41,9 +43,9 @@ class ProductDetailsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Text(
-                    "Product details",
-                    style: TextStyle(
+                  Text(
+                    LocaleKeys.product_details_title.tr(),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
@@ -110,9 +112,9 @@ class ProductDetailsScreen extends StatelessWidget {
                           color: Colors.grey.shade300,
                         ),
                         const SizedBox(height: 16),
-                        const Text(
-                          "Description",
-                          style: TextStyle(
+                        Text(
+                          LocaleKeys.product_details_description.tr(),
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                             color: Color(0xff1E1E1E),
@@ -138,11 +140,11 @@ class ProductDetailsScreen extends StatelessWidget {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(Icons.refresh, size: 14, color: Color(0xffF3212D)),
-                              SizedBox(width: 4),
-                              Text("Renew every 6 months",
-                                  style: TextStyle(
+                            children: [
+                              const Icon(Icons.refresh, size: 14, color: Color(0xffF3212D)),
+                              const SizedBox(width: 4),
+                              Text(LocaleKeys.Home_renew_hint.tr(),
+                                  style: const TextStyle(
                                       color: Color(0xffF3212D),
                                       fontSize: 10,
                                       fontWeight: FontWeight.w700)),
@@ -175,9 +177,9 @@ class ProductDetailsScreen extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "Price",
-                                  style: TextStyle(
+                                Text(
+                                  LocaleKeys.product_details_price.tr(),
+                                  style: const TextStyle(
                                     fontSize: 13,
                                     color: Color(0xff8A8F98),
                                   ),
@@ -201,10 +203,10 @@ class ProductDetailsScreen extends StatelessWidget {
                                   color: const Color(0xffF3212D),
                                   borderRadius: BorderRadius.circular(18),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Text(
-                                    "Add to cart",
-                                    style: TextStyle(
+                                    LocaleKeys.product_details_add_to_cart.tr(),
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,

@@ -68,20 +68,20 @@ class ProductsScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ProductDetailsScreen(
+                          builder: (context) => ProductDetailsScreen(
                             imagePath:
                                 'assets/svg/candle_change.png',
-                            title: 'Premium Candle Set',
+                            title: LocaleKeys.Home_premium_candle_set.tr(),
                             description:
-                                'Commodi quia error accusantium ex assumenda. Provident rerum sequi ex ea qui consequatur est quam asperiores. Facere fuga ut accusamus voluptatibus et repudiandae ea nostrum odit. Quidem nam et veniam iste.',
+                                LocaleKeys.product_candle_description.tr(),
                           ),
                         ),
                       );
                     },
-                    child: const _ProductGridCard(
+                    child: _ProductGridCard(
                       image:
                           'assets/svg/candle_change.png',
-                      title: 'Premium Candle Set',
+                      title: LocaleKeys.Home_premium_candle_set.tr(),
                     ),
                   );
                 },
@@ -210,10 +210,10 @@ class _ProductGridCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text("3-piece PP cotton + carbon + UF membrane",
+                Text(LocaleKeys.product_candle_description.tr(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 8, color: Color(0xff8A8A8A))),
+                    style: const TextStyle(fontSize: 8, color: Color(0xff8A8A8A))),
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

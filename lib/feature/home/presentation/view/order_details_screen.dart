@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zoom_provider/feature/home/presentation/view/status_updates_screen_wrapper.dart';
+import 'package:zoom_provider/generated/locale_keys.g.dart';
 
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -113,11 +115,11 @@ class OrderDetailsScreen extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Order details',
+                        LocaleKeys.OrderDetails_Title.tr(),
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -174,11 +176,11 @@ class OrderDetailsScreen extends StatelessWidget {
                               listener: (context, state) {
                                 if (state is ReceiveOrderSuccess) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Order received successfully')));
+                                      SnackBar(content: Text(LocaleKeys.OrderDetails_ReceivedSuccess.tr())));
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is ReceiveOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message.toString() ?? 'Failed to receive order')));
+                                      content: Text(state.apiError?.message.toString() ?? LocaleKeys.OrderDetails_FailedReceive.tr())));
                                 }
                               },
                             ),
@@ -186,11 +188,11 @@ class OrderDetailsScreen extends StatelessWidget {
                               listener: (context, state) {
                                 if (state is StartOrderSuccess) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Order started successfully')));
+                                      SnackBar(content: Text(LocaleKeys.OrderDetails_StartedSuccess.tr())));
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is StartOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message.toString() ?? 'Failed to start order')));
+                                      content: Text(state.apiError?.message.toString() ?? LocaleKeys.OrderDetails_FailedStart.tr())));
                                 }
                               },
                             ),
@@ -198,11 +200,11 @@ class OrderDetailsScreen extends StatelessWidget {
                               listener: (context, state) {
                                 if (state is UnsuspendOrderSuccess) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Order unsuspended successfully')));
+                                      SnackBar(content: Text(LocaleKeys.OrderDetails_UnsuspendedSuccess.tr())));
                                   context.read<HomeCubit>().getRequestsDetails(requestId);
                                 } else if (state is UnsuspendOrderFailure) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(state.apiError?.message .toString()?? 'Failed to unsuspend order')));
+                                      content: Text(state.apiError?.message.toString() ?? LocaleKeys.OrderDetails_FailedUnsuspend.tr())));
                                 }
                               },
                             ),
@@ -213,12 +215,12 @@ class OrderDetailsScreen extends StatelessWidget {
                                 return const Center(child: CircularProgressIndicator());
                               } else if (state is RequestDetailsFailure) {
                                 return Center(
-                                  child: Text('Error: ${state.apiError?.message ?? "Something went wrong"}'),
+                                  child: Text('${LocaleKeys.OrderDetails_Error.tr()}: ${state.apiError?.message ?? LocaleKeys.error_SomethingWentWrong.tr()}'),
                                 );
                               } else if (state is RequestDetailsSuccess) {
                                 final order = state.requestsDetailsModel.data;
                                 if (order == null) {
-                                  return const Center(child: Text('Order not found'));
+                                  return Center(child: Text(LocaleKeys.OrderDetails_NotFound.tr()));
                                 }
                                 return SingleChildScrollView(
                                   padding: const EdgeInsets.all(20),
@@ -310,23 +312,23 @@ class OrderDetailsScreen extends StatelessWidget {
                                         },
                                       ),
                                       const SizedBox(height: 24),
-                                      _buildSectionTitle('Customer data'),
+                                      _buildSectionTitle(LocaleKeys.OrderDetails_CustomerData.tr()),
                                       _buildDataContainer([
-                                        _buildDataRow(order.customer ?? '-', 'Name'),
-                                        _buildDataRow(order.address ?? '-', 'Address'),
+                                        _buildDataRow(order.customer ?? '-', LocaleKeys.OrderDetails_Name.tr()),
+                                        _buildDataRow(order.address ?? '-', LocaleKeys.OrderDetails_Address.tr()),
                                       ]),
                                       const SizedBox(height: 24),
-                                      _buildSectionTitle('Service details'),
+                                      _buildSectionTitle(LocaleKeys.OrderDetails_ServiceDetails.tr()),
                                       _buildDataContainer([
-                                        _buildDataRow(order.products?.map((e) => e.name).join(', ') ?? 'N/A', 'Service type'),
-                                        _buildDataRow('# ORD- ${order.code ?? order.id}', 'Order Code'),
+                                        _buildDataRow(order.products?.map((e) => e.name).join(', ') ?? 'N/A', LocaleKeys.OrderDetails_ServiceType.tr()),
+                                        _buildDataRow('# ORD- ${order.code ?? order.id}', LocaleKeys.OrderDetails_OrderCode.tr()),
                                         _buildDataRow(
-                                            order.products?.map((e) => '${e.name} (x${e.quantity})').join('\n') ?? 'N/A', 'Materials'),
-                                        _buildDataRow(order.customerDate ?? order.createdAt ?? 'N/A', 'Implementation date'),
+                                            order.products?.map((e) => '${e.name} (x${e.quantity})').join('\n') ?? 'N/A', LocaleKeys.OrderDetails_Materials.tr()),
+                                        _buildDataRow(order.customerDate ?? order.createdAt ?? 'N/A', LocaleKeys.OrderDetails_ImplementationDate.tr()),
                                       ]),
                                       const SizedBox(height: 24),
                                       if (order.customerNotes != null && order.customerNotes!.isNotEmpty) ...[
-                                        _buildSectionTitle('Notice'),
+                                        _buildSectionTitle(LocaleKeys.OrderDetails_Notice.tr()),
                                         Container(
                                           padding: const EdgeInsets.all(16),
                                           width: double.infinity,
@@ -348,7 +350,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             return Column(
                                               children: [
                                                 _buildActionButton(
-                                                  'Receive job',
+                                                  LocaleKeys.OrderDetails_ReceiveJob.tr(),
                                                   AppColors.accentRed,
                                                   isLoading: receiveState is ReceiveOrderLoading,
                                                   onPressed: () {
@@ -366,7 +368,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             return Column(
                                               children: [
                                                 _buildActionButton(
-                                                  'start job',
+                                                  LocaleKeys.OrderDetails_StartJob.tr(),
                                                   AppColors.accentRed,
                                                   isLoading: startState is StartOrderLoading,
                                                   onPressed: () {
@@ -384,7 +386,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             return Column(
                                               children: [
                                                 _buildActionButton(
-                                                  'Unsuspend job',
+                                                  LocaleKeys.OrderDetails_UnsuspendJob.tr(),
                                                   Colors.green,
                                                   isLoading: unsuspendState is UnsuspendOrderLoading,
                                                   onPressed: () {
@@ -398,7 +400,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                         ),
                                       if (order.status?.value == 'started_by_technical')
                                         _buildActionButton(
-                                          'Status update',
+                                          LocaleKeys.OrderDetails_StatusUpdate.tr(),
                                           AppColors.accentRed,
                                           onPressed: () async {
                                             final result = await Navigator.push(

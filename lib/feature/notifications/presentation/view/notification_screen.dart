@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:zoom_provider/generated/locale_keys.g.dart';
 
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -34,11 +36,11 @@ class NotificationScreen extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Notification',
+                        LocaleKeys.notifications_title.tr(),
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -94,15 +96,15 @@ class NotificationScreen extends StatelessWidget {
                               return Center(
                                 child: Text(
                                   state.apiError?.message?.toString() ??
-                                      'Something went wrong',
+                                      LocaleKeys.error_SomethingWentWrong.tr(),
                                 ),
                               );
                             } else if (state is HomeSuccess) {
                               final orders = state.homeModel.data ?? [];
 
                               if (orders.isEmpty) {
-                                return const Center(
-                                  child: Text('No notifications found'),
+                                return Center(
+                                  child: Text(LocaleKeys.notifications_no_notifications_found.tr()),
                                 );
                               }
 

@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../generated/locale_keys.g.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../data/model/request_card_data.dart';
 import '../view_model/home/home_cubit.dart';
@@ -28,9 +30,9 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                 child: Row(
                   children: [
-                    const Text(
-                      'Welcome',
-                      style: TextStyle(
+                    Text(
+                      LocaleKeys.Home_welcome.tr(),
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -87,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                               return Center(
                                 child: Text(
                                   state.apiError?.message?.toString() ??
-                                      'Something went wrong',
+                                      LocaleKeys.error_SomethingWentWrong.tr(),
                                 ),
                               );
                             } else if (state is HomeSuccess) {
@@ -138,7 +140,7 @@ class HomeScreen extends StatelessWidget {
 
                                       if (newOrders.isNotEmpty) ...[
                                         Text(
-                                          'New requests',
+                                          LocaleKeys.Home_new_requests.tr(),
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
@@ -155,9 +157,9 @@ class HomeScreen extends StatelessWidget {
 
                                       if (completedOrders.isNotEmpty) ...[
                                         const SizedBox(height: 20),
-                                        const Text(
-                                          'Completed today',
-                                          style: TextStyle(
+                                        Text(
+                                          LocaleKeys.Home_completed_today.tr(),
+                                          style: const TextStyle(
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -171,10 +173,10 @@ class HomeScreen extends StatelessWidget {
                                       ],
 
                                       if (orders.isEmpty)
-                                        const Center(
+                                        Center(
                                           child: Padding(
-                                            padding: EdgeInsets.only(top: 40),
-                                            child: Text('No requests found'),
+                                            padding: const EdgeInsets.only(top: 40),
+                                            child: Text(LocaleKeys.Home_no_requests_found.tr()),
                                           ),
                                         ),
                                     ],

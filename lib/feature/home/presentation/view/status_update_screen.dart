@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:zoom_provider/generated/locale_keys.g.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
@@ -89,12 +91,12 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
     final amountText = value?.trim() ?? '';
     if (amountText.isEmpty) {
-      return 'Amount is required';
+      return LocaleKeys.status_update_error_amount_empty.tr();
     }
 
     final amount = _parseDouble(amountText);
     if (amount == null || amount <= 0) {
-      return 'Please enter a valid amount';
+      return LocaleKeys.status_update_error_amount_invalid.tr();
     }
 
     return null;
@@ -108,7 +110,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
     final materials = _parseDouble(materialsText);
     if (materials == null) {
-      return 'Please enter a valid materials amount';
+      return LocaleKeys.status_update_error_materials_invalid.tr();
     }
 
     return null;
@@ -119,7 +121,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
     final note = value?.trim() ?? '';
     if (note.isEmpty) {
-      return 'Note is required for this status';
+      return LocaleKeys.status_update_error_note_required.tr();
     }
 
     return null;
@@ -130,13 +132,13 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) {
-      _showMessage('Please review the required fields', isError: true);
+      _showMessage(LocaleKeys.status_update_error_review_fields.tr(), isError: true);
       return;
     }
 
     if (_isCompletedWithPayment) {
       if (widget.servicesIds.isEmpty) {
-        _showMessage('Services list is empty', isError: true);
+        _showMessage(LocaleKeys.status_update_error_services_empty.tr(), isError: true);
         return;
       }
 
@@ -181,12 +183,12 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
           BlocListener<CompleteOrderCubit, CompleteOrderState>(
             listener: (context, state) {
               if (state is CompleteOrderSuccess) {
-                _showMessage('Order completed successfully');
+                _showMessage(LocaleKeys.status_update_success_complete.tr());
                 _navigateToMainLayout();
               } else if (state is CompleteOrderFailure) {
                 _showMessage(
                   state.apiError?.message.toString() ??
-                      'Failed to complete order',
+                      LocaleKeys.status_update_failed_complete.tr(),
                   isError: true,
                 );
               }
@@ -195,12 +197,12 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
           BlocListener<SuspendOrderCubit, SuspendOrderState>(
             listener: (context, state) {
               if (state is SuspendOrderSuccess) {
-                _showMessage('Order suspended successfully');
+                _showMessage(LocaleKeys.status_update_success_suspend.tr());
                 _navigateToMainLayout();
               } else if (state is SuspendOrderFailure) {
                 _showMessage(
                   state.apiError?.message.toString() ??
-                      'Failed to suspend order',
+                      LocaleKeys.status_update_failed_suspend.tr(),
                   isError: true,
                 );
               }
@@ -210,7 +212,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
             listener: (context, state) {
               if (state is CompletedPaidSuccess) {
                 final successMessage =
-                    state.data.message?.toString() ?? 'Payment request sent';
+                    state.data.message?.toString() ?? LocaleKeys.status_update_success_payment.tr();
                 _showMessage(successMessage);
                 _navigateToMainLayout();
               } else if (state is CompletedPaidFailure) {
@@ -249,11 +251,11 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                     padding: EdgeInsets.zero,
                                     constraints: const BoxConstraints(),
                                   ),
-                                  const Expanded(
+                                  Expanded(
                                     child: Text(
-                                      'Status update',
+                                      LocaleKeys.status_update_title.tr(),
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
@@ -306,7 +308,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                         children: [
                                           Center(
                                             child: Text(
-                                              'Select the visit result for customer ${widget.customerName}',
+                                              LocaleKeys.status_update_select_result.tr(args: [widget.customerName]),
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(
                                                 color: Colors.grey,
@@ -320,16 +322,16 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             index: 0,
                                             icon: '✅',
                                             title:
-                                            'Installation completed and payment received from the customer',
+                                            LocaleKeys.status_update_completed_paid.tr(),
                                             description: '',
                                           ),
 
                                           if (_isCompletedWithPayment) ...[
                                             const SizedBox(height: 20),
-                                            const Center(
+                                            Center(
                                               child: Text(
-                                                'Amount collected (Omani Rial)',
-                                                style: TextStyle(
+                                                LocaleKeys.status_update_amount_collected.tr(),
+                                                style: const TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 13,
                                                 ),
@@ -338,7 +340,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             const SizedBox(height: 10),
                                             _buildInputField(
                                               controller: _amountController,
-                                              hintText: 'Set amount...',
+                                              hintText: LocaleKeys.status_update_set_amount.tr(),
                                               keyboardType:
                                               const TextInputType.numberWithOptions(
                                                 decimal: true,
@@ -346,10 +348,10 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               validator: _validateAmount,
                                             ),
                                             const SizedBox(height: 16),
-                                            const Center(
+                                            Center(
                                               child: Text(
-                                                'Materials amount (optional)',
-                                                style: TextStyle(
+                                                LocaleKeys.status_update_materials_amount.tr(),
+                                                style: const TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 13,
                                                 ),
@@ -359,7 +361,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             _buildInputField(
                                               controller: _materialsController,
                                               hintText:
-                                              'Set materials amount...',
+                                              LocaleKeys.status_update_set_materials_amount.tr(),
                                               keyboardType:
                                               const TextInputType.numberWithOptions(
                                                 decimal: true,
@@ -374,9 +376,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             index: 1,
                                             icon: '🔧',
                                             title:
-                                            'Installation completed, no payment received',
+                                            LocaleKeys.status_update_completed_unpaid.tr(),
                                             description:
-                                            'The work is completed but the payment has not been collected — an alert will be sent to the Accounts',
+                                            LocaleKeys.status_update_completed_unpaid_desc.tr(),
                                           ),
 
                                           const SizedBox(height: 20),
@@ -385,9 +387,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             index: 2,
                                             icon: '📦',
                                             title:
-                                            'Installation was not completed and the goods were left with the customer.',
+                                            LocaleKeys.status_update_suspended_left.tr(),
                                             description:
-                                            'A note is required in this case to explain the reason clearly.',
+                                            LocaleKeys.status_update_suspended_left_desc.tr(),
                                           ),
 
                                           const SizedBox(height: 20),
@@ -396,9 +398,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             index: 3,
                                             icon: '↩️',
                                             title:
-                                            'The installation was not completed and the goods were returned by the customer.',
+                                            LocaleKeys.status_update_suspended_returned.tr(),
                                             description:
-                                            'The work was not completed and all the goods were retrieved from the customer and returned.',
+                                            LocaleKeys.status_update_suspended_returned_desc.tr(),
                                           ),
 
                                           const SizedBox(height: 24),
@@ -406,7 +408,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                           Center(
                                             child: RichText(
                                               text: TextSpan(
-                                                text: 'Additional notes',
+                                                text: LocaleKeys.status_update_additional_notes.tr(),
                                                 style: TextStyle(
                                                   color: Colors.grey.shade700,
                                                   fontSize: 13,
@@ -431,8 +433,8 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                           _buildInputField(
                                             controller: _notesController,
                                             hintText: _isNotesRequired
-                                                ? 'Add a required note for the admin...'
-                                                : 'Add a note for the admin...',
+                                                ? LocaleKeys.status_update_add_note_required.tr()
+                                                : LocaleKeys.status_update_add_note.tr(),
                                             maxLines: 3,
                                             validator: _validateNotes,
                                           ),
@@ -471,9 +473,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                   strokeWidth: 2,
                                                 ),
                                               )
-                                                  : const Text(
-                                                'Submit the final report ←',
-                                                style: TextStyle(
+                                                  : Text(
+                                                LocaleKeys.status_update_submit.tr(),
+                                                style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight:
                                                   FontWeight.bold,

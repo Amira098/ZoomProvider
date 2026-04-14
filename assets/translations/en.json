@@ -122,7 +122,30 @@
     "canceled_requests": "Canceled requests",
     "completed_requests": "Completed requests",
     "pending_requests": "Pending requests",
-    "premium_candle_set": "Premium Candle Set"
+    "premium_candle_set": "Premium Candle Set",
+    "new_requests": "New requests",
+    "completed_today": "Completed today",
+    "statistics": "statistics",
+    "total_requests_count": "Number of requests",
+    "view_details": "View details",
+    "candle_change": "Candle change",
+    "disbursement_authorization": "Disbursement authorization {}",
+    "basic_system_check": "Basic system check",
+    "filter_candle_replacement": "Filter candle replacement",
+    "two_visits_per_year": "2 visits / year",
+    "complete_water_system_inspection": "Complete water system inspection",
+    "primary_filter_candle_replacement": "Primary filter candle replacement",
+    "pressure_tank_check": "Pressure tank check",
+    "tds_level_testing": "TDS level testing",
+    "leakage_detection_check": "Leakage detection check",
+    "two_scheduled_visits_per_year": "2 Scheduled visits per year",
+    "priority_emergency_support": "Priority emergency support",
+    "store_title": "Store",
+    "approved_disbursement_requests": "Approved disbursement requests for\n{}",
+    "disbursement_approved_msg": "Disbursement authorization {} is approved by management. Proceed to the main warehouse.",
+    "certified": "Certified",
+    "recipient": "recipient",
+    "confirm_receipt": "Confirmation of receipt {} ←"
   },
   "NewAndUsed": {
     "Search": "Search",
@@ -406,7 +429,8 @@
   },
   "product": {
     "unnamed": "Unnamed Product",
-    "title": "Products"
+    "title": "Products",
+    "candle_description": "3-piece PP cotton + carbon + UF membrane"
   },
   "auctions": {
     "final_hammer_price": "Final hammer price",
@@ -492,12 +516,18 @@
     "ServiceType": "Service type",
     "OrderCode": "Order Code",
     "Materials": "Materials",
-    "ImplementationDate": "Implementation date"
+    "ImplementationDate": "Implementation date",
+    "FailedReceive": "Failed to receive order",
+    "FailedStart": "Failed to start order",
+    "FailedUnsuspend": "Failed to unsuspend order",
+    "Name": "Name"
   },
   "notifications": {
+    "title": "Notifications",
     "no_notifications_found": "No notifications found"
   },
   "status_update": {
+    "title": "Status Update",
     "select_result": "Select the visit result for customer {}",
     "completed_paid": "Installation completed and payment received from the customer",
     "amount_collected": "Amount collected (Omani Rial)",
@@ -507,10 +537,12 @@
     "completed_unpaid": "Installation completed, no payment received",
     "completed_unpaid_desc": "The work is completed but the payment has not been collected — an alert will be sent to the Accounts",
     "suspended_left": "Installation was not completed and the goods were left with the customer.",
+    "suspended_left_desc": "A note is required in this case to explain the reason clearly.",
     "suspended_returned": "The installation was not completed and the goods were returned by the customer.",
     "suspended_returned_desc": "The work was not completed and all the goods were retrieved from the customer and returned.",
     "additional_notes": "Additional notes",
     "add_note": "Add a note for the admin...",
+    "add_note_required": "Add a required note for the admin...",
     "submit": "Submit the final report ←",
     "success_complete": "Order completed successfully",
     "success_suspend": "Order suspended successfully",
@@ -518,6 +550,10 @@
     "error_amount_empty": "Please enter amount",
     "error_amount_invalid": "Please enter a valid amount",
     "error_services_empty": "Services list is empty",
-    "error_materials_invalid": "Please enter a valid materials amount"
+    "error_materials_invalid": "Please enter a valid materials amount",
+    "error_review_fields": "Please review the required fields",
+    "failed_complete": "Failed to complete order",
+    "failed_suspend": "Failed to suspend order",
+    "error_note_required": "Note is required for this status"
   }
 }

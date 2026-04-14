@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:zoom_provider/feature/home/presentation/view/order_details_screen.dart';
+import 'package:zoom_provider/generated/locale_keys.g.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../data/model/request_card_data.dart';
 
@@ -168,9 +170,9 @@ class RequestCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text(
-                  'View details',
-                  style: TextStyle(fontSize: 12),
+                child: Text(
+                  LocaleKeys.Home_view_details.tr(),
+                  style: const TextStyle(fontSize: 12),
                 ),
               ),
             ],

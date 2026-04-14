@@ -148,17 +148,9 @@ class _CartScreenState extends State<CartScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Candle change",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xff1E1E1E),
-                      ),
-                    ),
-                    const Text(
-                      "تغير شمعة",
-                      style: TextStyle(
+                    Text(
+                      LocaleKeys.Home_candle_change.tr(),
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
                         color: Color(0xff1E1E1E),

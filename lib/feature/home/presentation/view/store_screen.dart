@@ -1,7 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../generated/locale_keys.g.dart';
 import '../widgets/authorization_header.dart';
 import '../widgets/store_item.dart';
 class StoreScreen extends StatelessWidget {
@@ -25,11 +27,11 @@ class StoreScreen extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
-                  const Expanded(
+                    Expanded(
                     child: Text(
-                      'Store',
+                        LocaleKeys.Home_store_title.tr(),
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                        style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -67,11 +69,11 @@ class StoreScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Center(
+                            Center(
                               child: Text(
-                                'Approved disbursement requests for\nTuesday, March 24',
+                                LocaleKeys.Home_approved_disbursement_requests.tr(args: ['Tuesday, March 24']),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.grey,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
@@ -94,10 +96,10 @@ class StoreScreen extends StatelessWidget {
                                     child: Text('✅', style: TextStyle(fontSize: 16)),
                                   ),
                                   const SizedBox(width: 8),
-                                  const Expanded(
+                                  Expanded(
                                     child: Text(
-                                      'Disbursement authorization #WH-0091 is approved by management. Proceed to the main warehouse.',
-                                      style: TextStyle(
+                                      LocaleKeys.Home_disbursement_approved_msg.tr(args: ['#WH-0091']),
+                                      style: const TextStyle(
                                         color: AppColors.accentRed,
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -111,7 +113,7 @@ class StoreScreen extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 24),
-                            const AuthorizationHeader(id: '#WH-0091', status: 'Certified'),
+                            AuthorizationHeader(id: '#WH-0091', status: LocaleKeys.Home_certified.tr()),
                             const SizedBox(height: 12),
                             const StoreItem(
                               title: '5-stage RO filter',
@@ -138,9 +140,9 @@ class StoreScreen extends StatelessWidget {
                               statusTextColor: AppColors.orange,
                             ),
                             const SizedBox(height: 12),
-                            const AuthorizationHeader(
+                            AuthorizationHeader(
                               id: '#WH-0089',
-                              status: 'recipient',
+                              status: LocaleKeys.Home_recipient.tr(),
                               headerColor: AppColors.palePurple,
                               textColor: AppColors.darkrose,
                             ),
@@ -167,9 +169,9 @@ class StoreScreen extends StatelessWidget {
                                   ),
                                   elevation: 0,
                                 ),
-                                child: const Text(
-                                  'Confirmation of receipt #WH-0091 ←',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                child: Text(
+                                  LocaleKeys.Home_confirm_receipt.tr(args: ['#WH-0091']),
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),

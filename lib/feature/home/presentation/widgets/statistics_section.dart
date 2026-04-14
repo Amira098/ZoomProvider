@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:zoom_provider/generated/locale_keys.g.dart';
 import '../../data/model/home_model.dart';
 
 class StatisticsSection extends StatelessWidget {
@@ -17,9 +19,9 @@ class StatisticsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'statistics',
-            style: TextStyle(
+          Text(
+            LocaleKeys.Home_statistics.tr(),
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -43,9 +45,9 @@ class StatisticsSection extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                const Text(
-                  'Number of requests',
-                  style: TextStyle(
+                Text(
+                  LocaleKeys.Home_total_requests_count.tr(),
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
                   ),
@@ -57,15 +59,15 @@ class StatisticsSection extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: StatItem(count: '${stats?.canceled ?? 0}', label: 'Canceled requests'),
+                child: StatItem(count: '${stats?.canceled ?? 0}', label: LocaleKeys.Home_canceled_requests.tr()),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: StatItem(count: '${stats?.completed ?? 0}', label: 'Completed requests'),
+                child: StatItem(count: '${stats?.completed ?? 0}', label: LocaleKeys.Home_completed_requests.tr()),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: StatItem(count: '${stats?.pending ?? 0}', label: 'Pending requests'),
+                child: StatItem(count: '${stats?.pending ?? 0}', label: LocaleKeys.Home_pending_requests.tr()),
               ),
             ],
           ),

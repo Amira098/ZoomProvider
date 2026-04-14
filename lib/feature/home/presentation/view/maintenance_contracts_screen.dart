@@ -107,9 +107,9 @@ class _MaintenanceListItem extends StatelessWidget {
               style: const TextStyle(
                   fontSize: 12, color: Color(0xff8A8A8A), height: 1.4)),
           const SizedBox(height: 16),
-          _bulletPoint("Basic system check"),
-          _bulletPoint("Filter candle replacement"),
-          _bulletPoint("2 visits / year"),
+          _bulletPoint(LocaleKeys.Home_basic_system_check.tr()),
+          _bulletPoint(LocaleKeys.Home_filter_candle_replacement.tr()),
+          _bulletPoint(LocaleKeys.Home_two_visits_per_year.tr()),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

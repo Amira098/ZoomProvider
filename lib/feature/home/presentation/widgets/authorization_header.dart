@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class AuthorizationHeader extends StatelessWidget {
   final String id;
@@ -20,7 +22,7 @@ class AuthorizationHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Disbursement authorization $id',
+          LocaleKeys.Home_disbursement_authorization.tr(args: [id]),
           style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         ),
         Container(
