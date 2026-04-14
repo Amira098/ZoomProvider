@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_fonts_family.dart';
 
@@ -12,7 +13,7 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.white,
     primaryColor: AppColors.skyBlue[AppColors.colorCode50],
     secondaryHeaderColor: AppColors.black,
-    fontFamily: AppFontsFamily.inter,
+    fontFamily: AppFontsFamily.cairo,
     dialogTheme: DialogThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
@@ -188,12 +189,12 @@ class AppTheme {
         fontSize: 14.sp,
         color: AppColors.skyBlue[AppColors.colorCode50],
         fontWeight: FontWeight.bold,
-        fontFamily: AppFontsFamily.inter,
+        fontFamily: AppFontsFamily.cairo,
       ),
       unselectedLabelStyle: TextStyle(
         fontSize: 14.sp,
         color: AppColors.gray,
-        fontFamily: AppFontsFamily.inter,
+        fontFamily: AppFontsFamily.cairo,
       ),
     ),
     tabBarTheme: TabBarThemeData(
