@@ -88,7 +88,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                 return Skeletonizer(
                   enabled: true,
                   child: _buildAboutContent(
-                      "This is a dummy text for about us section. " * 10),
+                      "This is a dummy text for about us section. " * 30),
                 );
               } else if (state is AboutUsSuccess) {
                 return _buildAboutContent(_getLocalizedAboutText(state));

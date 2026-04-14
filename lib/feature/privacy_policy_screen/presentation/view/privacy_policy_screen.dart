@@ -85,7 +85,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                           return Skeletonizer(
                             enabled: true,
                             child: _buildPrivacyContent(
-                                "This is a dummy text for privacy policy section. " * 10),
+                                "This is a dummy text for privacy policy section. " * 30),
                           );
                         } else if (state is PrivacySuccess) {
                           return _buildPrivacyContent(_getLocalizedPrivacyText(state));

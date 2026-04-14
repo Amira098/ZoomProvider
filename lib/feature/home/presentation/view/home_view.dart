@@ -2,10 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../generated/locale_keys.g.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../data/model/home_model.dart';
 import '../../data/model/request_card_data.dart';
 import '../view_model/home/home_cubit.dart';
 import '../view_model/home/home_state.dart';
@@ -82,8 +84,12 @@ class HomeScreen extends StatelessWidget {
                         BlocBuilder<HomeCubit, HomeState>(
                           builder: (context, state) {
                             if (state is HomeLoading) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
+                              return Skeletonizer(
+                                enabled: true,
+                                child: _buildHomeContent(
+                                  context,
+                                  _getDummyHomeModel(),
+                                ),
                               );
                             } else if (state is HomeFailure) {
                               return Center(
@@ -93,95 +99,10 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               );
                             } else if (state is HomeSuccess) {
-                              final homeModel = state.homeModel;
-                              final orders = homeModel.data ?? [];
-
-                              final newOrders = orders
-                                  .where((o) => o.status?.value != 'completed')
-                                  .toList();
-
-                              final completedOrders = orders
-                                  .where((o) => o.status?.value == 'completed')
-                                  .toList();
-
-                              RequestCardData mapToRequestCardData(order) {
-                                return RequestCardData(
-                                  id: order.id,
-                                  code: (order.code ?? order.id ?? '').toString(),
-                                  customerName:
-                                  order.customer?.name ?? 'Unknown Customer',
-                                  address: order.address ?? '',
-                                  date: order.customerDate ?? order.createdAt ?? '',
-                                  note: order.customerNotes ??
-                                      (order.products?.isNotEmpty == true
-                                          ? order.products!.first.name ?? ''
-                                          : ''),
-                                  statusValue: order.status?.value ?? '',
-                                  statusLabel: order.status?.label ?? '',
-                                );
-                              }
-
                               return RefreshIndicator(
                                 onRefresh: () =>
                                     context.read<HomeCubit>().getHomeData(),
-                                child: SingleChildScrollView(
-                                  padding: const EdgeInsets.all(20),
-                                  physics:
-                                  const AlwaysScrollableScrollPhysics(),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 25),
-                                      StatisticsSection(
-                                        stats: homeModel.stats,
-                                      ),
-                                      const SizedBox(height: 25),
-
-                                      if (newOrders.isNotEmpty) ...[
-                                        Text(
-                                          LocaleKeys.Home_new_requests.tr(),
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppColors.primary,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        ...newOrders.map(
-                                              (order) => RequestCard(
-                                            order: mapToRequestCardData(order),
-                                          ),
-                                        ),
-                                      ],
-
-                                      if (completedOrders.isNotEmpty) ...[
-                                        const SizedBox(height: 20),
-                                        Text(
-                                          LocaleKeys.Home_completed_today.tr(),
-                                          style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        ...completedOrders.map(
-                                              (order) => RequestCard(
-                                            order: mapToRequestCardData(order),
-                                          ),
-                                        ),
-                                      ],
-
-                                      if (orders.isEmpty)
-                                        Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 40),
-                                            child: Text(LocaleKeys.Home_no_requests_found.tr()),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
+                                child: _buildHomeContent(context, state.homeModel),
                               );
                             }
 
@@ -195,6 +116,104 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHomeContent(BuildContext context, HomeModel homeModel) {
+    final orders = homeModel.data ?? [];
+
+    final newOrders =
+        orders.where((o) => o.status?.value != 'completed').toList();
+
+    final completedOrders =
+        orders.where((o) => o.status?.value == 'completed').toList();
+
+    RequestCardData mapToRequestCardData(OrderModel order) {
+      return RequestCardData(
+        id: order.id,
+        code: (order.code ?? order.id ?? '').toString(),
+        customerName: order.customer?.name ?? 'Unknown Customer',
+        address: order.address ?? '',
+        date: order.customerDate ?? order.createdAt ?? '',
+        note: order.customerNotes ??
+            (order.products?.isNotEmpty == true
+                ? order.products!.first.name ?? ''
+                : ''),
+        statusValue: order.status?.value ?? '',
+        statusLabel: order.status?.label ?? '',
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      physics: const AlwaysScrollableScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 25),
+          StatisticsSection(
+            stats: homeModel.stats,
+          ),
+          const SizedBox(height: 25),
+          if (newOrders.isNotEmpty) ...[
+            Text(
+              LocaleKeys.Home_new_requests.tr(),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 10),
+            ...newOrders.map(
+              (order) => RequestCard(
+                order: mapToRequestCardData(order),
+              ),
+            ),
+          ],
+          if (completedOrders.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            Text(
+              LocaleKeys.Home_completed_today.tr(),
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            ...completedOrders.map(
+              (order) => RequestCard(
+                order: mapToRequestCardData(order),
+              ),
+            ),
+          ],
+          if (orders.isEmpty)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40),
+                child: Text(LocaleKeys.Home_no_requests_found.tr()),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  HomeModel _getDummyHomeModel() {
+    return HomeModel(
+      stats: StatsModel(total: 0, canceled: 0, completed: 0, pending: 0),
+      data: List.generate(
+        3,
+        (index) => OrderModel(
+          id: index,
+          code: 12345,
+          customer: CustomerModel(name: 'Customer Name ' * 2),
+          address: 'Address Details ' * 3,
+          customerDate: '2023-01-01',
+          customerNotes: 'Order notes go here ' * 5,
+          status: OrderStatusModel(label: 'Status', value: 'new'),
         ),
       ),
     );

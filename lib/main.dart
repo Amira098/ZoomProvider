@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import 'core/constants/app_values.dart';
 import 'core/di/service_locator.dart';
@@ -69,16 +70,26 @@ class _MyAppState extends State<MyApp> {
           );
         }
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          navigatorKey: rootNavigatorKey,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          theme: AppTheme.lightTheme,
-          title: AppValues.appTitle,
-          onGenerateRoute: RouteGenerator.getRoute,
-          initialRoute: _initialRoute!,
+        return SkeletonizerConfig(
+          data: SkeletonizerConfigData(
+            effect: ShimmerEffect(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              duration: const Duration(milliseconds: 1000),
+            ),
+            ignoreContainers: false,
+          ),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: rootNavigatorKey,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            theme: AppTheme.lightTheme,
+            title: AppValues.appTitle,
+            onGenerateRoute: RouteGenerator.getRoute,
+            initialRoute: _initialRoute!,
+          ),
         );
 
       },
