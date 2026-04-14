@@ -197,10 +197,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
       }
 
       final formData = FormData.fromMap({
-        'product_id': _selectedProduct!.productId,
-        'quantity': int.tryParse(quantityText) ?? 0,
+        'products[0][id]': _selectedProduct!.productId,
+        'products[0][quantity]': int.tryParse(quantityText) ?? 0,
         'notes': _productNoteController.text.trim(),
-        'additional_notes': _notesController.text.trim(),
       });
 
       context
@@ -486,7 +485,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                     return Center(
                                                         child: Text(state
                                                                 .apiError
-                                                                ?.message ??
+                                                                ?.message.toString() ??
                                                             "Error loading products"));
                                                   }
                                                   return const SizedBox.shrink();
