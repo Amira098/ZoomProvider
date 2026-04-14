@@ -7,6 +7,8 @@ import '../../../../../core/utils/app_shared_preference.dart';
 import '../../api/auth_retrofit_client.dart';
 import '../../models/login_model.dart';
 import '../../models/register_model.dart';
+import '../../models/reset_password_model.dart';
+import '../../models/send_reset_email.dart';
 import 'remote_auth_data_source.dart';
 
 @Injectable(as: RemoteAuthDataSource)
@@ -110,4 +112,44 @@ class RemoteAuthDataSourceImp extends RemoteAuthDataSource {
       );
     }
   }
+
+  @override
+  Future<Result<ResetPasswordModel>> resetPassword(
+      {required String code, required String email, required String password, required String confirmPassword}) async {
+    final result = await _apiManager.execute<ResetPasswordModel>(() async {
+      return await _apiService.resetPassword(
+          code, email, password, confirmPassword);
+    });
+
+    switch (result) {
+      case SuccessResult<ResetPasswordModel>():
+        return SuccessResult<ResetPasswordModel>(result.data);
+
+      case FailureResult<ResetPasswordModel>():
+        return FailureResult<ResetPasswordModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+
+  @override
+  Future<Result<SendResetEmail>> sendResetEmail({required String email}) async {
+    final result = await _apiManager.execute<SendResetEmail>(() async {
+      return await _apiService.sendResetEmail(email);
+    });
+
+    switch (result) {
+      case SuccessResult<SendResetEmail>():
+        return SuccessResult<SendResetEmail>(result.data);
+
+      case FailureResult<SendResetEmail>():
+        return FailureResult<SendResetEmail>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
 }
+

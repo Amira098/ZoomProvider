@@ -1,8 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/common/widget/tools_pattern_painter.dart';
+import '../../../../core/constants/app_values.dart';
+import '../../../../core/utils/app_shared_preference.dart';
 import '../../../../generated/locale_keys.g.dart';
 import '../../../Terms_conditions_screen/presentation/view/Terms_conditions_screen.dart';
+import '../../../auth/presentation/view/login_screen.dart';
 import '../../../contact_us/presentation/view/contact_us_form.dart';
 import 'edit_profile_screen.dart';
 
@@ -117,7 +120,19 @@ class ProfileScreen extends StatelessWidget {
                         _buildProfileItem(
                           icon: Icons.logout,
                           title: LocaleKeys.drawer_logout.tr(),
-                          onTap: () {},
+                          onTap: () async {
+                            await SharedPreferencesUtils.removeData(key: AppValues.token);
+                            await SharedPreferencesUtils.removeData(key: AppValues.user);
+                            await SharedPreferencesUtils.removeData(key: AppValues.loggedIn);
+
+                            if (context.mounted) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                    (route) => false,
+                              );
+                            }
+                          },
                         ),
                       ],
                     ),

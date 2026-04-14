@@ -5,6 +5,8 @@ import 'package:retrofit/http.dart';
 import '../../../../core/network/remote/api_constants.dart';
 import '../models/login_model.dart';
 import '../models/register_model.dart';
+import '../models/reset_password_model.dart';
+import '../models/send_reset_email.dart';
 part 'auth_retrofit_client.g.dart';
 
 @lazySingleton
@@ -31,6 +33,23 @@ abstract class AuthRetrofitClient {
       @Field("password_confirmation") String confirmPassword,
 
   );
+
+  @POST(ApiConstants.sendResetEmail)
+  @FormUrlEncoded()
+  Future<SendResetEmail> sendResetEmail(
+      @Field("email") String email,
+
+      );
+
+  @POST(ApiConstants.resetPassword)
+  @FormUrlEncoded()
+  Future<ResetPasswordModel> resetPassword(
+      @Field("code") String code,
+      @Field("email") String email,
+      @Field("password") String password,
+      @Field("password_confirmation") String confirmPassword,
+
+      );
 
 
 

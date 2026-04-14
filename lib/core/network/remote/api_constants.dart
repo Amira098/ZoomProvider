@@ -25,6 +25,8 @@ abstract class ApiConstants {
   static const String productsSearch = 'products/search';
   static const String requests  = "orders";
   static const String contact  = 'general/get-whatsapp-number';
+  static const String sendResetEmail   = 'send-verification-code';
+  static const String resetPassword   = 'reset-password';
 
 
 }

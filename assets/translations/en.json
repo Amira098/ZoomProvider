@@ -1,10 +1,10 @@
 {
   "Authentication": {
     "AuthenticationfillInTheForm": "Please fill in the form to register.",
-    "RegistrationFailed": "Registration failed, please try again.",
+    "RegistrationFailed": "Registration failed",
     "SignUp": "Sign Up",
     "Login": "Login",
-    "LoginFailed": "Login failed, please try again.",
+    "LoginFailed": "Login failed",
     "Email": "Email",
     "SendOtp": "Send OTP",
     "EnterYourEmail": "Enter your email",
@@ -47,8 +47,19 @@
     "fillInTheForm ": "Hi, kindly fill in the form to proceed to the app",
     "PasswordChangedSuccessfully": "Password changed successfully!",
     "LoginSuccess": "Login success",
-    "LoginFailed": "Login failed",
-    "RegistrationFailed": "Registration failed"
+    "Enter6DigitCode": "Please enter the 6-digit code",
+    "EnterAndConfirmPassword": "Please enter and confirm your password",
+    "full_name": "Full Name",
+    "email_address": "Email Address",
+    "phone_number": "Phone Number",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "must_be_8_chars": "must be 8 characters",
+    "repeat_password": "repeat password",
+    "forgot_password": "Forgot Password",
+    "full_name_hint": "Abhishek Patel",
+    "email_hint": "abhishekpatelXXX@gmail.com",
+    "phone_hint": "+33 2 94 27 84 11"
   },
   "Profile": {
     "Profile": "Profile",
@@ -232,7 +243,11 @@
     "Afterpayment": "After payment is completed, points will be added to your balance immediately."
   },
   "Messages": {
-    "OtpSentToYourEmail": "OTP sent to your email"
+    "OtpSentToYourEmail": "OTP sent to your email",
+    "service_request_success": "Service requested successfully",
+    "service_request_failed": "Failed to request service",
+    "service_details_error": "Error loading service details",
+    "code_resent": "Code resent"
   },
   "cart": {
     "title": "My Cart",
