@@ -63,7 +63,7 @@ class StoreItem extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Quantity: $quantity',
+            ' $quantity',
             style: const TextStyle(
               fontSize: 14,
               color: Colors.red,

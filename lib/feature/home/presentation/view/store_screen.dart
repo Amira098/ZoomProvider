@@ -14,6 +14,7 @@ import '../view_model/home/home_cubit.dart';
 import '../view_model/home/home_state.dart';
 import '../widgets/authorization_header.dart';
 import '../widgets/store_item.dart';
+import 'order_details_screen.dart';
 
 class StoreScreen extends StatelessWidget {
   const StoreScreen({super.key});
@@ -27,7 +28,7 @@ class StoreScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) =>
-              serviceLocator<GetReceivedRequestsCubit>()..getReceivedRequests(),
+          serviceLocator<GetReceivedRequestsCubit>()..getReceivedRequests(),
         ),
       ],
       child: const StoreView(),
@@ -67,6 +68,7 @@ class StoreView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 24),
                 ],
               ),
             ),
@@ -103,10 +105,12 @@ class StoreView extends StatelessWidget {
                           Center(
                             child: Text(
                               LocaleKeys.Home_approved_disbursement_requests
-                                  .tr(args: [
-                                DateFormat('EEEE, MMMM d')
-                                    .format(DateTime.now())
-                              ]),
+                                  .tr(
+                                args: [
+                                  DateFormat('EEEE, MMMM d')
+                                      .format(DateTime.now()),
+                                ],
+                              ),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Colors.grey,
@@ -140,17 +144,17 @@ class _StoreContent extends StatelessWidget {
       builder: (context, homeState) {
         return BlocBuilder<GetReceivedRequestsCubit, GetReceivedRequestsState>(
           builder: (context, receivedState) {
-            final isLoading =
-                homeState is HomeLoading || receivedState is GetReceivedRequestsLoading;
+            final isLoading = homeState is HomeLoading ||
+                receivedState is GetReceivedRequestsLoading;
 
             if (isLoading) {
               return Skeletonizer(
                 enabled: true,
                 child: Column(
                   children: [
-                    _buildHomeList([_getDummyOrder()]),
+                    _buildHomeList(context, [_getDummyOrder()]),
                     const SizedBox(height: 24),
-                    _buildReceivedList([_getDummyRequestData()]),
+                    _buildReceivedList(context, [_getDummyRequestData()]),
                   ],
                 ),
               );
@@ -159,7 +163,9 @@ class _StoreContent extends StatelessWidget {
             final homeOrders = (homeState is HomeSuccess)
                 ? homeState.homeModel.data ?? []
                 : <home.OrderModel>[];
-            final receivedRequests = (receivedState is GetReceivedRequestsSuccess)
+
+            final receivedRequests =
+            (receivedState is GetReceivedRequestsSuccess)
                 ? receivedState.receivedRequestsModel.data ?? []
                 : <received.RequestData>[];
 
@@ -174,11 +180,11 @@ class _StoreContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (homeOrders.isNotEmpty) ...[
-                  _buildHomeList(homeOrders),
+                  _buildHomeList(context, homeOrders),
                   const SizedBox(height: 24),
                 ],
                 if (receivedRequests.isNotEmpty) ...[
-                  _buildReceivedList(receivedRequests),
+                  _buildReceivedList(context, receivedRequests),
                   const SizedBox(height: 40),
                 ],
               ],
@@ -189,7 +195,7 @@ class _StoreContent extends StatelessWidget {
     );
   }
 
-  Widget _buildHomeList(List<home.OrderModel> orders) {
+  Widget _buildHomeList(BuildContext context, List<home.OrderModel> orders) {
     return Column(
       children: orders.map((order) {
         return Column(
@@ -199,22 +205,43 @@ class _StoreContent extends StatelessWidget {
               status: LocaleKeys.Home_certified.tr(),
             ),
             const SizedBox(height: 12),
-            ... (order.products ?? []).map((product) => StoreItem(
-              title: product.name ?? '',
-              code: '${order.code} | ${product.type ?? ''}',
-              quantity: '${product.quantity ?? 0} ${LocaleKeys.Home_pcs.tr()}',
-              status: 'ready',
-              statusColor: AppColors.paleGreen,
-              statusTextColor: const Color(0xFF27AE60),
-            )),
-            const SizedBox(height: 12),
+            ...(order.products ?? []).map(
+                  (product) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OrderDetailsScreen(
+                          requestId: order.id??0,
+                        ),
+                      ),
+                    );
+                  },
+                  child: StoreItem(
+                    title: product.name ?? '',
+                    code: '${order.code} | ${product.type ?? ''}',
+                    quantity:
+                    '${product.quantity ?? 0} ${LocaleKeys.Home_pcs.tr()}',
+                    status: 'ready',
+                    statusColor: AppColors.paleGreen,
+                    statusTextColor: const Color(0xFF27AE60),
+                  ),
+                ),
+              ),
+            ),
           ],
         );
       }).toList(),
     );
   }
 
-  Widget _buildReceivedList(List<received.RequestData> requests) {
+  Widget _buildReceivedList(
+      BuildContext context,
+      List<received.RequestData> requests,
+      ) {
     return Column(
       children: requests.map((request) {
         return Column(
@@ -226,15 +253,34 @@ class _StoreContent extends StatelessWidget {
               textColor: AppColors.darkrose,
             ),
             const SizedBox(height: 12),
-            ... (request.products ?? []).map((product) => StoreItem(
-              title: product.name ?? '',
-              code: '${request.code} | ${LocaleKeys.Home_recipient.tr()} by ${request.customer ?? ''}',
-              quantity: '${product.quantity ?? 0} ${LocaleKeys.Home_pcs.tr()}',
-              status: 'recipient',
-              statusColor: AppColors.palePurple,
-              statusTextColor: AppColors.darkrose,
-            )),
-            const SizedBox(height: 12),
+            ...(request.products ?? []).map(
+                  (product) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OrderDetailsScreen(
+                          requestId: request.id??0,
+                        ),
+                      ),
+                    );
+                  },
+                  child: StoreItem(
+                    title: product.name ?? '',
+                    code:
+                    '${request.code} | ${LocaleKeys.Home_recipient.tr()} by ${request.customer ?? ''}',
+                    quantity:
+                    '${product.quantity ?? 0} ${LocaleKeys.Home_pcs.tr()}',
+                    status: 'recipient',
+                    statusColor: AppColors.palePurple,
+                    statusTextColor: AppColors.darkrose,
+                  ),
+                ),
+              ),
+            ),
           ],
         );
       }).toList(),
