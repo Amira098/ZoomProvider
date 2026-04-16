@@ -4,6 +4,7 @@ import '../../../../core/network/common/api_result.dart';
 import '../model/all_requests_model.dart';
 import '../model/complete_order_model.dart';
 import '../model/completed_paid_model.dart';
+import '../model/get_received_requests_model.dart';
 import '../model/home_model.dart';
 import '../model/products_in_orders.dart';
 import '../model/receive_order_model.dart';
@@ -24,5 +25,7 @@ abstract class HomeDataSources {
   Future<Result<CompletedPaidModel>> completedPaid(int orderId, FormData body);
   Future<Result<SuspendWithGoodsReturnedModel>> suspendWithGoodsReturned(int orderId, FormData body);
   Future<Result<ProductsInOrders>> productsInOrders(int orderId,);
+  Future<Result<GetReceivedRequestsModel>> getReceivedRequests();
+
 
 }

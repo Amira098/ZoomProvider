@@ -59,11 +59,7 @@ class StoreScreen extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      Positioned.fill(
-                        child: CustomPaint(
-                          painter: ToolsPatternPainter(),
-                        ),
-                      ),
+
                       SingleChildScrollView(
                         padding: const EdgeInsets.all(20),
                         child: Column(
@@ -155,26 +151,26 @@ class StoreScreen extends StatelessWidget {
                               statusColor: AppColors.palePurple,
                               statusTextColor: AppColors.darkrose,
                             ),
-                            const SizedBox(height: 24),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.accentRed,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: Text(
-                                  LocaleKeys.Home_confirm_receipt.tr(args: ['#WH-0091']),
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
+                            // const SizedBox(height: 24),
+                            // SizedBox(
+                            //   width: double.infinity,
+                            //   child: ElevatedButton(
+                            //     onPressed: () {},
+                            //     style: ElevatedButton.styleFrom(
+                            //       backgroundColor: AppColors.accentRed,
+                            //       foregroundColor: Colors.white,
+                            //       padding: const EdgeInsets.symmetric(vertical: 16),
+                            //       shape: RoundedRectangleBorder(
+                            //         borderRadius: BorderRadius.circular(20),
+                            //       ),
+                            //       elevation: 0,
+                            //     ),
+                            //     child: Text(
+                            //       LocaleKeys.Home_confirm_receipt.tr(args: ['#WH-0091']),
+                            //       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            //     ),
+                            //   ),
+                            // ),
                             const SizedBox(height: 40),
                           ],
                         ),

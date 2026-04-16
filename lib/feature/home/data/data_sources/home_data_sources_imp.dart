@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:zoom_provider/feature/home/data/model/all_requests_model.dart';
 import 'package:zoom_provider/feature/home/data/model/complete_order_model.dart';
 import 'package:zoom_provider/feature/home/data/model/completed_paid_model.dart';
+import 'package:zoom_provider/feature/home/data/model/get_received_requests_model.dart';
 import 'package:zoom_provider/feature/home/data/model/products_in_orders.dart';
 import 'package:zoom_provider/feature/home/data/model/receive_order_model.dart';
 import 'package:zoom_provider/feature/home/data/model/requests_details_model.dart';
@@ -239,6 +240,26 @@ class HomeDataSourcesImp implements HomeDataSources {
 
       case FailureResult<SuspendWithGoodsReturnedModel>():
         return FailureResult<SuspendWithGoodsReturnedModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<GetReceivedRequestsModel>> getReceivedRequests()async {
+    final result = await _apiManager.execute<GetReceivedRequestsModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.getReceivedRequests(auth);
+    });
+
+    switch (result) {
+      case SuccessResult<GetReceivedRequestsModel>():
+        return SuccessResult<GetReceivedRequestsModel>(result.data);
+
+      case FailureResult<GetReceivedRequestsModel>():
+        return FailureResult<GetReceivedRequestsModel>(
           exception: result.exception,
           apiError: result.apiError,
         );

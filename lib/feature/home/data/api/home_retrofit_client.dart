@@ -7,6 +7,7 @@ import '../../../../core/network/remote/api_constants.dart';
 import '../model/all_requests_model.dart';
 import '../model/complete_order_model.dart';
 import '../model/completed_paid_model.dart';
+import '../model/get_received_requests_model.dart';
 import '../model/home_model.dart';
 import '../model/products_in_orders.dart';
 import '../model/receive_order_model.dart';
@@ -89,6 +90,11 @@ Future<SuspendWithGoodsReturnedModel> suspendWithGoodsReturned(
 @GET("products-orders/{order}/products")
 Future<ProductsInOrders> productsInOrders(
     @Path("order") int orderId,
+    @Header("Authorization") String token,
+    );
+
+@GET("recived-requests")
+Future<GetReceivedRequestsModel> getReceivedRequests(
     @Header("Authorization") String token,
     );
 

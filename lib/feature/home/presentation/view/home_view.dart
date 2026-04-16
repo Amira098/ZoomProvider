@@ -50,7 +50,25 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     Text('👋', style: TextStyle(fontSize: 24.sp)),
-
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const StoreScreen(),
+                          ),
+                        );
+                      },
+                      child: SvgPicture.asset(
+                        'assets/svg/shopping_cart.svg',
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
+                        width: 24,
+                      ),
+                    ),
                   ],
                 ),
               ),

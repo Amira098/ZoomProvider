@@ -21,6 +21,7 @@ class StoreItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -38,21 +39,21 @@ class StoreItem extends StatelessWidget {
                 title,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: statusColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: statusTextColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              // Container(
+              //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              //   decoration: BoxDecoration(
+              //     color: statusColor,
+              //     borderRadius: BorderRadius.circular(10),
+              //   ),
+              //   child: Text(
+              //     status,
+              //     style: TextStyle(
+              //       fontSize: 10,
+              //       color: statusTextColor,
+              //       fontWeight: FontWeight.bold,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
           const SizedBox(height: 4),
