@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zoom_provider/feature/home/presentation/view/status_updates_screen_wrapper.dart';
 import 'package:zoom_provider/generated/locale_keys.g.dart';
 
@@ -298,46 +299,64 @@ class OrderDetailsScreen extends StatelessWidget {
                     '&key=$googleMapsApiKey';
               }
 
-              return Container(
-                height: 180,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: mapUrl != null
-                          ? Image.network(
-                              mapUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey.shade200,
-                                  child: const Center(
-                                    child: Icon(
-                                      Icons.location_off,
-                                      size: 50,
-                                      color: Colors.grey,
+              return GestureDetector(
+                onTap: () async {
+                  if (hasLatLng) {
+                    final uri = Uri.parse(
+                        "https://www.google.com/maps/search/?api=1&query=${order.latitude},${order.longitude}");
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri);
+                    }
+                  } else if (hasAddress) {
+                    final encodedAddress = Uri.encodeComponent(order.address!);
+                    final uri = Uri.parse(
+                        "https://www.google.com/maps/search/?api=1&query=$encodedAddress");
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri);
+                    }
+                  }
+                },
+                child: Container(
+                  height: 180,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: mapUrl != null
+                            ? Image.network(
+                                mapUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: Colors.grey.shade200,
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.location_off,
+                                        size: 50,
+                                        color: Colors.grey,
+                                      ),
                                     ),
+                                  );
+                                },
+                              )
+                            : Container(
+                                color: Colors.grey.shade200,
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.location_on,
+                                    size: 50,
+                                    color: Colors.grey,
                                   ),
-                                );
-                              },
-                            )
-                          : Container(
-                              color: Colors.grey.shade200,
-                              child: const Center(
-                                child: Icon(
-                                  Icons.location_on,
-                                  size: 50,
-                                  color: Colors.grey,
                                 ),
                               ),
-                            ),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
