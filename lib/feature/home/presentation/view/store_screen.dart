@@ -1,13 +1,42 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../../../../core/common/widget/tools_pattern_painter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:zoom_provider/core/di/service_locator.dart';
+import 'package:zoom_provider/feature/home/presentation/view_model/get_received_requests/get_received_requests_cubit.dart';
+import 'package:zoom_provider/feature/home/presentation/view_model/get_received_requests/get_received_requests_state.dart';
+import '../../../../core/common/widget/empty_state_widget.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../generated/locale_keys.g.dart';
+import '../../data/model/get_received_requests_model.dart' as received;
+import '../../data/model/home_model.dart' as home;
+import '../view_model/home/home_cubit.dart';
+import '../view_model/home/home_state.dart';
 import '../widgets/authorization_header.dart';
 import '../widgets/store_item.dart';
+
 class StoreScreen extends StatelessWidget {
   const StoreScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => serviceLocator<HomeCubit>()..getHomeData(),
+        ),
+        BlocProvider(
+          create: (context) =>
+              serviceLocator<GetReceivedRequestsCubit>()..getReceivedRequests(),
+        ),
+      ],
+      child: const StoreView(),
+    );
+  }
+}
+
+class StoreView extends StatelessWidget {
+  const StoreView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +56,17 @@ class StoreScreen extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                   ),
-                    Expanded(
+                  Expanded(
                     child: Text(
-                        LocaleKeys.Home_store_title.tr(),
+                      LocaleKeys.Home_store_title.tr(),
                       textAlign: TextAlign.center,
-                        style: const TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -57,125 +85,41 @@ class StoreScreen extends StatelessWidget {
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
-                  child: Stack(
-                    children: [
-
-                      SingleChildScrollView(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Text(
-                                LocaleKeys.Home_approved_disbursement_requests.tr(args: ['Tuesday, March 24']),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await Future.wait([
+                        context.read<HomeCubit>().getHomeData(),
+                        context
+                            .read<GetReceivedRequestsCubit>()
+                            .getReceivedRequests(),
+                      ]);
+                    },
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Text(
+                              LocaleKeys.Home_approved_disbursement_requests
+                                  .tr(args: [
+                                DateFormat('EEEE, MMMM d')
+                                    .format(DateTime.now())
+                              ]),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const SizedBox(height: 20),
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.red.withOpacity(0.3)),
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: 2),
-                                    child: Text('✅', style: TextStyle(fontSize: 16)),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      LocaleKeys.Home_disbursement_approved_msg.tr(args: ['#WH-0091']),
-                                      style: const TextStyle(
-                                        color: AppColors.accentRed,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        height: 1.4,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(Icons.notifications, color: Colors.red.shade400),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            AuthorizationHeader(id: '#WH-0091', status: LocaleKeys.Home_certified.tr()),
-                            const SizedBox(height: 12),
-                            const StoreItem(
-                              title: '5-stage RO filter',
-                              code: 'FLT-RO-001 | Location: Shelf A-12',
-                              quantity: '1 unit',
-                              status: 'ready',
-                              statusColor: AppColors.paleGreen,
-                              statusTextColor: Color(0xFF27AE60),
-                            ),
-                            const StoreItem(
-                              title: '10 inch PP candle',
-                              code: 'CND-PP-010 | Location: Shelf B-04',
-                              quantity: '3 pieces',
-                              status: 'ready',
-                              statusColor: AppColors.paleGreen,
-                              statusTextColor: Color(0xFF27AE60),
-                            ),
-                            const StoreItem(
-                              title: 'Carbon block filter',
-                              code: 'CRB-BLK-05 | Location: Shelf C-07',
-                              quantity: '1 unit',
-                              status: 'expected',
-                              statusColor: AppColors.paleOrange,
-                              statusTextColor: AppColors.orange,
-                            ),
-                            const SizedBox(height: 12),
-                            AuthorizationHeader(
-                              id: '#WH-0089',
-                              status: LocaleKeys.Home_recipient.tr(),
-                              headerColor: AppColors.palePurple,
-                              textColor: AppColors.darkrose,
-                            ),
-                            const SizedBox(height: 12),
-                            const StoreItem(
-                              title: 'Granular candle',
-                              code: 'KIT-STD-02 | Request by Sarah Ibrahim',
-                              quantity: '1 unit',
-                              status: 'recipient',
-                              statusColor: AppColors.palePurple,
-                              statusTextColor: AppColors.darkrose,
-                            ),
-                            // const SizedBox(height: 24),
-                            // SizedBox(
-                            //   width: double.infinity,
-                            //   child: ElevatedButton(
-                            //     onPressed: () {},
-                            //     style: ElevatedButton.styleFrom(
-                            //       backgroundColor: AppColors.accentRed,
-                            //       foregroundColor: Colors.white,
-                            //       padding: const EdgeInsets.symmetric(vertical: 16),
-                            //       shape: RoundedRectangleBorder(
-                            //         borderRadius: BorderRadius.circular(20),
-                            //       ),
-                            //       elevation: 0,
-                            //     ),
-                            //     child: Text(
-                            //       LocaleKeys.Home_confirm_receipt.tr(args: ['#WH-0091']),
-                            //       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            //     ),
-                            //   ),
-                            // ),
-                            const SizedBox(height: 40),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 24),
+                          const _StoreContent(),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -185,5 +129,137 @@ class StoreScreen extends StatelessWidget {
       ),
     );
   }
+}
 
+class _StoreContent extends StatelessWidget {
+  const _StoreContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, homeState) {
+        return BlocBuilder<GetReceivedRequestsCubit, GetReceivedRequestsState>(
+          builder: (context, receivedState) {
+            final isLoading =
+                homeState is HomeLoading || receivedState is GetReceivedRequestsLoading;
+
+            if (isLoading) {
+              return Skeletonizer(
+                enabled: true,
+                child: Column(
+                  children: [
+                    _buildHomeList([_getDummyOrder()]),
+                    const SizedBox(height: 24),
+                    _buildReceivedList([_getDummyRequestData()]),
+                  ],
+                ),
+              );
+            }
+
+            final homeOrders = (homeState is HomeSuccess)
+                ? homeState.homeModel.data ?? []
+                : <home.OrderModel>[];
+            final receivedRequests = (receivedState is GetReceivedRequestsSuccess)
+                ? receivedState.receivedRequestsModel.data ?? []
+                : <received.RequestData>[];
+
+            if (homeOrders.isEmpty && receivedRequests.isEmpty) {
+              return EmptyStateWidget(
+                icon: Icons.store_mall_directory_outlined,
+                text: LocaleKeys.Home_no_requests_found.tr(),
+              );
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (homeOrders.isNotEmpty) ...[
+                  _buildHomeList(homeOrders),
+                  const SizedBox(height: 24),
+                ],
+                if (receivedRequests.isNotEmpty) ...[
+                  _buildReceivedList(receivedRequests),
+                  const SizedBox(height: 40),
+                ],
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildHomeList(List<home.OrderModel> orders) {
+    return Column(
+      children: orders.map((order) {
+        return Column(
+          children: [
+            AuthorizationHeader(
+              id: '#${order.code ?? order.id}',
+              status: LocaleKeys.Home_certified.tr(),
+            ),
+            const SizedBox(height: 12),
+            ... (order.products ?? []).map((product) => StoreItem(
+              title: product.name ?? '',
+              code: '${order.code} | ${product.type ?? ''}',
+              quantity: '${product.quantity ?? 0} ${LocaleKeys.Home_pcs.tr()}',
+              status: 'ready',
+              statusColor: AppColors.paleGreen,
+              statusTextColor: const Color(0xFF27AE60),
+            )),
+            const SizedBox(height: 12),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildReceivedList(List<received.RequestData> requests) {
+    return Column(
+      children: requests.map((request) {
+        return Column(
+          children: [
+            AuthorizationHeader(
+              id: '#${request.code ?? request.id}',
+              status: LocaleKeys.Home_recipient.tr(),
+              headerColor: AppColors.palePurple,
+              textColor: AppColors.darkrose,
+            ),
+            const SizedBox(height: 12),
+            ... (request.products ?? []).map((product) => StoreItem(
+              title: product.name ?? '',
+              code: '${request.code} | ${LocaleKeys.Home_recipient.tr()} by ${request.customer ?? ''}',
+              quantity: '${product.quantity ?? 0} ${LocaleKeys.Home_pcs.tr()}',
+              status: 'recipient',
+              statusColor: AppColors.palePurple,
+              statusTextColor: AppColors.darkrose,
+            )),
+            const SizedBox(height: 12),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+  home.OrderModel _getDummyOrder() {
+    return home.OrderModel(
+      id: 1,
+      code: 12345,
+      status: home.OrderStatusModel(label: 'Certified', value: 'certified'),
+      products: [
+        home.ProductModel(name: 'Product Name', quantity: 1, type: 'Type'),
+      ],
+    );
+  }
+
+  received.RequestData _getDummyRequestData() {
+    return received.RequestData(
+      id: 1,
+      code: 12345,
+      customer: 'Customer',
+      products: [
+        received.ProductModel(name: 'Product Name', quantity: 1, type: 'Type'),
+      ],
+    );
+  }
 }

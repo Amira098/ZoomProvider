@@ -12,8 +12,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../data/model/all_requests_model.dart';
 import '../../data/model/request_card_data.dart';
-import '../view_model/home/home_cubit.dart';
-import '../view_model/home/home_state.dart';
+import '../view_model/all_requests/all_requests_cubit.dart';
+import '../view_model/all_requests/all_requests_state.dart';
 import '../widgets/request_card.dart';
 import 'store_screen.dart';
 
@@ -23,7 +23,7 @@ class AllRequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => serviceLocator<HomeCubit>()..getAllRequests(),
+      create: (_) => serviceLocator<AllRequestsCubit>()..getAllRequests(),
       child: const _AllRequestsView(),
     );
   }
@@ -126,7 +126,7 @@ class _Body extends StatelessWidget {
           child: Stack(
             children: [
 
-              BlocBuilder<HomeCubit, HomeState>(
+              BlocBuilder<AllRequestsCubit, AllRequestsState>(
                 builder: (context, state) {
                   if (state is AllRequestsLoading) {
                     return Skeletonizer(
@@ -159,7 +159,7 @@ class _Body extends StatelessWidget {
 
                     return RefreshIndicator(
                       onRefresh: () =>
-                          context.read<HomeCubit>().getAllRequests(),
+                          context.read<AllRequestsCubit>().getAllRequests(),
                       child: _buildListContent(context, state.allRequestsModel),
                     );
                   }

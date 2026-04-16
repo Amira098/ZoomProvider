@@ -55,16 +55,22 @@ import 'package:zoom_provider/feature/home/data/data_sources/home_data_sources.d
     as _i871;
 import 'package:zoom_provider/feature/home/data/data_sources/home_data_sources_imp.dart'
     as _i128;
+import 'package:zoom_provider/feature/home/presentation/view_model/all_requests/all_requests_cubit.dart'
+    as _i196;
 import 'package:zoom_provider/feature/home/presentation/view_model/complete_order/complete_order_cubit.dart'
     as _i282;
 import 'package:zoom_provider/feature/home/presentation/view_model/completed_paid/completed_paid_cubit.dart'
     as _i1063;
+import 'package:zoom_provider/feature/home/presentation/view_model/get_received_requests/get_received_requests_cubit.dart'
+    as _i388;
 import 'package:zoom_provider/feature/home/presentation/view_model/home/home_cubit.dart'
     as _i514;
 import 'package:zoom_provider/feature/home/presentation/view_model/products_in_orders/products_in_orders_cubit.dart'
     as _i194;
 import 'package:zoom_provider/feature/home/presentation/view_model/receive_order/receive_order_cubit.dart'
     as _i919;
+import 'package:zoom_provider/feature/home/presentation/view_model/request_details/request_details_cubit.dart'
+    as _i375;
 import 'package:zoom_provider/feature/home/presentation/view_model/start_order/start_order_cubit.dart'
     as _i139;
 import 'package:zoom_provider/feature/home/presentation/view_model/suspend_order/suspend_order_cubit.dart'
@@ -198,14 +204,20 @@ extension GetItInjectableX on _i174.GetIt {
         _i1027.ProfileUpdateCubit(gh<_i457.RemoteProfileUpdateDataSource>()));
     gh.factory<_i1063.CompletedPaidCubit>(
         () => _i1063.CompletedPaidCubit(gh<_i871.HomeDataSources>()));
+    gh.factory<_i196.AllRequestsCubit>(
+        () => _i196.AllRequestsCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i282.CompleteOrderCubit>(
         () => _i282.CompleteOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i388.GetReceivedRequestsCubit>(() =>
+        _i388.GetReceivedRequestsCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i514.HomeCubit>(
         () => _i514.HomeCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i194.ProductsInOrdersCubit>(() =>
         _i194.ProductsInOrdersCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i919.ReceiveOrderCubit>(
         () => _i919.ReceiveOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i375.RequestDetailsCubit>(
+        () => _i375.RequestDetailsCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i139.StartOrderCubit>(
         () => _i139.StartOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i973.SuspendOrderCubit>(

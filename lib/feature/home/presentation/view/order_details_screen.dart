@@ -13,8 +13,8 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../data/model/requests_details_model.dart';
 import '../view_model/completed_paid/completed_paid_cubit.dart';
-import '../view_model/home/home_cubit.dart';
-import '../view_model/home/home_state.dart';
+import '../view_model/request_details/request_details_cubit.dart';
+import '../view_model/request_details/request_details_state.dart';
 import '../view_model/receive_order/receive_order_cubit.dart';
 import '../view_model/receive_order/receive_order_state.dart';
 import '../view_model/start_order/start_order_cubit.dart';
@@ -38,7 +38,7 @@ class OrderDetailsScreen extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) =>
-          serviceLocator<HomeCubit>()..getRequestsDetails(requestId),
+          serviceLocator<RequestDetailsCubit>()..getRequestsDetails(requestId),
         ),
         BlocProvider(
           create: (context) => serviceLocator<ReceiveOrderCubit>(),
@@ -130,7 +130,7 @@ class OrderDetailsScreen extends StatelessWidget {
                               listener: (context, state) {
                                 if (state is ReceiveOrderSuccess) {
                                   showPrettySnack(context, LocaleKeys.OrderDetails_ReceivedSuccess.tr());
-                                  context.read<HomeCubit>().getRequestsDetails(requestId);
+                                  context.read<RequestDetailsCubit>().getRequestsDetails(requestId);
                                 } else if (state is ReceiveOrderFailure) {
                                   showPrettySnack(
                                       context,
@@ -143,7 +143,7 @@ class OrderDetailsScreen extends StatelessWidget {
                               listener: (context, state) {
                                 if (state is StartOrderSuccess) {
                                   showPrettySnack(context, LocaleKeys.OrderDetails_StartedSuccess.tr());
-                                  context.read<HomeCubit>().getRequestsDetails(requestId);
+                                  context.read<RequestDetailsCubit>().getRequestsDetails(requestId);
                                 } else if (state is StartOrderFailure) {
                                   showPrettySnack(
                                       context,
@@ -156,7 +156,7 @@ class OrderDetailsScreen extends StatelessWidget {
                               listener: (context, state) {
                                 if (state is UnsuspendOrderSuccess) {
                                   showPrettySnack(context, LocaleKeys.OrderDetails_UnsuspendedSuccess.tr());
-                                  context.read<HomeCubit>().getRequestsDetails(requestId);
+                                  context.read<RequestDetailsCubit>().getRequestsDetails(requestId);
                                 } else if (state is UnsuspendOrderFailure) {
                                   showPrettySnack(
                                       context,
@@ -166,7 +166,7 @@ class OrderDetailsScreen extends StatelessWidget {
                               },
                             ),
                           ],
-                          child: BlocBuilder<HomeCubit, HomeState>(
+                          child: BlocBuilder<RequestDetailsCubit, RequestDetailsState>(
                             builder: (context, state) {
                               if (state is RequestDetailsLoading) {
                                 return Skeletonizer(
@@ -461,7 +461,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 );
 
                 if (result == true) {
-                  context.read<HomeCubit>().getRequestsDetails(requestId);
+                  context.read<RequestDetailsCubit>().getRequestsDetails(requestId);
                 }
               },
             ),
