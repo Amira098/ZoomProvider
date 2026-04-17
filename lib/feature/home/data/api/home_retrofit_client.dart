@@ -16,6 +16,8 @@ import '../model/start_order_model.dart';
 import '../model/suspend_order_model.dart';
 import '../model/suspend_with_goods_returned.dart';
 import '../model/unsuspend_model.dart';
+import '../model/create_patient_model.dart';
+import '../model/create_reservation_model.dart';
 part 'home_retrofit_client.g.dart';
 
 @lazySingleton
@@ -97,5 +99,22 @@ Future<ProductsInOrders> productsInOrders(
 Future<GetReceivedRequestsModel> getReceivedRequests(
     @Header("Authorization") String token,
     );
+
+  @POST(ApiConstants.patients)
+  @FormUrlEncoded()
+  Future<CreatePatientModel> createPatient(
+    @Field("name") String name,
+    @Field("phone") String phone,
+    @Header("Authorization") String token,
+  );
+
+  @POST(ApiConstants.reservations)
+  @FormUrlEncoded()
+  Future<CreateReservationModel> createReservation(
+    @Field("patient_id") int patientId,
+    @Field("date") String date,
+    @Field("time") String time,
+    @Header("Authorization") String token,
+  );
 
 }

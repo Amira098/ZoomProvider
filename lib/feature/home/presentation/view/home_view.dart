@@ -15,6 +15,7 @@ import '../view_model/home/home_cubit.dart';
 import '../view_model/home/home_state.dart';
 import '../widgets/request_card.dart';
 import '../widgets/statistics_section.dart';
+import 'create_reservation/create_reservation_screen.dart';
 import 'store_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -51,6 +52,31 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(width: 8.w),
                     Text('👋', style: TextStyle(fontSize: 24.sp)),
                     Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CreateReservationScreen(),
+                          ),
+                        ).then((_) {
+                          context.read<HomeCubit>().getHomeData();
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8.r),
+                        decoration: BoxDecoration(
+                          color: Colors.white24,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 24.r,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(

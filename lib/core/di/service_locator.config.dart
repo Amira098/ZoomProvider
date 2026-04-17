@@ -61,6 +61,10 @@ import 'package:zoom_provider/feature/home/presentation/view_model/complete_orde
     as _i282;
 import 'package:zoom_provider/feature/home/presentation/view_model/completed_paid/completed_paid_cubit.dart'
     as _i1063;
+import 'package:zoom_provider/feature/home/presentation/view_model/create_patient/create_patient_cubit.dart'
+    as _i1051;
+import 'package:zoom_provider/feature/home/presentation/view_model/create_reservation/create_reservation_cubit.dart'
+    as _i45;
 import 'package:zoom_provider/feature/home/presentation/view_model/get_received_requests/get_received_requests_cubit.dart'
     as _i388;
 import 'package:zoom_provider/feature/home/presentation/view_model/home/home_cubit.dart'
@@ -208,6 +212,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i196.AllRequestsCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i282.CompleteOrderCubit>(
         () => _i282.CompleteOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i1051.CreatePatientCubit>(
+        () => _i1051.CreatePatientCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i45.CreateReservationCubit>(() =>
+        _i45.CreateReservationCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i388.GetReceivedRequestsCubit>(() =>
         _i388.GetReceivedRequestsCubit(homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i514.HomeCubit>(
