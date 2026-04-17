@@ -11,6 +11,8 @@ import 'package:zoom_provider/feature/home/data/model/start_order_model.dart';
 import 'package:zoom_provider/feature/home/data/model/suspend_order_model.dart';
 import 'package:zoom_provider/feature/home/data/model/suspend_with_goods_returned.dart';
 import 'package:zoom_provider/feature/home/data/model/unsuspend_model.dart';
+import 'package:zoom_provider/feature/home/data/model/create_patient_model.dart';
+import 'package:zoom_provider/feature/home/data/model/create_reservation_model.dart';
 
 import '../../../../core/constants/app_values.dart';
 import '../../../../core/network/common/api_result.dart';
@@ -260,6 +262,46 @@ class HomeDataSourcesImp implements HomeDataSources {
 
       case FailureResult<GetReceivedRequestsModel>():
         return FailureResult<GetReceivedRequestsModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<CreatePatientModel>> createPatient(String name, String phone) async {
+    final result = await _apiManager.execute<CreatePatientModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.createPatient(name, phone, auth);
+    });
+
+    switch (result) {
+      case SuccessResult<CreatePatientModel>():
+        return SuccessResult<CreatePatientModel>(result.data);
+
+      case FailureResult<CreatePatientModel>():
+        return FailureResult<CreatePatientModel>(
+          exception: result.exception,
+          apiError: result.apiError,
+        );
+    }
+  }
+
+  @override
+  Future<Result<CreateReservationModel>> createReservation(int patientId, String date, String time) async {
+    final result = await _apiManager.execute<CreateReservationModel>(() async {
+      final token = await SharedPreferencesUtils.getString(AppValues.token);
+      final auth = 'Bearer $token';
+      return await _apiService.createReservation(patientId, date, time, auth);
+    });
+
+    switch (result) {
+      case SuccessResult<CreateReservationModel>():
+        return SuccessResult<CreateReservationModel>(result.data);
+
+      case FailureResult<CreateReservationModel>():
+        return FailureResult<CreateReservationModel>(
           exception: result.exception,
           apiError: result.apiError,
         );

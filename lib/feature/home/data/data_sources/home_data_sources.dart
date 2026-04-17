@@ -13,6 +13,9 @@ import '../model/start_order_model.dart';
 import '../model/suspend_order_model.dart';
 import '../model/suspend_with_goods_returned.dart';
 import '../model/unsuspend_model.dart';
+import '../model/create_patient_model.dart';
+import '../model/create_reservation_model.dart';
+
 abstract class HomeDataSources {
   Future<Result<HomeModel>> getHomeData();
   Future<Result<AllRequestsModel>> getAllRequests();
@@ -26,6 +29,7 @@ abstract class HomeDataSources {
   Future<Result<SuspendWithGoodsReturnedModel>> suspendWithGoodsReturned(int orderId, FormData body);
   Future<Result<ProductsInOrders>> productsInOrders(int orderId,);
   Future<Result<GetReceivedRequestsModel>> getReceivedRequests();
-
+  Future<Result<CreatePatientModel>> createPatient(String name, String phone);
+  Future<Result<CreateReservationModel>> createReservation(int patientId, String date, String time);
 
 }
