@@ -120,11 +120,6 @@ class OrderDetailsScreen extends StatelessWidget {
                     ),
                     child: Stack(
                       children: [
-                        Positioned.fill(
-                          child: CustomPaint(
-                            painter: ToolsPatternPainter(),
-                          ),
-                        ),
                         MultiBlocListener(
                           listeners: [
                             BlocListener<ReceiveOrderCubit, ReceiveOrderState>(

@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:zoom_provider/generated/locale_keys.g.dart';
 
-import '../../../../core/utils/pick_localized_dyn.dart';
-import '../../../../core/utils/show_pretty_snack.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/show_pretty_snack.dart';
 import '../../../app_section/presentation/view/app_section.dart';
 import '../../data/model/products_in_orders.dart';
 import '../view_model/complete_order/complete_order_cubit.dart';
@@ -42,22 +42,24 @@ class StatusUpdateScreen extends StatefulWidget {
 
 class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
+  final ImagePicker _picker = ImagePicker();
 
   int _selectedStatus = 0;
 
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _materialsController = TextEditingController();
+  final TextEditingController _productQuantityController =
+  TextEditingController();
+  final TextEditingController _productNoteController = TextEditingController();
 
   ProductData? _selectedProduct;
-  final TextEditingController _productQuantityController = TextEditingController();
-  final TextEditingController _productNoteController = TextEditingController();
+  XFile? _depositReceipt;
 
   bool get _isCompletedWithPayment => _selectedStatus == 0;
   bool get _isCompletedWithoutPayment => _selectedStatus == 1;
   bool get _isGoodsLeftWithCustomer => _selectedStatus == 2;
   bool get _isGoodsReturned => _selectedStatus == 3;
-
   bool get _isNotesRequired => _isGoodsLeftWithCustomer;
 
   @override
@@ -87,13 +89,40 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     return double.tryParse(normalized);
   }
 
+  Future<void> _pickDepositReceipt() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _depositReceipt = pickedFile;
+        });
+      }
+    } catch (e) {
+      _showMessage(e.toString(), isError: true);
+    }
+  }
+
+  void _resetConditionalFields() {
+    _notesController.clear();
+    _amountController.clear();
+    _materialsController.clear();
+    _productQuantityController.clear();
+    _productNoteController.clear();
+
+    _selectedProduct = null;
+    _depositReceipt = null;
+  }
+
   void _onStatusSelected(int index) {
     setState(() {
       _selectedStatus = index;
+      _resetConditionalFields();
     });
+
     if (_isGoodsReturned) {
       context.read<ProductsInOrdersCubit>().getProductsInOrders(widget.orderId);
     }
+
     _formKey.currentState?.validate();
   }
 
@@ -120,7 +149,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     if (materialsText.isEmpty) return null;
 
     final materials = _parseDouble(materialsText);
-    if (materials == null) {
+    if (materials == null || materials < 0) {
       return LocaleKeys.status_update_error_materials_invalid.tr();
     }
 
@@ -138,18 +167,45 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     return null;
   }
 
+  String? _validateReturnedQuantity(String? value) {
+    if (!_isGoodsReturned) return null;
+
+    final quantityText = value?.trim() ?? '';
+    if (quantityText.isEmpty) {
+      return LocaleKeys.status_update_error_enter_quantity.tr();
+    }
+
+    final quantity = int.tryParse(quantityText);
+    if (quantity == null || quantity <= 0) {
+      return LocaleKeys.status_update_error_enter_quantity.tr();
+    }
+
+    return null;
+  }
+
   void _submit() {
     FocusScope.of(context).unfocus();
 
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) {
-      _showMessage(LocaleKeys.status_update_error_review_fields.tr(), isError: true);
+      _showMessage(
+        LocaleKeys.status_update_error_review_fields.tr(),
+        isError: true,
+      );
       return;
     }
 
     if (_isCompletedWithPayment) {
       if (widget.servicesIds.isEmpty) {
-        _showMessage(LocaleKeys.status_update_error_services_empty.tr(), isError: true);
+        _showMessage(
+          LocaleKeys.status_update_error_services_empty.tr(),
+          isError: true,
+        );
+        return;
+      }
+
+      if (_depositReceipt == null) {
+        _showMessage('Please upload deposit receipt', isError: true);
         return;
       }
 
@@ -163,6 +219,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
         amount: amount,
         servicesIds: widget.servicesIds,
         materials: materials,
+        depositReceipt: _depositReceipt!,
       );
       return;
     }
@@ -182,18 +239,25 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
     if (_isGoodsReturned) {
       if (_selectedProduct == null) {
-        _showMessage(LocaleKeys.status_update_error_select_product.tr(), isError: true);
+        _showMessage(
+          LocaleKeys.status_update_error_select_product.tr(),
+          isError: true,
+        );
         return;
       }
-      final quantityText = _productQuantityController.text.trim();
-      if (quantityText.isEmpty) {
-        _showMessage(LocaleKeys.status_update_error_enter_quantity.tr(), isError: true);
+
+      final quantity = int.tryParse(_productQuantityController.text.trim());
+      if (quantity == null || quantity <= 0) {
+        _showMessage(
+          LocaleKeys.status_update_error_enter_quantity.tr(),
+          isError: true,
+        );
         return;
       }
 
       final formData = FormData.fromMap({
         'products[0][id]': _selectedProduct!.productId,
-        'products[0][quantity]': int.tryParse(quantityText) ?? 0,
+        'products[0][quantity]': quantity,
         'notes': _productNoteController.text.trim(),
       });
 
@@ -277,7 +341,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                               suspendState is SuspendOrderLoading ||
                               completedPaidState is CompletedPaidLoading ||
                               suspendWithGoodsReturnedState
-                                  is SuspendWithGoodsReturnedLoading;
+                              is SuspendWithGoodsReturnedLoading;
 
                       return Scaffold(
                         backgroundColor: AppColors.surface,
@@ -286,7 +350,8 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                                padding:
+                                const EdgeInsets.fromLTRB(20, 10, 20, 20),
                                 child: Row(
                                   children: [
                                     IconButton(
@@ -314,7 +379,8 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (_) => const StoreScreen(),
+                                            builder: (_) =>
+                                            const StoreScreen(),
                                           ),
                                         );
                                       },
@@ -355,7 +421,11 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                           children: [
                                             Center(
                                               child: Text(
-                                                LocaleKeys.status_update_select_result.tr(args: [widget.customerName]),
+                                                LocaleKeys
+                                                    .status_update_select_result
+                                                    .tr(args: [
+                                                  widget.customerName
+                                                ]),
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
                                                   color: Colors.grey,
@@ -368,8 +438,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             _buildStatusCard(
                                               index: 0,
                                               icon: '✅',
-                                              title:
-                                              LocaleKeys.status_update_completed_paid.tr(),
+                                              title: LocaleKeys
+                                                  .status_update_completed_paid
+                                                  .tr(),
                                               description: '',
                                             ),
 
@@ -377,7 +448,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               const SizedBox(height: 20),
                                               Center(
                                                 child: Text(
-                                                  LocaleKeys.status_update_amount_collected.tr(),
+                                                  LocaleKeys
+                                                      .status_update_amount_collected
+                                                      .tr(),
                                                   style: const TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 13,
@@ -387,9 +460,12 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               const SizedBox(height: 10),
                                               _buildInputField(
                                                 controller: _amountController,
-                                                hintText: LocaleKeys.status_update_set_amount.tr(),
+                                                hintText: LocaleKeys
+                                                    .status_update_set_amount
+                                                    .tr(),
                                                 keyboardType:
-                                                const TextInputType.numberWithOptions(
+                                                const TextInputType
+                                                    .numberWithOptions(
                                                   decimal: true,
                                                 ),
                                                 validator: _validateAmount,
@@ -397,7 +473,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               const SizedBox(height: 16),
                                               Center(
                                                 child: Text(
-                                                  LocaleKeys.status_update_materials_amount.tr(),
+                                                  LocaleKeys
+                                                      .status_update_materials_amount
+                                                      .tr(),
                                                   style: const TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 13,
@@ -406,15 +484,20 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               ),
                                               const SizedBox(height: 10),
                                               _buildInputField(
-                                                controller: _materialsController,
-                                                hintText:
-                                                LocaleKeys.status_update_set_materials_amount.tr(),
+                                                controller:
+                                                _materialsController,
+                                                hintText: LocaleKeys
+                                                    .status_update_set_materials_amount
+                                                    .tr(),
                                                 keyboardType:
-                                                const TextInputType.numberWithOptions(
+                                                const TextInputType
+                                                    .numberWithOptions(
                                                   decimal: true,
                                                 ),
                                                 validator: _validateMaterials,
                                               ),
+                                              const SizedBox(height: 16),
+                                              _buildReceiptPicker(),
                                             ],
 
                                             const SizedBox(height: 20),
@@ -422,10 +505,12 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             _buildStatusCard(
                                               index: 1,
                                               icon: '🔧',
-                                              title:
-                                              LocaleKeys.status_update_completed_unpaid.tr(),
-                                              description:
-                                              LocaleKeys.status_update_completed_unpaid_desc.tr(),
+                                              title: LocaleKeys
+                                                  .status_update_completed_unpaid
+                                                  .tr(),
+                                              description: LocaleKeys
+                                                  .status_update_completed_unpaid_desc
+                                                  .tr(),
                                             ),
 
                                             const SizedBox(height: 20),
@@ -433,10 +518,12 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             _buildStatusCard(
                                               index: 2,
                                               icon: '📦',
-                                              title:
-                                              LocaleKeys.status_update_suspended_left.tr(),
-                                              description:
-                                              LocaleKeys.status_update_suspended_left_desc.tr(),
+                                              title: LocaleKeys
+                                                  .status_update_suspended_left
+                                                  .tr(),
+                                              description: LocaleKeys
+                                                  .status_update_suspended_left_desc
+                                                  .tr(),
                                             ),
 
                                             const SizedBox(height: 20),
@@ -458,29 +545,34 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                   ProductsInOrdersState>(
                                                 builder: (context, state) {
                                                   if (state
-                                                      is ProductsInOrdersLoading) {
+                                                  is ProductsInOrdersLoading) {
                                                     return Skeletonizer(
                                                       enabled: true,
                                                       child: _buildProductFields(
                                                         [
                                                           const ProductData(
-                                                              name: "Loading...")
+                                                            name: 'Loading...',
+                                                          ),
                                                         ],
                                                       ),
                                                     );
                                                   } else if (state
-                                                      is ProductsInOrdersSuccess) {
+                                                  is ProductsInOrdersSuccess) {
                                                     return _buildProductFields(
-                                                        state.productsInOrders
-                                                                .data ??
-                                                            []);
+                                                      state.productsInOrders
+                                                          .data ??
+                                                          [],
+                                                    );
                                                   } else if (state
-                                                      is ProductsInOrdersFailure) {
+                                                  is ProductsInOrdersFailure) {
                                                     return Center(
-                                                        child: Text(state
-                                                                .apiError
-                                                                ?.getLocalizedMessage(context) ??
-                                                            "Error loading products"));
+                                                      child: Text(
+                                                        state.apiError
+                                                            ?.getLocalizedMessage(
+                                                            context) ??
+                                                            'Error loading products',
+                                                      ),
+                                                    );
                                                   }
                                                   return const SizedBox.shrink();
                                                 },
@@ -492,7 +584,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             Center(
                                               child: RichText(
                                                 text: TextSpan(
-                                                  text: LocaleKeys.status_update_additional_notes.tr(),
+                                                  text: LocaleKeys
+                                                      .status_update_additional_notes
+                                                      .tr(),
                                                   style: TextStyle(
                                                     color: Colors.grey.shade700,
                                                     fontSize: 13,
@@ -517,8 +611,12 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             _buildInputField(
                                               controller: _notesController,
                                               hintText: _isNotesRequired
-                                                  ? LocaleKeys.status_update_add_note_required.tr()
-                                                  : LocaleKeys.status_update_add_note.tr(),
+                                                  ? LocaleKeys
+                                                  .status_update_add_note_required
+                                                  .tr()
+                                                  : LocaleKeys
+                                                  .status_update_add_note
+                                                  .tr(),
                                               maxLines: 3,
                                               validator: _validateNotes,
                                             ),
@@ -537,13 +635,14 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                   disabledBackgroundColor:
                                                   AppColors.accentRed
                                                       .withOpacity(0.6),
-                                                  padding:
-                                                  const EdgeInsets.symmetric(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
                                                     vertical: 16,
                                                   ),
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                    BorderRadius.circular(20),
+                                                    BorderRadius.circular(
+                                                        20),
                                                   ),
                                                   elevation: 0,
                                                 ),
@@ -558,7 +657,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                   ),
                                                 )
                                                     : Text(
-                                                  LocaleKeys.status_update_submit.tr(),
+                                                  LocaleKeys
+                                                      .status_update_submit
+                                                      .tr(),
                                                   style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight:
@@ -590,6 +691,81 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     );
   }
 
+  Widget _buildReceiptPicker() {
+    final hasReceipt = _depositReceipt != null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Text(
+            'Deposit receipt',
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 13,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        InkWell(
+          borderRadius: BorderRadius.circular(15),
+          onTap: _pickDepositReceipt,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: hasReceipt
+                    ? AppColors.accentRed.withOpacity(0.5)
+                    : Colors.grey.withOpacity(0.2),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  hasReceipt ? Icons.check_circle : Icons.upload_file,
+                  color:
+                  hasReceipt ? Colors.green : AppColors.accentRed,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    hasReceipt
+                        ? _depositReceipt!.name
+                        : 'Upload deposit receipt',
+                    style: TextStyle(
+                      color: AppColors.black,
+                      fontSize: 14,
+                      fontWeight:
+                      hasReceipt ? FontWeight.w600 : FontWeight.w400,
+                    ),
+                  ),
+                ),
+                if (hasReceipt)
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _depositReceipt = null;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.red,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildProductFields(List<ProductData> products) {
     return Column(
       children: [
@@ -608,7 +784,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
               items: products.map((ProductData product) {
                 return DropdownMenuItem<ProductData>(
                   value: product,
-                  child: Text(product.name ?? ""),
+                  child: Text(product.name ?? ''),
                 );
               }).toList(),
               onChanged: (ProductData? newValue) {
@@ -624,6 +800,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
           controller: _productQuantityController,
           hintText: LocaleKeys.status_update_quantity.tr(),
           keyboardType: TextInputType.number,
+          validator: _validateReturnedQuantity,
         ),
         SizedBox(height: 16.h),
         _buildInputField(
@@ -648,8 +825,13 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
       maxLines: maxLines,
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      style: TextStyle(color: AppColors.black),
       decoration: InputDecoration(
         hintText: hintText,
+        hintStyle: TextStyle(color: Colors.grey.shade500),
+        counterStyle: TextStyle(color: AppColors.black),
+        helperStyle: TextStyle(color: AppColors.black),
+        labelStyle: TextStyle(color: AppColors.black),
         filled: true,
         fillColor: Colors.white,
         contentPadding:
