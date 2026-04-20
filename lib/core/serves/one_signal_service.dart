@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+@lazySingleton
 class OneSignalService {
   OneSignalService(this.navigatorKey);
 
   final GlobalKey<NavigatorState> navigatorKey;
-
-  static OneSignalService? _instance;
-
-  static OneSignalService getInstance(GlobalKey<NavigatorState> key) {
-    _instance ??= OneSignalService(key);
-    return _instance!;
-  }
+  bool _isInitialized = false;
 
   Future<void> init({
     required String appId,
     bool debug = false,
   }) async {
-    if (debug) OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+    if (_isInitialized) return;
+
+    if (debug) {
+      OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+    }
 
     OneSignal.initialize(appId);
 
@@ -32,6 +32,8 @@ class OneSignalService {
       final data = event.notification.additionalData;
       _handleOpen(data);
     });
+
+    _isInitialized = true;
   }
 
   void _handleOpen(Map<String, dynamic>? data) {
@@ -42,20 +44,20 @@ class OneSignalService {
 
     switch (screen) {
       case 'order_details':
-      // nav.pushNamed(Routes.orderDetails);
+      // nav.pushNamed(...);
         break;
       default:
-      // nav.pushNamed(Routes.appSection);
         break;
     }
   }
 
-  /// 🔥 أهم دالة (ربط اليوزر)
   Future<void> loginUser(String userId) async {
-    await OneSignal.login(userId);
+    final trimmedUserId = userId.trim();
+    if (trimmedUserId.isEmpty) return;
 
+    await OneSignal.login(trimmedUserId);
     await OneSignal.User.addTags({
-      "user_id": userId,
+      'user_id': trimmedUserId,
     });
   }
 

@@ -10,13 +10,16 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i361;
+import 'package:flutter/material.dart' as _i409;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:logger/logger.dart' as _i974;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart' as _i528;
+import 'package:zoom_provider/core/di/service_locator.dart' as _i366;
 import 'package:zoom_provider/core/logger/logger_module.dart' as _i853;
 import 'package:zoom_provider/core/network/remote/api_manager.dart' as _i238;
 import 'package:zoom_provider/core/network/remote/dio_module.dart' as _i890;
+import 'package:zoom_provider/core/serves/one_signal_service.dart' as _i289;
 import 'package:zoom_provider/feature/about_us_screen/data/api/about_us_retrofit_client.dart'
     as _i1068;
 import 'package:zoom_provider/feature/about_us_screen/data/data_sources_imp/remote/remote_about_us_data_source.dart'
@@ -125,9 +128,12 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
+    final appModule = _$AppModule();
     final loggerModule = _$LoggerModule();
     final dioModule = _$DioModule();
     gh.singleton<_i238.ApiManager>(() => _i238.ApiManager());
+    gh.lazySingleton<_i409.GlobalKey<_i409.NavigatorState>>(
+        () => appModule.navigatorKey);
     gh.lazySingleton<_i974.Logger>(() => loggerModule.loggerProvider);
     gh.lazySingleton<_i974.PrettyPrinter>(() => loggerModule.prettyPrinter);
     gh.lazySingleton<_i361.Dio>(() => dioModule.provideDio());
@@ -164,6 +170,8 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i238.ApiManager>(),
               gh<_i520.ContactUsRetrofitClient>(),
             ));
+    gh.lazySingleton<_i289.OneSignalService>(() =>
+        _i289.OneSignalService(gh<_i409.GlobalKey<_i409.NavigatorState>>()));
     gh.factory<_i899.PrivacyUseCase>(
         () => _i899.PrivacyUseCase(gh<_i498.RemotePrivacyDataSource>()));
     gh.factory<_i1009.ContactUsCubit>(
@@ -227,15 +235,19 @@ extension GetItInjectableX on _i174.GetIt {
             homeRepo: gh<_i871.HomeDataSources>()));
     gh.factory<_i179.UnsuspendOrderCubit>(
         () => _i179.UnsuspendOrderCubit(homeRepo: gh<_i871.HomeDataSources>()));
+    gh.factory<_i610.LoginCubit>(() => _i610.LoginCubit(
+          gh<_i930.RemoteAuthDataSource>(),
+          gh<_i289.OneSignalService>(),
+        ));
     gh.factory<_i171.ForgetPasswordCubit>(
         () => _i171.ForgetPasswordCubit(gh<_i930.RemoteAuthDataSource>()));
-    gh.factory<_i610.LoginCubit>(
-        () => _i610.LoginCubit(gh<_i930.RemoteAuthDataSource>()));
     gh.factory<_i954.RegisterCubit>(
         () => _i954.RegisterCubit(gh<_i930.RemoteAuthDataSource>()));
     return this;
   }
 }
+
+class _$AppModule extends _i366.AppModule {}
 
 class _$LoggerModule extends _i853.LoggerModule {}
 

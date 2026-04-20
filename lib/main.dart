@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'core/constants/app_values.dart';
@@ -12,10 +13,19 @@ import 'core/serves/one_signal_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/app_shared_preference.dart';
 
-final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
-late OneSignalService oneSignalService;
+late final OneSignalService oneSignalService;
 
-void main() async {
+Future<void> checkOneSignal() async {
+  final id = OneSignal.User.pushSubscription.id;
+  final token = OneSignal.User.pushSubscription.token;
+  final optedIn = OneSignal.User.pushSubscription.optedIn;
+
+  print('ONESIGNAL ID: $id');
+  print('TOKEN: $token');
+  print('OPTED IN: $optedIn');
+}
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
@@ -23,12 +33,14 @@ void main() async {
   await SharedPreferencesUtils.init();
   await configureDependencies();
 
-  oneSignalService = OneSignalService.getInstance(rootNavigatorKey);
+  oneSignalService = serviceLocator<OneSignalService>();
 
   await oneSignalService.init(
     appId: AppValues.oneSignalAppId,
     debug: true,
   );
+
+  await checkOneSignal();
 
   runApp(
     EasyLocalization(
@@ -43,47 +55,36 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  Future<String> _determineStartScreen() async {
+  String _determineStartScreen() {
     final token = SharedPreferencesUtils.getData(key: AppValues.token);
     return token != null ? Routes.appSection : Routes.splash;
   }
 
   @override
   Widget build(BuildContext context) {
+    final initialRoute = _determineStartScreen();
+
     return ScreenUtilInit(
       designSize: const Size(390, 844),
       builder: (context, child) {
-        return FutureBuilder<String>(
-          future: _determineStartScreen(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const MaterialApp(
-                home: Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                ),
-              );
-            }
-
-            return SkeletonizerConfig(
-              data: SkeletonizerConfigData(
-                effect: ShimmerEffect(
-                  baseColor: Colors.grey,
-                  highlightColor: Colors.white,
-                ),
-              ),
-              child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                navigatorKey: rootNavigatorKey,
-                localizationsDelegates: context.localizationDelegates,
-                supportedLocales: context.supportedLocales,
-                locale: context.locale,
-                theme: AppTheme.lightTheme,
-                title: AppValues.appTitle,
-                onGenerateRoute: RouteGenerator.getRoute,
-                initialRoute: snapshot.data!,
-              ),
-            );
-          },
+        return SkeletonizerConfig(
+          data: const SkeletonizerConfigData(
+            effect: ShimmerEffect(
+              baseColor: Colors.grey,
+              highlightColor: Colors.white,
+            ),
+          ),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: serviceLocator<GlobalKey<NavigatorState>>(),
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            theme: AppTheme.lightTheme,
+            title: AppValues.appTitle,
+            onGenerateRoute: RouteGenerator.getRoute,
+            initialRoute: initialRoute,
+          ),
         );
       },
     );
