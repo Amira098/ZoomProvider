@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import '../../feature/home/presentation/view/order_details_screen.dart';
+
 @lazySingleton
 class OneSignalService {
   OneSignalService(this.navigatorKey);
@@ -44,8 +46,17 @@ class OneSignalService {
 
     switch (screen) {
       case 'order_details':
-      // nav.pushNamed(...);
+        final orderId = data?['order_id'];
+
+        navigatorKey.currentState?.pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => OrderDetailsScreen(
+              requestId: orderId,
+            ),
+          ),
+        );
         break;
+
       default:
         break;
     }
