@@ -26,5 +26,5 @@ abstract class AppValues {
   static const String kPrefAgentIdKey = 'chat_agent_id';
   static const String kPrefAgentNameKey = 'chat_agent_name';
 
-  static const String oneSignalAppId = '04c35639-6514-498c-8f47-f586940d9089';
+  static const String oneSignalAppId = '0d687b5a-3ea4-4681-ad9a-f5fd645355ea';
 }

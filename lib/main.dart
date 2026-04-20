@@ -12,19 +12,22 @@ import 'core/serves/one_signal_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/app_shared_preference.dart';
 
-
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+late OneSignalService oneSignalService;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
+  await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
   await SharedPreferencesUtils.init();
   await configureDependencies();
 
-  await OneSignalService(rootNavigatorKey).init(
+  oneSignalService = OneSignalService.getInstance(rootNavigatorKey);
+
+  await oneSignalService.init(
     appId: AppValues.oneSignalAppId,
+    debug: true,
   );
 
   runApp(
@@ -37,69 +40,52 @@ void main() async {
   );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  String? _initialRoute;
-
-  @override
-  void initState() {
-    super.initState();
-    _determineStartScreen();
-  }
-
-  Future<void> _determineStartScreen() async {
+  Future<String> _determineStartScreen() async {
     final token = SharedPreferencesUtils.getData(key: AppValues.token);
-    setState(() {
-      _initialRoute = token != null ? Routes.appSection : Routes.splash;
-    });
+    return token != null ? Routes.appSection : Routes.splash;
   }
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(390, 844),
-      minTextAdapt: true,
-      splitScreenMode: true,
       builder: (context, child) {
-        if (_initialRoute == null) {
-          return const MaterialApp(
-            debugShowCheckedModeBanner: false,
-            home: Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            ),
-          );
-        }
+        return FutureBuilder<String>(
+          future: _determineStartScreen(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const MaterialApp(
+                home: Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                ),
+              );
+            }
 
-        return SkeletonizerConfig(
-          data: SkeletonizerConfigData(
-            effect: ShimmerEffect(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
-              duration: const Duration(milliseconds: 1000),
-            ),
-            ignoreContainers: false,
-          ),
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            navigatorKey: rootNavigatorKey,
-            localizationsDelegates: context.localizationDelegates,
-            supportedLocales: context.supportedLocales,
-            locale: context.locale,
-            theme: AppTheme.lightTheme,
-            title: AppValues.appTitle,
-            onGenerateRoute: RouteGenerator.getRoute,
-            initialRoute: _initialRoute!,
-          ),
+            return SkeletonizerConfig(
+              data: SkeletonizerConfigData(
+                effect: ShimmerEffect(
+                  baseColor: Colors.grey,
+                  highlightColor: Colors.white,
+                ),
+              ),
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                navigatorKey: rootNavigatorKey,
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+                theme: AppTheme.lightTheme,
+                title: AppValues.appTitle,
+                onGenerateRoute: RouteGenerator.getRoute,
+                initialRoute: snapshot.data!,
+              ),
+            );
+          },
         );
-
       },
-      child: const SizedBox.shrink(),
     );
   }
 }

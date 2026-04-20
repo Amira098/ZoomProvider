@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
-import '../routes/routes.dart';
-
-/// خدمة OneSignal مع تنقّل عبر navigatorKey (بدون الحاجة لتمرير context)
 class OneSignalService {
   OneSignalService(this.navigatorKey);
 
   final GlobalKey<NavigatorState> navigatorKey;
+
+  static OneSignalService? _instance;
+
+  static OneSignalService getInstance(GlobalKey<NavigatorState> key) {
+    _instance ??= OneSignalService(key);
+    return _instance!;
+  }
 
   Future<void> init({
     required String appId,
@@ -17,27 +21,17 @@ class OneSignalService {
 
     OneSignal.initialize(appId);
 
-    // iOS فقط: اطلب الإذن (على أندرويد 13+ سيُطلب تلقائياً)
     await OneSignal.Notifications.requestPermission(true);
 
-    // لو التطبيق في الـ Foreground اعرض الإشعار (أو خصّص سلوكك)
     OneSignal.Notifications.addForegroundWillDisplayListener((event) {
       event.preventDefault();
       event.notification.display();
     });
 
-    // عند النقر على الإشعار
     OneSignal.Notifications.addClickListener((event) {
-      final data = _asMapStringDynamic(event.notification.additionalData);
+      final data = event.notification.additionalData;
       _handleOpen(data);
     });
-  }
-
-  /// توحيد الـ payload إلى Map<String, dynamic> بأمان
-  Map<String, dynamic>? _asMapStringDynamic(Map<String, Object?>? raw) {
-    if (raw == null) return null;
-    // نحاول تحويل جميع القيم إلى شكل مقروء (strings / numbers / maps)
-    return raw.map((k, v) => MapEntry(k, v));
   }
 
   void _handleOpen(Map<String, dynamic>? data) {
@@ -48,25 +42,24 @@ class OneSignalService {
 
     switch (screen) {
       case 'order_details':
-        // final orderId = data?['order_id']?.toString();
-        // nav.pushNamed(Routes.orderDetails, arguments: orderId);
+      // nav.pushNamed(Routes.orderDetails);
         break;
-
       default:
-        // nav.pushNamed(Routes.appSection);
+      // nav.pushNamed(Routes.appSection);
         break;
     }
   }
 
-  // ربط المستخدم بالجهاز عند تسجيل الدخول
-  Future<void> setExternalUserId(String userId) => OneSignal.login(userId);
+  /// 🔥 أهم دالة (ربط اليوزر)
+  Future<void> loginUser(String userId) async {
+    await OneSignal.login(userId);
 
-  // تسجيل الخروج من الإشعارات
-  Future<void> logout() => OneSignal.logout();
+    await OneSignal.User.addTags({
+      "user_id": userId,
+    });
+  }
 
-  // تعيين Tags للتجزئة
-  Future<void> setTags(Map<String, String> tags) => OneSignal.User.addTags(tags);
-
-  // حذف Tag
-  Future<void> deleteTag(String key) => OneSignal.User.removeTag(key);
+  Future<void> logout() async {
+    await OneSignal.logout();
+  }
 }
