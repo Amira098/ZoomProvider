@@ -1,4 +1,4 @@
-package com.zoom.zoom_provider
+package com.khalij.zoomoman
 
 import io.flutter.embedding.android.FlutterActivity
 
