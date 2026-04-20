@@ -574,6 +574,16 @@
     "quantity": "الكمية",
     "product_note": "ملاحظة المنتج",
     "error_select_product": "يرجى اختيار المنتج",
-    "error_enter_quantity": "يرجى إدخال الكمية"
+    "error_enter_quantity": "يرجى إدخال الكمية",
+    "company_transfer": "تم التحويل على حساب الشركة",
+    "employee_transfer": "تم التحويل على حساب الحج مصطفى",
+    "cash_transfer": "اخذ النقود كاش",
+    "deposit_receipt": "إيصال الإيداع",
+    "upload_deposit_receipt": "رفع إيصال الإيداع",
+    "select_deposit_account_type": "اختر نوع التحويل",
+    "transfer_type": "نوع التحويل",
+    "error_select_deposit_account": "يرجى اختيار نوع الحساب",
+    "error_upload_deposit_receipt": "يرجى رفع إيصال الإيداع",
+    "error_loading_products": "خطأ في تحميل المنتجات"
   }
 }

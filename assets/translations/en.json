@@ -574,6 +574,16 @@
     "quantity": "Quantity",
     "product_note": "Product Note",
     "error_select_product": "Please select a product",
-    "error_enter_quantity": "Please enter quantity"
+    "error_enter_quantity": "Please enter quantity",
+    "company_transfer": "Transferred to company account",
+    "employee_transfer": "Transferred to Al-Haj Mustafa account",
+    "cash_transfer": "Took cash",
+    "deposit_receipt": "Deposit receipt",
+    "upload_deposit_receipt": "Upload deposit receipt",
+    "select_deposit_account_type": "Select deposit account type",
+    "transfer_type": "Transfer type",
+    "error_select_deposit_account": "Please select deposit account type",
+    "error_upload_deposit_receipt": "Please upload deposit receipt",
+    "error_loading_products": "Error loading products"
   }
 }

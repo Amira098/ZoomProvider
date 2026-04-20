@@ -22,6 +22,10 @@ import '../view_model/suspend_order/suspend_order_cubit.dart';
 import '../view_model/suspend_order/suspend_order_state.dart';
 import '../view_model/suspend_with_goods_returned/suspend_with_goods_returned_cubit.dart';
 import '../view_model/suspend_with_goods_returned/suspend_with_goods_returned_state.dart';
+import '../widgets/custom_input_field.dart';
+import '../widgets/deposit_section.dart';
+import '../widgets/returned_product_section.dart';
+import '../widgets/status_card.dart';
 import 'store_screen.dart';
 
 class StatusUpdateScreen extends StatefulWidget {
@@ -59,15 +63,15 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
   static const List<Map<String, String>> _depositAccountOptions = [
     {
-      'label': 'تم التحويل على حساب الشركة',
+      'label': LocaleKeys.status_update_company_transfer,
       'value': 'company_transfer',
     },
     {
-      'label': 'تم التحويل على حساب الحج مصطفى',
+      'label': LocaleKeys.status_update_employee_transfer,
       'value': 'employee_transfer',
     },
     {
-      'label': 'اخذ النقود كاش',
+      'label': LocaleKeys.status_update_cash_transfer,
       'value': 'cash',
     },
   ];
@@ -222,12 +226,12 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
       }
 
       if (_selectedDepositAccountType == null) {
-        _showMessage('Please select deposit account type', isError: true);
+        _showMessage(LocaleKeys.status_update_error_select_deposit_account.tr(), isError: true);
         return;
       }
 
       if (_depositReceipt == null) {
-        _showMessage('Please upload deposit receipt', isError: true);
+        _showMessage(LocaleKeys.status_update_error_upload_deposit_receipt.tr(), isError: true);
         return;
       }
 
@@ -458,13 +462,16 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             ),
                                             const SizedBox(height: 20),
 
-                                            _buildStatusCard(
+                                            StatusCard(
                                               index: 0,
+                                              selectedStatus: _selectedStatus,
                                               icon: '✅',
                                               title: LocaleKeys
                                                   .status_update_completed_paid
                                                   .tr(),
                                               description: '',
+                                              onTap: () =>
+                                                  _onStatusSelected(0),
                                             ),
 
                                             if (_isCompletedWithPayment) ...[
@@ -481,14 +488,14 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                 ),
                                               ),
                                               const SizedBox(height: 10),
-                                              _buildInputField(
+                                              CustomInputField(
                                                 controller: _amountController,
                                                 hintText: LocaleKeys
                                                     .status_update_set_amount
                                                     .tr(),
                                                 keyboardType:
-                                                const TextInputType
-                                                    .numberWithOptions(
+                                                    const TextInputType
+                                                        .numberWithOptions(
                                                   decimal: true,
                                                 ),
                                                 validator: _validateAmount,
@@ -506,29 +513,47 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                 ),
                                               ),
                                               const SizedBox(height: 10),
-                                              _buildInputField(
+                                              CustomInputField(
                                                 controller:
-                                                _materialsController,
+                                                    _materialsController,
                                                 hintText: LocaleKeys
                                                     .status_update_set_materials_amount
                                                     .tr(),
                                                 keyboardType:
-                                                const TextInputType
-                                                    .numberWithOptions(
+                                                    const TextInputType
+                                                        .numberWithOptions(
                                                   decimal: true,
                                                 ),
                                                 validator: _validateMaterials,
                                               ),
                                               const SizedBox(height: 16),
-                                              _buildDepositAccountTypeDropdown(),
-                                              const SizedBox(height: 16),
-                                              _buildReceiptPicker(),
+                                              DepositSection(
+                                                selectedDepositAccountType:
+                                                    _selectedDepositAccountType,
+                                                depositReceipt: _depositReceipt,
+                                                depositAccountOptions:
+                                                    _depositAccountOptions,
+                                                onAccountTypeChanged: (value) {
+                                                  setState(() {
+                                                    _selectedDepositAccountType =
+                                                        value;
+                                                  });
+                                                },
+                                                onPickReceipt:
+                                                    _pickDepositReceipt,
+                                                onRemoveReceipt: () {
+                                                  setState(() {
+                                                    _depositReceipt = null;
+                                                  });
+                                                },
+                                              ),
                                             ],
 
                                             const SizedBox(height: 20),
 
-                                            _buildStatusCard(
+                                            StatusCard(
                                               index: 1,
+                                              selectedStatus: _selectedStatus,
                                               icon: '🔧',
                                               title: LocaleKeys
                                                   .status_update_completed_unpaid
@@ -536,12 +561,15 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               description: LocaleKeys
                                                   .status_update_completed_unpaid_desc
                                                   .tr(),
+                                              onTap: () =>
+                                                  _onStatusSelected(1),
                                             ),
 
                                             const SizedBox(height: 20),
 
-                                            _buildStatusCard(
+                                            StatusCard(
                                               index: 2,
+                                              selectedStatus: _selectedStatus,
                                               icon: '📦',
                                               title: LocaleKeys
                                                   .status_update_suspended_left
@@ -549,12 +577,15 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               description: LocaleKeys
                                                   .status_update_suspended_left_desc
                                                   .tr(),
+                                              onTap: () =>
+                                                  _onStatusSelected(2),
                                             ),
 
                                             const SizedBox(height: 20),
 
-                                            _buildStatusCard(
+                                            StatusCard(
                                               index: 3,
+                                              selectedStatus: _selectedStatus,
                                               icon: '↩️',
                                               title: LocaleKeys
                                                   .status_update_suspended_returned
@@ -562,46 +593,26 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               description: LocaleKeys
                                                   .status_update_suspended_returned_desc
                                                   .tr(),
+                                              onTap: () =>
+                                                  _onStatusSelected(3),
                                             ),
 
                                             if (_isGoodsReturned) ...[
                                               SizedBox(height: 20.h),
-                                              BlocBuilder<ProductsInOrdersCubit,
-                                                  ProductsInOrdersState>(
-                                                builder: (context, state) {
-                                                  if (state
-                                                  is ProductsInOrdersLoading) {
-                                                    return Skeletonizer(
-                                                      enabled: true,
-                                                      child:
-                                                      _buildProductFields(
-                                                        [
-                                                          const ProductData(
-                                                            name: 'Loading...',
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  } else if (state
-                                                  is ProductsInOrdersSuccess) {
-                                                    return _buildProductFields(
-                                                      state.productsInOrders
-                                                          .data ??
-                                                          [],
-                                                    );
-                                                  } else if (state
-                                                  is ProductsInOrdersFailure) {
-                                                    return Center(
-                                                      child: Text(
-                                                        state.apiError
-                                                            ?.getLocalizedMessage(
-                                                            context) ??
-                                                            'Error loading products',
-                                                      ),
-                                                    );
-                                                  }
-                                                  return const SizedBox.shrink();
+                                              ReturnedProductSection(
+                                                selectedProduct:
+                                                    _selectedProduct,
+                                                quantityController:
+                                                    _productQuantityController,
+                                                noteController:
+                                                    _productNoteController,
+                                                onProductChanged: (newValue) {
+                                                  setState(() {
+                                                    _selectedProduct = newValue;
+                                                  });
                                                 },
+                                                quantityValidator:
+                                                    _validateReturnedQuantity,
                                               ),
                                             ],
 
@@ -634,7 +645,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                             ),
                                             const SizedBox(height: 10),
 
-                                            _buildInputField(
+                                            CustomInputField(
                                               controller: _notesController,
                                               hintText: _isNotesRequired
                                                   ? LocaleKeys
@@ -717,286 +728,4 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     );
   }
 
-  Widget _buildReceiptPicker() {
-    final hasReceipt = _depositReceipt != null;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Center(
-          child: Text(
-            'Deposit receipt',
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 13,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        InkWell(
-          borderRadius: BorderRadius.circular(15),
-          onTap: _pickDepositReceipt,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: hasReceipt
-                    ? AppColors.accentRed.withOpacity(0.5)
-                    : Colors.grey.withOpacity(0.2),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  hasReceipt ? Icons.check_circle : Icons.upload_file,
-                  color: hasReceipt ? Colors.green : AppColors.accentRed,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    hasReceipt
-                        ? _depositReceipt!.name
-                        : 'Upload deposit receipt',
-                    style: TextStyle(
-                      color: AppColors.black,
-                      fontSize: 14,
-                      fontWeight:
-                      hasReceipt ? FontWeight.w600 : FontWeight.w400,
-                    ),
-                  ),
-                ),
-                if (hasReceipt)
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _depositReceipt = null;
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.close,
-                      color: Colors.red,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProductFields(List<ProductData> products) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15.r),
-            border: Border.all(color: Colors.grey.withOpacity(0.2)),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<ProductData>(
-              isExpanded: true,
-              value: _selectedProduct,
-              hint: Text(LocaleKeys.status_update_select_product.tr()),
-              items: products.map((ProductData product) {
-                return DropdownMenuItem<ProductData>(
-                  value: product,
-                  child: Text(product.name ?? ''),
-                );
-              }).toList(),
-              onChanged: (ProductData? newValue) {
-                setState(() {
-                  _selectedProduct = newValue;
-                });
-              },
-            ),
-          ),
-        ),
-        SizedBox(height: 16.h),
-        _buildInputField(
-          controller: _productQuantityController,
-          hintText: LocaleKeys.status_update_quantity.tr(),
-          keyboardType: TextInputType.number,
-          validator: _validateReturnedQuantity,
-        ),
-        SizedBox(height: 16.h),
-        _buildInputField(
-          controller: _productNoteController,
-          hintText: LocaleKeys.status_update_product_note.tr(),
-          maxLines: 2,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hintText,
-    TextInputType? keyboardType,
-    int maxLines = 1,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      maxLines: maxLines,
-      validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      style: TextStyle(color: AppColors.black),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey.shade500),
-        counterStyle: TextStyle(color: AppColors.black),
-        helperStyle: TextStyle(color: AppColors.black),
-        labelStyle: TextStyle(color: AppColors.black),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding:
-        const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide(
-            color: AppColors.accentRed.withOpacity(0.6),
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: const BorderSide(color: Colors.red),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusCard({
-    required int index,
-    required String icon,
-    required String title,
-    required String description,
-  }) {
-    final isSelected = _selectedStatus == index;
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(30),
-      onTap: () => _onStatusSelected(index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF2F4F7),
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(
-            color: isSelected
-                ? AppColors.accentRed.withOpacity(0.6)
-                : Colors.grey.withOpacity(0.12),
-            width: isSelected ? 1.4 : 1,
-          ),
-          boxShadow: isSelected
-              ? [
-            BoxShadow(
-              color: AppColors.accentRed.withOpacity(0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ]
-              : [],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(icon, style: const TextStyle(fontSize: 18)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      height: 1.3,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            if (description.trim().isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.only(left: 26),
-                child: Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDepositAccountTypeDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Center(
-          child: Text(
-            'نوع التحويل',
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 13,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: Colors.grey.withOpacity(0.2)),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              isExpanded: true,
-              value: _selectedDepositAccountType,
-              hint: const Text('اختر نوع التحويل',style: TextStyle(fontSize: 15),),
-              items: _depositAccountOptions.map((option) {
-                return DropdownMenuItem<String>(
-                  value: option['value'],
-                  child: Text(option['label']!,style: TextStyle(fontSize: 15),),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedDepositAccountType = value;
-                });
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 }
