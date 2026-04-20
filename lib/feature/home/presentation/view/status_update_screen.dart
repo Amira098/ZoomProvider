@@ -55,6 +55,22 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
   ProductData? _selectedProduct;
   XFile? _depositReceipt;
+  String? _selectedDepositAccountType;
+
+  static const List<Map<String, String>> _depositAccountOptions = [
+    {
+      'label': 'تم التحويل على حساب الشركة',
+      'value': 'company_transfer',
+    },
+    {
+      'label': 'تم التحويل على حساب الحج مصطفى',
+      'value': 'employee_transfer',
+    },
+    {
+      'label': 'اخذ النقود كاش',
+      'value': 'cash',
+    },
+  ];
 
   bool get _isCompletedWithPayment => _selectedStatus == 0;
   bool get _isCompletedWithoutPayment => _selectedStatus == 1;
@@ -111,6 +127,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
 
     _selectedProduct = null;
     _depositReceipt = null;
+    _selectedDepositAccountType = null;
   }
 
   void _onStatusSelected(int index) {
@@ -204,6 +221,11 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
         return;
       }
 
+      if (_selectedDepositAccountType == null) {
+        _showMessage('Please select deposit account type', isError: true);
+        return;
+      }
+
       if (_depositReceipt == null) {
         _showMessage('Please upload deposit receipt', isError: true);
         return;
@@ -220,6 +242,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
         servicesIds: widget.servicesIds,
         materials: materials,
         depositReceipt: _depositReceipt!,
+        depositAccountType: _selectedDepositAccountType!,
       );
       return;
     }
@@ -497,6 +520,8 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                 validator: _validateMaterials,
                                               ),
                                               const SizedBox(height: 16),
+                                              _buildDepositAccountTypeDropdown(),
+                                              const SizedBox(height: 16),
                                               _buildReceiptPicker(),
                                             ],
 
@@ -548,7 +573,8 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                   is ProductsInOrdersLoading) {
                                                     return Skeletonizer(
                                                       enabled: true,
-                                                      child: _buildProductFields(
+                                                      child:
+                                                      _buildProductFields(
                                                         [
                                                           const ProductData(
                                                             name: 'Loading...',
@@ -729,8 +755,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
               children: [
                 Icon(
                   hasReceipt ? Icons.check_circle : Icons.upload_file,
-                  color:
-                  hasReceipt ? Colors.green : AppColors.accentRed,
+                  color: hasReceipt ? Colors.green : AppColors.accentRed,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -928,6 +953,50 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDepositAccountTypeDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Text(
+            'نوع التحويل',
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 13,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: Colors.grey.withOpacity(0.2)),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              isExpanded: true,
+              value: _selectedDepositAccountType,
+              hint: const Text('اختر نوع التحويل',style: TextStyle(fontSize: 15),),
+              items: _depositAccountOptions.map((option) {
+                return DropdownMenuItem<String>(
+                  value: option['value'],
+                  child: Text(option['label']!,style: TextStyle(fontSize: 15),),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedDepositAccountType = value;
+                });
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

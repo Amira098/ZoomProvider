@@ -20,6 +20,7 @@ class CompletedPaidCubit extends Cubit<CompletedPaidState> {
     required List<int> servicesIds,
     double? materials,
     required XFile depositReceipt,
+    required String depositAccountType,
   }) async {
     emit(const CompletedPaidLoading());
 
@@ -32,6 +33,7 @@ class CompletedPaidCubit extends Cubit<CompletedPaidState> {
           depositReceipt.path,
           filename: depositReceipt.name,
         ),
+        'deposit_account_type':depositAccountType,
       });
 
       final result = await repository.completedPaid(orderId, formData);
