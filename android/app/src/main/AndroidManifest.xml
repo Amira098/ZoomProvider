@@ -1,25 +1,22 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.zoomtechnical.app">
 
-    <!-- 🔥 Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <!-- Location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
-    <!-- اختياري (لو عايز الموقع في الخلفية) -->
-    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/> -->
-
     <application
-        android:label="Zoom Technical "
+        android:label="Zoom Technical"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-        <!-- 🔥 مهم للأندرويد 9+ -->
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false"/>
 
         <activity
-            android:name="com.khalij.zoomoman.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
@@ -38,19 +35,15 @@
             </intent-filter>
         </activity>
 
-        <!-- Flutter -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <!-- 🔥 Google Maps API -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB4H3wQWZ_8RPrcApCAgHUnuLm36PU_9Rw"/>
-
     </application>
 
-    <!-- Queries -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
