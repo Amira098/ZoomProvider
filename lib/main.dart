@@ -12,6 +12,7 @@ import 'core/routes/routes.dart';
 import 'core/serves/one_signal_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/app_shared_preference.dart';
+import 'firebase_options.dart';
 
 late final OneSignalService oneSignalService;
 
@@ -28,7 +29,9 @@ Future<void> checkOneSignal() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await EasyLocalization.ensureInitialized();
   await SharedPreferencesUtils.init();
   await configureDependencies();
