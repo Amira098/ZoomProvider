@@ -104,6 +104,8 @@ import 'package:zoom_provider/feature/settings_screen/data/api/delete_retrofit_c
     as _i415;
 import 'package:zoom_provider/feature/settings_screen/data/data_sources_imp/delete_account_data_sources.dart'
     as _i418;
+import 'package:zoom_provider/feature/settings_screen/data/data_sources_imp/delete_account_data_sources_impl.dart'
+    as _i276;
 import 'package:zoom_provider/feature/settings_screen/presentation/view_model/delete_account_cubit.dart'
     as _i269;
 import 'package:zoom_provider/feature/Terms_conditions_screen/data/api/terms_retrofit_client.dart'
@@ -176,8 +178,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i899.PrivacyUseCase(gh<_i498.RemotePrivacyDataSource>()));
     gh.factory<_i1009.ContactUsCubit>(
         () => _i1009.ContactUsCubit(gh<_i368.RemoteContactUsDataSource>()));
-    gh.factory<_i269.DeleteCubit>(
-        () => _i269.DeleteCubit(gh<_i418.DeleteDataSources>()));
+    gh.factory<_i418.DeleteDataSources>(() => _i276.DeleteDataSourcesImpl(
+          gh<_i415.DeleteRetrofitClient>(),
+          gh<_i238.ApiManager>(),
+        ));
     gh.factory<_i547.AboutUsUseCase>(
         () => _i547.AboutUsUseCase(gh<_i966.RemoteAboutUsDataSource>()));
     gh.factory<_i457.RemoteProfileUpdateDataSource>(
@@ -239,6 +243,8 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i930.RemoteAuthDataSource>(),
           gh<_i289.OneSignalService>(),
         ));
+    gh.factory<_i269.DeleteCubit>(
+        () => _i269.DeleteCubit(gh<_i418.DeleteDataSources>()));
     gh.factory<_i171.ForgetPasswordCubit>(
         () => _i171.ForgetPasswordCubit(gh<_i930.RemoteAuthDataSource>()));
     gh.factory<_i954.RegisterCubit>(
