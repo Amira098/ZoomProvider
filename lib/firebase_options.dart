@@ -15,10 +15,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-            'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -26,15 +23,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -49,7 +40,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBk3CO9JwrKaH5wQHX0qL1mNxYEupkVAgM',
-    appId: '1:537414522632:android:918ffa764e92dd82a23ebd',
+    appId: '1:537414522632:android:465a5331e322e765a23ebd',
     messagingSenderId: '537414522632',
     projectId: 'zoomoman-67957',
     storageBucket: 'zoomoman-67957.firebasestorage.app',
@@ -57,10 +48,40 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCDj4P7KJak3iiid4xIqCO49HQrkLkEYy0',
-    appId: '1:537414522632:ios:7ac2ba33be44520ba23ebd',
+    appId: '1:537414522632:ios:7cfb7425524cd4dba23ebd',
     messagingSenderId: '537414522632',
     projectId: 'zoomoman-67957',
     storageBucket: 'zoomoman-67957.firebasestorage.app',
-    iosBundleId: 'com.zoomtechnical.app',
+    iosBundleId: 'com.zoom.zoomProvider',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDc5QdMBZofeglWpFZo-2CIzLQZeNEpIxw',
+    appId: '1:537414522632:web:2b9950f9db6bedb4a23ebd',
+    messagingSenderId: '537414522632',
+    projectId: 'zoomoman-67957',
+    authDomain: 'zoomoman-67957.firebaseapp.com',
+    storageBucket: 'zoomoman-67957.firebasestorage.app',
+    measurementId: 'G-BJ175Q9K2K',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCDj4P7KJak3iiid4xIqCO49HQrkLkEYy0',
+    appId: '1:537414522632:ios:e71525402cb34127a23ebd',
+    messagingSenderId: '537414522632',
+    projectId: 'zoomoman-67957',
+    storageBucket: 'zoomoman-67957.firebasestorage.app',
+    iosBundleId: 'com.example.zoomProvider',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDc5QdMBZofeglWpFZo-2CIzLQZeNEpIxw',
+    appId: '1:537414522632:web:74d6245c31c2b90da23ebd',
+    messagingSenderId: '537414522632',
+    projectId: 'zoomoman-67957',
+    authDomain: 'zoomoman-67957.firebaseapp.com',
+    storageBucket: 'zoomoman-67957.firebasestorage.app',
+    measurementId: 'G-18RVDL4855',
+  );
+
 }

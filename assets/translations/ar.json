@@ -585,5 +585,7 @@
     "error_select_deposit_account": "يرجى اختيار نوع الحساب",
     "error_upload_deposit_receipt": "يرجى رفع إيصال الإيداع",
     "error_loading_products": "خطأ في تحميل المنتجات"
-  }
+  },
+  "addProduct": "إضافة منتج آخر"
+
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:zoom_provider/generated/locale_keys.g.dart';
 
 import '../../../../core/constants/app_colors.dart';
@@ -23,8 +24,6 @@ import '../view_model/suspend_order/suspend_order_state.dart';
 import '../view_model/suspend_with_goods_returned/suspend_with_goods_returned_cubit.dart';
 import '../view_model/suspend_with_goods_returned/suspend_with_goods_returned_state.dart';
 import '../widgets/custom_input_field.dart';
-import '../widgets/deposit_section.dart';
-import '../widgets/returned_product_section.dart';
 import '../widgets/status_card.dart';
 import 'store_screen.dart';
 
@@ -53,12 +52,13 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
   final TextEditingController _notesController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _materialsController = TextEditingController();
-  final TextEditingController _productQuantityController =
-  TextEditingController();
-  final TextEditingController _productNoteController = TextEditingController();
 
-  ProductData? _selectedProduct;
-  XFile? _depositReceipt;
+  final List<XFile> _depositReceipts = [];
+
+  final List<ReturnedProductInput> _returnedProducts = [
+    ReturnedProductInput(),
+  ];
+
   String? _selectedDepositAccountType;
 
   static const List<Map<String, String>> _depositAccountOptions = [
@@ -87,8 +87,11 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     _notesController.dispose();
     _amountController.dispose();
     _materialsController.dispose();
-    _productQuantityController.dispose();
-    _productNoteController.dispose();
+
+    for (final item in _returnedProducts) {
+      item.dispose();
+    }
+
     super.dispose();
   }
 
@@ -109,12 +112,13 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     return double.tryParse(normalized);
   }
 
-  Future<void> _pickDepositReceipt() async {
+  Future<void> _pickDepositReceipts() async {
     try {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
+      final pickedFiles = await _picker.pickMultiImage();
+
+      if (pickedFiles.isNotEmpty) {
         setState(() {
-          _depositReceipt = pickedFile;
+          _depositReceipts.addAll(pickedFiles);
         });
       }
     } catch (e) {
@@ -126,12 +130,17 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     _notesController.clear();
     _amountController.clear();
     _materialsController.clear();
-    _productQuantityController.clear();
-    _productNoteController.clear();
 
-    _selectedProduct = null;
-    _depositReceipt = null;
+    _depositReceipts.clear();
     _selectedDepositAccountType = null;
+
+    for (final item in _returnedProducts) {
+      item.dispose();
+    }
+
+    _returnedProducts
+      ..clear()
+      ..add(ReturnedProductInput());
   }
 
   void _onStatusSelected(int index) {
@@ -151,11 +160,13 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     if (!_isCompletedWithPayment) return null;
 
     final amountText = value?.trim() ?? '';
+
     if (amountText.isEmpty) {
       return LocaleKeys.status_update_error_amount_empty.tr();
     }
 
     final amount = _parseDouble(amountText);
+
     if (amount == null || amount <= 0) {
       return LocaleKeys.status_update_error_amount_invalid.tr();
     }
@@ -167,9 +178,11 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     if (!_isCompletedWithPayment) return null;
 
     final materialsText = value?.trim() ?? '';
+
     if (materialsText.isEmpty) return null;
 
     final materials = _parseDouble(materialsText);
+
     if (materials == null || materials < 0) {
       return LocaleKeys.status_update_error_materials_invalid.tr();
     }
@@ -181,6 +194,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     if (!_isNotesRequired) return null;
 
     final note = value?.trim() ?? '';
+
     if (note.isEmpty) {
       return LocaleKeys.status_update_error_note_required.tr();
     }
@@ -188,26 +202,40 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
     return null;
   }
 
-  String? _validateReturnedQuantity(String? value) {
-    if (!_isGoodsReturned) return null;
+  void _addReturnedProduct() {
+    setState(() {
+      _returnedProducts.add(ReturnedProductInput());
+    });
+  }
 
-    final quantityText = value?.trim() ?? '';
-    if (quantityText.isEmpty) {
-      return LocaleKeys.status_update_error_enter_quantity.tr();
+  void _removeReturnedProduct(int index) {
+    if (_returnedProducts.length <= 1) return;
+
+    setState(() {
+      _returnedProducts[index].dispose();
+      _returnedProducts.removeAt(index);
+    });
+  }
+
+  bool _validateReturnedProductsManually() {
+    if (!_isGoodsReturned) return true;
+
+    for (final item in _returnedProducts) {
+      final quantity = int.tryParse(item.quantityController.text.trim());
+
+      if (item.product == null || quantity == null || quantity <= 0) {
+        return false;
+      }
     }
 
-    final quantity = int.tryParse(quantityText);
-    if (quantity == null || quantity <= 0) {
-      return LocaleKeys.status_update_error_enter_quantity.tr();
-    }
-
-    return null;
+    return true;
   }
 
   void _submit() {
     FocusScope.of(context).unfocus();
 
     final isValid = _formKey.currentState?.validate() ?? false;
+
     if (!isValid) {
       _showMessage(
         LocaleKeys.status_update_error_review_fields.tr(),
@@ -226,28 +254,34 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
       }
 
       if (_selectedDepositAccountType == null) {
-        _showMessage(LocaleKeys.status_update_error_select_deposit_account.tr(), isError: true);
+        _showMessage(
+          LocaleKeys.status_update_error_select_deposit_account.tr(),
+          isError: true,
+        );
         return;
       }
 
-      if (_depositReceipt == null) {
-        _showMessage(LocaleKeys.status_update_error_upload_deposit_receipt.tr(), isError: true);
+      if (_depositReceipts.isEmpty) {
+        _showMessage(
+          LocaleKeys.status_update_error_upload_deposit_receipt.tr(),
+          isError: true,
+        );
         return;
       }
 
       final amount = _parseDouble(_amountController.text.trim())!;
       final materialsText = _materialsController.text.trim();
-      final materials =
-      materialsText.isEmpty ? null : _parseDouble(materialsText);
+      final materials = materialsText.isEmpty ? null : _parseDouble(materialsText);
 
       context.read<CompletedPaidCubit>().completedPaid(
         orderId: widget.orderId,
         amount: amount,
         servicesIds: widget.servicesIds,
         materials: materials,
-        depositReceipt: _depositReceipt!,
+        depositReceipts: _depositReceipts,
         depositAccountType: _selectedDepositAccountType!,
       );
+
       return;
     }
 
@@ -261,38 +295,341 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
         widget.orderId,
         _notesController.text.trim(),
       );
+
       return;
     }
 
     if (_isGoodsReturned) {
-      if (_selectedProduct == null) {
+      final validReturnedProducts = _validateReturnedProductsManually();
+
+      if (!validReturnedProducts) {
         _showMessage(
-          LocaleKeys.status_update_error_select_product.tr(),
+          LocaleKeys.status_update_error_review_fields.tr(),
           isError: true,
         );
         return;
       }
 
-      final quantity = int.tryParse(_productQuantityController.text.trim());
-      if (quantity == null || quantity <= 0) {
-        _showMessage(
-          LocaleKeys.status_update_error_enter_quantity.tr(),
-          isError: true,
-        );
-        return;
+      final formMap = <String, dynamic>{};
+
+      for (int i = 0; i < _returnedProducts.length; i++) {
+        final item = _returnedProducts[i];
+        final quantity = int.parse(item.quantityController.text.trim());
+
+        formMap['products[$i][id]'] = item.product!.productId;
+        formMap['products[$i][quantity]'] = quantity;
+
+        final productNote = item.noteController.text.trim();
+
+        if (productNote.isNotEmpty) {
+          formMap['products[$i][notes]'] = productNote;
+        }
       }
 
-      final formData = FormData.fromMap({
-        'products[0][id]': _selectedProduct!.productId,
-        'products[0][quantity]': quantity,
-        'notes': _productNoteController.text.trim(),
-      });
+      final generalNote = _notesController.text.trim();
+
+      if (generalNote.isNotEmpty) {
+        formMap['notes'] = generalNote;
+      }
+
+      final formData = FormData.fromMap(formMap);
 
       context
           .read<SuspendWithGoodsReturnedCubit>()
           .suspendWithGoodsReturned(widget.orderId, formData);
+
       return;
     }
+  }
+
+  Widget _buildDepositSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DropdownButtonFormField<String>(
+          value: _selectedDepositAccountType,
+          decoration: InputDecoration(
+            hintText: LocaleKeys.status_update_company_transfer.tr(),
+            hintStyle: TextStyle(fontSize: 12),
+            filled: true,
+            counterStyle: TextStyle(fontSize: 14),
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: Colors.grey.shade200),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: AppColors.accentRed),
+            ),
+          ),
+          items: _depositAccountOptions.map((item) {
+            return DropdownMenuItem<String>(
+              value: item['value'],
+              child: Text(item['label']!.tr(),style: TextStyle(fontSize: 14),),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedDepositAccountType = value;
+            });
+          },
+        ),
+        const SizedBox(height: 14),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: _pickDepositReceipts,
+            icon: const Icon(Icons.upload_file),
+            label: Text(
+              LocaleKeys.status_update_upload_deposit_receipt.tr(),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.accentRed,
+              side: const BorderSide(color: AppColors.accentRed),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          ),
+        ),
+        if (_depositReceipts.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: List.generate(_depositReceipts.length, (index) {
+              final image = _depositReceipts[index];
+
+              return Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(
+                      File(image.path),
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _depositReceipts.removeAt(index);
+                        });
+                      },
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.black54,
+                          shape: BoxShape.circle,
+                        ),
+                        padding: const EdgeInsets.all(4),
+                        child: const Icon(
+                          Icons.close,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildReturnedProductsSection() {
+    return BlocBuilder<ProductsInOrdersCubit, ProductsInOrdersState>(
+      builder: (context, state) {
+        if (state is ProductsInOrdersLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (state is ProductsInOrdersFailure) {
+          return Text(
+            state.apiError?.getLocalizedMessage(context) ??
+                LocaleKeys.status_update_failed_suspend.tr(),
+            style: const TextStyle(
+              color: Colors.red,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          );
+        }
+
+        if (state is ProductsInOrdersSuccess) {
+          final products = state.productsInOrders.data ?? [];
+
+          if (products.isEmpty) {
+            return Center(
+              child: Text(
+                LocaleKeys.status_update_error_select_product.tr(),
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 13,
+                ),
+              ),
+            );
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...List.generate(_returnedProducts.length, (index) {
+                final item = _returnedProducts[index];
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 14),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${LocaleKeys.status_update_select_product.tr()} ${index + 1}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          if (_returnedProducts.length > 1)
+                            IconButton(
+                              onPressed: () => _removeReturnedProduct(index),
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      DropdownButtonFormField<ProductData>(
+                        value: item.product,
+                        decoration: InputDecoration(
+                          hintText: LocaleKeys.status_update_select_product.tr(),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: Colors.grey.shade200),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: AppColors.accentRed,
+                            ),
+                          ),
+                        ),
+                        items: products.map((product) {
+                          return DropdownMenuItem<ProductData>(
+                            value: product,
+                            child: Text(
+                              product.name ?? '',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            item.product = value;
+                          });
+                        },
+                        validator: (_) {
+                          if (!_isGoodsReturned) return null;
+
+                          if (item.product == null) {
+                            return LocaleKeys.status_update_error_select_product
+                                .tr();
+                          }
+
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      CustomInputField(
+                        controller: item.quantityController,
+                        hintText: LocaleKeys.status_update_quantity.tr(),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (!_isGoodsReturned) return null;
+
+                          final quantity = int.tryParse(value?.trim() ?? '');
+
+                          if (quantity == null || quantity <= 0) {
+                            return LocaleKeys
+                                .status_update_error_enter_quantity
+                                .tr();
+                          }
+
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      CustomInputField(
+                        controller: item.noteController,
+                        hintText: LocaleKeys.status_update_add_note.tr(),
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                );
+              }),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _addReturnedProduct,
+                  icon: const Icon(Icons.add),
+                  label:  Text( LocaleKeys.addProduct.tr()),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.accentRed,
+                    side: const BorderSide(color: AppColors.accentRed),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
+    );
   }
 
   @override
@@ -406,8 +743,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (_) =>
-                                            const StoreScreen(),
+                                            builder: (_) => const StoreScreen(),
                                           ),
                                         );
                                       },
@@ -450,9 +786,9 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               child: Text(
                                                 LocaleKeys
                                                     .status_update_select_result
-                                                    .tr(args: [
-                                                  widget.customerName
-                                                ]),
+                                                    .tr(
+                                                  args: [widget.customerName],
+                                                ),
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
                                                   color: Colors.grey,
@@ -461,7 +797,6 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               ),
                                             ),
                                             const SizedBox(height: 20),
-
                                             StatusCard(
                                               index: 0,
                                               selectedStatus: _selectedStatus,
@@ -473,7 +808,6 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               onTap: () =>
                                                   _onStatusSelected(0),
                                             ),
-
                                             if (_isCompletedWithPayment) ...[
                                               const SizedBox(height: 20),
                                               Center(
@@ -494,8 +828,8 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                     .status_update_set_amount
                                                     .tr(),
                                                 keyboardType:
-                                                    const TextInputType
-                                                        .numberWithOptions(
+                                                const TextInputType
+                                                    .numberWithOptions(
                                                   decimal: true,
                                                 ),
                                                 validator: _validateAmount,
@@ -515,42 +849,21 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               const SizedBox(height: 10),
                                               CustomInputField(
                                                 controller:
-                                                    _materialsController,
+                                                _materialsController,
                                                 hintText: LocaleKeys
                                                     .status_update_set_materials_amount
                                                     .tr(),
                                                 keyboardType:
-                                                    const TextInputType
-                                                        .numberWithOptions(
+                                                const TextInputType
+                                                    .numberWithOptions(
                                                   decimal: true,
                                                 ),
                                                 validator: _validateMaterials,
                                               ),
                                               const SizedBox(height: 16),
-                                              DepositSection(
-                                                selectedDepositAccountType:
-                                                    _selectedDepositAccountType,
-                                                depositReceipt: _depositReceipt,
-                                                depositAccountOptions:
-                                                    _depositAccountOptions,
-                                                onAccountTypeChanged: (value) {
-                                                  setState(() {
-                                                    _selectedDepositAccountType =
-                                                        value;
-                                                  });
-                                                },
-                                                onPickReceipt:
-                                                    _pickDepositReceipt,
-                                                onRemoveReceipt: () {
-                                                  setState(() {
-                                                    _depositReceipt = null;
-                                                  });
-                                                },
-                                              ),
+                                              _buildDepositSection(),
                                             ],
-
                                             const SizedBox(height: 20),
-
                                             StatusCard(
                                               index: 1,
                                               selectedStatus: _selectedStatus,
@@ -564,9 +877,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               onTap: () =>
                                                   _onStatusSelected(1),
                                             ),
-
                                             const SizedBox(height: 20),
-
                                             StatusCard(
                                               index: 2,
                                               selectedStatus: _selectedStatus,
@@ -580,9 +891,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               onTap: () =>
                                                   _onStatusSelected(2),
                                             ),
-
                                             const SizedBox(height: 20),
-
                                             StatusCard(
                                               index: 3,
                                               selectedStatus: _selectedStatus,
@@ -596,28 +905,11 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               onTap: () =>
                                                   _onStatusSelected(3),
                                             ),
-
                                             if (_isGoodsReturned) ...[
                                               SizedBox(height: 20.h),
-                                              ReturnedProductSection(
-                                                selectedProduct:
-                                                    _selectedProduct,
-                                                quantityController:
-                                                    _productQuantityController,
-                                                noteController:
-                                                    _productNoteController,
-                                                onProductChanged: (newValue) {
-                                                  setState(() {
-                                                    _selectedProduct = newValue;
-                                                  });
-                                                },
-                                                quantityValidator:
-                                                    _validateReturnedQuantity,
-                                              ),
+                                              _buildReturnedProductsSection(),
                                             ],
-
                                             const SizedBox(height: 24),
-
                                             Center(
                                               child: RichText(
                                                 text: TextSpan(
@@ -644,7 +936,6 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               ),
                                             ),
                                             const SizedBox(height: 10),
-
                                             CustomInputField(
                                               controller: _notesController,
                                               hintText: _isNotesRequired
@@ -657,9 +948,7 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                               maxLines: 3,
                                               validator: _validateNotes,
                                             ),
-
                                             const SizedBox(height: 24),
-
                                             SizedBox(
                                               width: double.infinity,
                                               child: ElevatedButton(
@@ -679,7 +968,8 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
                                                     BorderRadius.circular(
-                                                        20),
+                                                      20,
+                                                    ),
                                                   ),
                                                   elevation: 0,
                                                 ),
@@ -727,5 +1017,15 @@ class _StatusUpdateScreenState extends State<StatusUpdateScreen> {
       ),
     );
   }
+}
 
+class ReturnedProductInput {
+  ProductData? product;
+  final TextEditingController quantityController = TextEditingController();
+  final TextEditingController noteController = TextEditingController();
+
+  void dispose() {
+    quantityController.dispose();
+    noteController.dispose();
+  }
 }

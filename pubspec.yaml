@@ -2,7 +2,7 @@ name: zoom_provider
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.0.0+56
+version: 1.0.0+9
 
 environment:
   sdk: ^3.6.2
@@ -13,7 +13,7 @@ dependencies:
 
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
-  firebase_core: ^3.10.1
+  firebase_core: ^4.10.0
   onesignal_flutter: ^5.2.6
   flutter_svg: ^2.0.17
   cached_network_image: ^3.4.1

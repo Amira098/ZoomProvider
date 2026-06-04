@@ -585,5 +585,6 @@
     "error_select_deposit_account": "Please select deposit account type",
     "error_upload_deposit_receipt": "Please upload deposit receipt",
     "error_loading_products": "Error loading products"
-  }
+  },
+  "addProduct": "Add another product"
 }

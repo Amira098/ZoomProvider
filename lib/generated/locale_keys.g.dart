@@ -5,11 +5,11 @@
 abstract class  LocaleKeys {
   static const Authentication_AuthenticationfillInTheForm = 'Authentication.AuthenticationfillInTheForm';
   static const Authentication_RegistrationFailed = 'Authentication.RegistrationFailed';
-  static const Authentication_SignUp = 'Authentication.SignUp';
-  static const Authentication_Login = 'Authentication.Login';
   static const Authentication_LoginFailed = 'Authentication.LoginFailed';
-  static const Authentication_Email = 'Authentication.Email';
+  static const Authentication_Login = 'Authentication.Login';
+  static const Authentication_SignUp = 'Authentication.SignUp';
   static const Authentication_SendOtp = 'Authentication.SendOtp';
+  static const Authentication_Email = 'Authentication.Email';
   static const Authentication_EnterYourEmail = 'Authentication.EnterYourEmail';
   static const Authentication_InvalidEmail = 'Authentication.InvalidEmail';
   static const Authentication_Password = 'Authentication.Password';
@@ -68,8 +68,8 @@ abstract class  LocaleKeys {
   static const Profile_EditProfile = 'Profile.EditProfile';
   static const Profile_Change = 'Profile.Change';
   static const Profile_ChangePassword = 'Profile.ChangePassword';
-  static const Profile_Update = 'Profile.Update';
   static const Profile_ResetPassword = 'Profile.ResetPassword';
+  static const Profile_Update = 'Profile.Update';
   static const Profile = 'Profile';
   static const Home_welcome = 'Home.welcome';
   static const Home_search_hint = 'Home.search_hint';
@@ -82,13 +82,13 @@ abstract class  LocaleKeys {
   static const Home_basic_care_desc = 'Home.basic_care_desc';
   static const Home_subscribe = 'Home.subscribe';
   static const Home_per_year = 'Home.per_year';
+  static const Home_Home = 'Home.Home';
   static const Home_live = 'Home.live';
   static const Home_starting_price = 'Home.starting_price';
   static const Home_starts_in = 'Home.starts_in';
   static const Home_auction_ended = 'Home.auction_ended';
   static const Home_bid_now = 'Home.bid_now';
   static const Home_bidders = 'Home.bidders';
-  static const Home_Home = 'Home.Home';
   static const Home_Categories = 'Home.Categories';
   static const Home_Cart = 'Home.Cart';
   static const Home_Profile = 'Home.Profile';
@@ -207,9 +207,9 @@ abstract class  LocaleKeys {
   static const Error_EmailAlreadyExists = 'Error.EmailAlreadyExists';
   static const Error_PasswordCannotBeEmpty = 'Error.PasswordCannotBeEmpty';
   static const Error_NameCannotBeEmpty = 'Error.NameCannotBeEmpty';
-  static const Error_InvalidName = 'Error.InvalidName';
   static const Error_PhoneNumberCannotBeEmpty = 'Error.PhoneNumberCannotBeEmpty';
   static const Error_InvalidPhoneNumber = 'Error.InvalidPhoneNumber';
+  static const Error_InvalidName = 'Error.InvalidName';
   static const Error_ConfirmPasswordMustMatch = 'Error.ConfirmPasswordMustMatch';
   static const Error_OtpCodeIsInvalidOrExpired = 'Error.OtpCodeIsInvalidOrExpired';
   static const Error_PasswordEnterAValidPassword = 'Error.PasswordEnterAValidPassword';
@@ -552,5 +552,6 @@ abstract class  LocaleKeys {
   static const status_update_error_upload_deposit_receipt = 'status_update.error_upload_deposit_receipt';
   static const status_update_error_loading_products = 'status_update.error_loading_products';
   static const status_update = 'status_update';
+  static const addProduct = 'addProduct';
 
 }

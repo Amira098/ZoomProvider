@@ -19,22 +19,45 @@ class CompletedPaidCubit extends Cubit<CompletedPaidState> {
     required double amount,
     required List<int> servicesIds,
     double? materials,
-    required XFile depositReceipt,
+    required List<XFile> depositReceipts,
     required String depositAccountType,
   }) async {
     emit(const CompletedPaidLoading());
 
     try {
-      final formData = FormData.fromMap({
-        'amount': amount,
-        'services[]': servicesIds,
-        if (materials != null) 'materials': materials,
-        'deposit_receipt': await MultipartFile.fromFile(
-          depositReceipt.path,
-          filename: depositReceipt.name,
-        ),
-        'deposit_account_type':depositAccountType,
-      });
+      final formData = FormData();
+
+      formData.fields.add(
+        MapEntry('amount', amount.toString()),
+      );
+
+      for (final serviceId in servicesIds) {
+        formData.fields.add(
+          MapEntry('services[]', serviceId.toString()),
+        );
+      }
+
+      if (materials != null) {
+        formData.fields.add(
+          MapEntry('materials', materials.toString()),
+        );
+      }
+
+      formData.fields.add(
+        MapEntry('deposit_account_type', depositAccountType),
+      );
+
+      for (final receipt in depositReceipts) {
+        formData.files.add(
+          MapEntry(
+            'deposit_receipts[]',
+            await MultipartFile.fromFile(
+              receipt.path,
+              filename: receipt.name,
+            ),
+          ),
+        );
+      }
 
       final result = await repository.completedPaid(orderId, formData);
 
