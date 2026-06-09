@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zoomtechnical.app">
+    package="com.zoom.technical">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
